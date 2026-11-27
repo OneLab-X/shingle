@@ -255,6 +255,7 @@ KEY_ORDER = [
     "images",
     "facts",
     "decisions",
+    "imported_from",
 ]
 
 

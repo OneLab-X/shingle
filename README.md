@@ -39,7 +39,7 @@ or point it at a file: `/shingle ./business.json`
 
 Shingle then:
 
-1. **Reads and normalizes** your details (phone to E.164, free-text hours to a schedule, country codes, socials) and tells you what is missing.
+1. **Reads and normalizes** your details (or imports your Google Business Profile export) (phone to E.164, free-text hours to a schedule, country codes, socials) and tells you what is missing.
 2. **Picks the closest category** of 13 (restaurant, dental clinic, plumber…) and loads only that playbook.
 3. **Interviews you** with a few multiple-choice rounds (max 4 questions, a recommended answer each): goal, pages, tone, photos, booking, features.
 4. **Proposes 2–3 palettes and a design direction**, all checked for WCAG AA contrast.
@@ -91,6 +91,8 @@ Each category is one short Markdown playbook: audience, tone, required sections,
 
 **Which Node and Python versions?** Node 22.23.4+ (Astro 7) for the site. The helper scripts use only the Python 3.9+ standard library.
 
+**Can I import my Google Business Profile?** Yes: `/shingle ./locations.csv` (or `.tsv`, `.xlsx`, or an API `Location` `.json`). Download it in Business Profile Manager: Actions > Download > Businesses. Shingle fills the name, address, phone, hours, website, category and description, never overwrites what you already wrote, and lists what it skipped. Reviews, ratings and photos are never imported. See [the guide](skills/shingle/references/google-business-profile.md).
+
 **Can the site be in two languages?** Yes. List them in `languages` (the first is the default) and Shingle builds `/pt/`, `/en/` and so on with hreflang, a language switcher and translated interface text (en, pt, es, fr, de, it; others fall back to English). Claude drafts the translations from your facts and the site shows a visible "native speaker should review this" notice until you mark them reviewed. Prices, phone numbers and names are never translated. [Example](examples/barro-e-luz/).
 
 **Can it do online stores or bookings?** It links to the shop or booking tool you already use (Shopify, Square, Calendly…). It does not build carts or take payments.
@@ -100,7 +102,7 @@ Each category is one short Markdown playbook: audience, tone, required sections,
 - [x] Multi-language sites (`/en/`, `/pt/`) with hreflang, driven by `languages`
 - [ ] Right-to-left languages (Arabic, Hebrew)
 - [ ] Optional "suggest my language" banner (no automatic redirect, which hurts SEO)
-- [ ] Import from a Google Business Profile export
+- [x] Import from a Google Business Profile export (spreadsheet download or API JSON)
 - [ ] More categories: vet, accountant, florist, driving school, coworking
 - [ ] More design directions and palettes from the community
 - [ ] Optional blog/news collection with RSS

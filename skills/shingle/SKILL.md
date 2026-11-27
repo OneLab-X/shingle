@@ -20,9 +20,14 @@ Load reference files only at the step that needs them. Never load every category
 - Show progress: after each step, a 1-3 line status of what was decided.
 
 ## Step 1: INTAKE
-1. Input is free text, a pasted list, or a path to `business.json` (the command passes `$ARGUMENTS`).
+1. Input is free text, a pasted list, a path to `business.json`, or a Google Business Profile export
+   (`.csv .tsv .xlsx`, or API Location `.json`). The command passes `$ARGUMENTS`.
 2. Extract every fact into `business.json` following `SK/references/business-schema.md`.
-   Keep the owner's wording for names; do not "improve" facts.
+   Keep the owner's wording for names; do not "improve" facts. For an export, run
+   `python3 SK/scripts/import_gbp.py <file> --out business.json --write` instead (details in
+   `SK/references/google-business-profile.md`). Several locations: it exits 2 with a list, so ask
+   which one, then re-run with `--location`. It never overwrites existing values; show its
+   report (filled, kept, not imported) and ask only for what is still missing.
 3. Run `python3 SK/scripts/validate_input.py business.json --write`. It normalizes phone (E.164),
    hours, URLs, socials and slug, and prints `errors`, `warnings` and `missing`.
 4. Show a compact table: understood facts, normalized changes, and missing items.
