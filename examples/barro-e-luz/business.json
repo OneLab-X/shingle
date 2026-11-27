@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "name": "Barro & Luz",
+  "slug": "barro-and-luz",
+  "category": "ecommerce-boutique",
+  "category_label": "Loja de cerâmica",
+  "tagline": "Cerâmica pintada à mão, no coração do Bairro Alto",
+  "description": "Pequena loja-atelier em Lisboa com azulejos, loiça e peças decorativas pintados à mão. Venha ver as prateleiras ou pintar o seu próprio azulejo ao sábado.",
+  "domain": "barroeluz.example",
+  "address": {
+    "street": "Rua do Norte 41",
+    "locality": "Lisboa",
+    "postal_code": "1200-286",
+    "country": "PT"
+  },
+  "timezone": "Europe/Lisbon",
+  "phone": "+351210000000",
+  "phone_display": "21 000 0000",
+  "email": "ola@barroeluz.example",
+  "hours": {
+    "mon": [],
+    "tue": [
+      [
+        "10:00",
+        "19:00"
+      ]
+    ],
+    "wed": [
+      [
+        "10:00",
+        "19:00"
+      ]
+    ],
+    "thu": [
+      [
+        "10:00",
+        "19:00"
+      ]
+    ],
+    "fri": [
+      [
+        "10:00",
+        "19:00"
+      ]
+    ],
+    "sat": [
+      [
+        "10:00",
+        "19:00"
+      ]
+    ],
+    "sun": []
+  },
+  "hours_note": "Aos sábados de manhã a loja organiza oficinas de pintura.",
+  "languages": [
+    "pt",
+    "en"
+  ],
+  "translations": {
+    "en": {
+      "review": "draft",
+      "category_label": "Ceramics shop",
+      "tagline": "Hand-painted ceramics in the heart of Bairro Alto",
+      "description": "A small shop and studio in Lisbon with hand-painted tiles, tableware and decorative pieces. Come and browse the shelves, or paint your own tile on Saturdays.",
+      "hours_note": "On Saturday mornings the shop runs painting workshops.",
+      "facts": {
+        "story": "Barro & Luz is a small shop and studio in Bairro Alto. The ceramicists paint each piece by hand and sell it here, next to the kiln.",
+        "products": [
+          {
+            "name": "Hand-painted tile",
+            "text": "15 × 15 cm square, painted and glazed as a single piece.",
+            "price": "€18"
+          },
+          {
+            "name": "Clay bowl",
+            "text": "Glazed bowl for soup or cereal, thrown on the wheel.",
+            "price": "€32"
+          },
+          {
+            "name": "Enamelled mug",
+            "text": "300 ml mug. Each one has its own painting.",
+            "price": "€24"
+          },
+          {
+            "name": "Wall plate",
+            "text": "28 cm decorative plate with a geometric pattern.",
+            "price": "€58"
+          }
+        ],
+        "workshop": {
+          "title": "Paint your own tile",
+          "text": "On Saturday mornings, in small groups, you paint a tile to take home. Book by phone or email."
+        },
+        "shipping": "We ship across Portugal. Arrange shipping by phone or email.",
+        "find_us": "Five minutes' walk from Largo do Camões.",
+        "faq": [
+          {
+            "q": "Can I order a custom piece?",
+            "a": "Yes. Write to us with your idea and the size you need, and we will reply with a quote."
+          },
+          {
+            "q": "Can the pieces go in the microwave and the dishwasher?",
+            "a": "Glazed tableware can go in the dishwasher. Decorative pieces, such as wall plates, are not for eating from."
+          },
+          {
+            "q": "Do you ship outside Portugal?",
+            "a": "Email us to arrange it: it depends on the destination and the size of the order."
+          }
+        ],
+        "labels": {
+          "products": "The pieces",
+          "workshop": "Workshop",
+          "faq": "Questions",
+          "visit": "Visit us",
+          "shipping": "Shipping",
+          "price_label": "Price"
+        }
+      },
+      "decisions": {
+        "cta": {
+          "label": "Visit the shop"
+        }
+      }
+    }
+  },
+  "facts": {
+    "story": "A Barro & Luz é uma pequena loja-atelier no Bairro Alto. As ceramistas pintam as peças à mão, uma a uma, e vendem-nas aqui, ao lado do forno.",
+    "products": [
+      {
+        "name": "Azulejo pintado à mão",
+        "text": "Quadrado de 15 × 15 cm, pintado e vidrado numa só peça.",
+        "price": "€18"
+      },
+      {
+        "name": "Tigela de barro",
+        "text": "Tigela vidrada para sopa ou cereais, feita na roda.",
+        "price": "€32"
+      },
+      {
+        "name": "Caneca esmaltada",
+        "text": "Caneca de 300 ml. Cada uma tem a sua pintura.",
+        "price": "€24"
+      },
+      {
+        "name": "Prato de parede",
+        "text": "Prato decorativo de 28 cm com padrão geométrico.",
+        "price": "€58"
+      }
+    ],
+    "workshop": {
+      "title": "Pinte o seu azulejo",
+      "text": "Aos sábados de manhã, em grupos pequenos, pinta-se um azulejo para levar para casa. Reserve por telefone ou email."
+    },
+    "shipping": "Enviamos para todo o país. Combine o envio por telefone ou email.",
+    "find_us": "A cinco minutos a pé do Largo do Camões.",
+    "faq": [
+      {
+        "q": "Posso encomendar uma peça personalizada?",
+        "a": "Sim. Escreva-nos com a ideia e o tamanho que procura e respondemos com um orçamento."
+      },
+      {
+        "q": "As peças podem ir ao micro-ondas e à máquina de lavar loiça?",
+        "a": "A loiça vidrada pode ir à máquina de lavar loiça. As peças decorativas, como os pratos de parede, não servem para comer."
+      },
+      {
+        "q": "Fazem envios para fora de Portugal?",
+        "a": "Combine connosco por email: depende do destino e do tamanho da encomenda."
+      }
+    ],
+    "labels": {
+      "products": "As peças",
+      "workshop": "Oficina",
+      "faq": "Perguntas",
+      "visit": "Visite-nos",
+      "shipping": "Envios",
+      "price_label": "Preço"
+    }
+  },
+  "decisions": {
+    "goal": "visits",
+    "cta": {
+      "label": "Visitar a loja",
+      "action": "map"
+    },
+    "pages": "single",
+    "tone": "warm",
+    "imagery": "svg-placeholders",
+    "languages": [
+      "pt",
+      "en"
+    ],
+    "contact_method": [
+      "tel",
+      "email",
+      "map"
+    ],
+    "features": [
+      "products",
+      "workshop",
+      "faq",
+      "map"
+    ],
+    "schema_type": "HomeGoodsStore",
+    "design": {
+      "direction": "handmade",
+      "palette": "terracotta-sun"
+    },
+    "badge": true
+  }
+}

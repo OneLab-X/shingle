@@ -6,10 +6,12 @@ Usage:
     python3 sync.py <site> --record-all       # after first build: track every generated file
     python3 sync.py <site> --record a b ...   # after rewriting files: re-track just those
     python3 sync.py <site> --status           # print status only, write nothing
+    python3 sync.py <site> --init-i18n        # languages has 2+ entries: add src/pages/[lang]/ (never overwrites edits)
     add --json for machine-readable output
 
 Data files (always regenerated, never hand-edited):
-    src/data/site.json, src/styles/theme.css, src/styles/fonts.css, public/robots.txt,
+    src/data/site.json, src/data/site.<lang>.json (extra languages), src/data/ui.json,
+    src/styles/theme.css, src/styles/fonts.css, public/robots.txt,
     public/CNAME (only when a domain is set)
 Generated files are tracked by SHA-256 in .shingle/manifest.json. A file whose current hash
 differs from the recorded one was edited by hand and must not be overwritten (see
@@ -41,13 +43,27 @@ DATA_FILES = [
     "public/robots.txt",
     "public/CNAME",
 ]
-UNTRACKED_PREFIXES = ("public/images/", "node_modules/", "dist/", ".astro/", ".shingle/", ".git/")
+UNTRACKED_PREFIXES = ("public/images/", "src/data/", "node_modules/", "dist/", ".astro/", ".shingle/", ".git/")
 UNTRACKED_FILES = {"business.json", "package.json", "package-lock.json", "pnpm-lock.yaml", "yarn.lock"}
 TRACK_ROOTS = ("src", "public")
 TRACK_FILES = ("astro.config.mjs", "README.md")
 
 PLACEHOLDER_URL = "https://example.com/"
 SHINGLE_URL = "https://github.com/OneLab-X/shingle"
+UI_STRINGS_DIR = REFS / "ui-strings"
+TEMPLATE_DIR = SCRIPTS.parent.parent.parent / "templates" / "astro-tailwind"
+
+# Which countries each language is the everyday language of; used to pick og:locale regions.
+LANGUAGE_COUNTRIES = {
+    "en": {"US", "GB", "CA", "AU", "NZ", "IE", "IN", "ZA", "SG"},
+    "pt": {"PT", "BR"},
+    "es": {"ES", "MX", "AR", "CO", "CL", "PE"},
+    "fr": {"FR", "CA", "BE", "CH"},
+    "de": {"DE", "AT", "CH"},
+    "it": {"IT", "CH"},
+}
+DEFAULT_REGION = {"en": "US", "pt": "PT", "es": "ES", "fr": "FR", "de": "DE", "it": "IT"}
+RTL_LANGUAGES = {"ar", "he", "fa", "ur"}
 
 # Countries with a single time zone (or one that covers nearly all businesses). Others need
 # an explicit "timezone" in business.json for the live open/closed status.
@@ -170,8 +186,11 @@ def build_hours(hours: dict | None, twelve: bool, note: str | None) -> dict:
         text = "Closed" if d["closed"] else ("Hours not set" if d["unknown"] else ", ".join(r["text"] for r in d["ranges"]))
         if groups and groups[-1]["text"] == text:
             groups[-1]["days"].append(d["short"])
+            groups[-1]["keys"].append(d["key"])
         else:
-            groups.append({"days": [d["short"]], "text": text})
+            groups.append(
+                {"days": [d["short"]], "keys": [d["key"]], "text": text, "closed": d["closed"], "unknown": d["unknown"]}
+            )
     for g in groups:
         ds = g.pop("days")
         g["label"] = ds[0] if len(ds) == 1 else f"{ds[0]}–{ds[-1]}"
@@ -209,7 +228,112 @@ def address_lines(addr: dict | None) -> list[str]:
     return lines
 
 
-def build_jsonld(b: dict, url: str) -> dict:
+def load_ui(code: str) -> dict:
+    """UI strings for a language code (pt-BR falls back to pt, anything unknown to English)."""
+    en = json.loads((UI_STRINGS_DIR / "en.json").read_text(encoding="utf-8"))
+    base = code.split("-")[0]
+    path = UI_STRINGS_DIR / f"{base}.json"
+    own = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+    merged = {**en, **{k: v for k, v in own.items() if v}}
+    meta = merged.pop("_meta", {})
+    merged["_native_name"] = meta.get("native_name") if path.exists() else None
+    return merged
+
+
+def og_locale(code: str, country: str | None) -> str:
+    lang, *rest = code.split("-")
+    lang = lang.lower()
+    region = next((p.upper() for p in rest if len(p) == 2), None)
+    if not region:
+        if country and country in LANGUAGE_COUNTRIES.get(lang, set()):
+            region = country
+        else:
+            region = DEFAULT_REGION.get(lang, lang.upper())
+    return f"{lang}_{region}"
+
+
+def build_i18n(b: dict) -> dict:
+    """Language configuration shared by every page. `enabled` only when there are 2+ languages."""
+    dec = b.get("decisions") or {}
+    langs = b.get("languages") or dec.get("languages") or ["en"]
+    country = (b.get("address") or {}).get("country")
+    enabled = len(langs) > 1
+    locales = []
+    for code in langs:
+        ui = load_ui(code)
+        locales.append(
+            {
+                "code": code,
+                "path": code.lower(),
+                "hreflang": code,
+                "og_locale": og_locale(code, country),
+                "label": ui["_native_name"] or code,
+                "dir": "rtl" if code.split("-")[0] in RTL_LANGUAGES else "ltr",
+            }
+        )
+    return {"enabled": enabled, "default": langs[0], "locales": locales}
+
+
+def merge_translation(base, overlay):
+    """Deep-merge a translation overlay over the default-language data: objects merge, anything else replaces."""
+    if isinstance(base, dict) and isinstance(overlay, dict):
+        out = dict(base)
+        for key, value in overlay.items():
+            out[key] = merge_translation(base[key], value) if key in base else value
+        return out
+    return overlay
+
+
+def translated_business(b: dict, lang: str) -> dict:
+    """The business as seen in `lang`: top-level fields are the default language, overlay for the rest."""
+    overlay = ((b.get("translations") or {}).get(lang)) or {}
+    overlay = {k: v for k, v in overlay.items() if k != "review"}
+    merged = merge_translation({k: v for k, v in b.items() if k != "translations"}, overlay)
+    return merged
+
+
+def untranslated_paths(base, overlay, prefix: str = "") -> list[str]:
+    """Prose keys that exist in the default language but have no counterpart in the overlay."""
+    missing: list[str] = []
+    if isinstance(base, dict):
+        for key, value in base.items():
+            path = f"{prefix}.{key}" if prefix else key
+            if isinstance(value, str) and key in PROSE_KEYS:
+                if not isinstance(overlay, dict) or key not in overlay:
+                    missing.append(path)
+            elif isinstance(value, (dict, list)):
+                missing += untranslated_paths(value, (overlay or {}).get(key) if isinstance(overlay, dict) else None, path)
+    elif isinstance(base, list):
+        for i, item in enumerate(base):
+            sub = overlay[i] if isinstance(overlay, list) and i < len(overlay) else None
+            missing += untranslated_paths(item, sub, f"{prefix}[{i}]")
+    return missing
+
+
+PROSE_KEYS = {
+    "tagline",
+    "description",
+    "hours_note",
+    "text",
+    "summary",
+    "story",
+    "q",
+    "a",
+    "title",
+    "note",
+    "about",
+    "process",
+    "pricing",
+    "first_step",
+    "good_to_know",
+    "emergency",
+    "accessibility",
+    "payment",
+    "insurance_note",
+}
+
+
+def build_jsonld(b: dict, url: str, page_url: str | None = None, languages: list[str] | None = None) -> dict:
     cat = b.get("category", "generic-local-business")
     dec = b.get("decisions") or {}
     facts = b.get("facts") or {}
@@ -218,7 +342,7 @@ def build_jsonld(b: dict, url: str) -> dict:
         "@type": dec.get("schema_type") or SCHEMA_TYPES.get(cat, "LocalBusiness"),
         "@id": f"{url}#business",
         "name": b["name"],
-        "url": url,
+        "url": page_url or url,
     }
     if cat == "photographer" and not dec.get("schema_type"):
         ld["additionalType"] = "https://www.wikidata.org/wiki/Q33231"
@@ -256,7 +380,10 @@ def build_jsonld(b: dict, url: str) -> dict:
     if cat in ("restaurant", "cafe") and facts.get("cuisine"):
         ld["servesCuisine"] = facts["cuisine"]
     if cat in ("restaurant", "cafe") and "menu" in (dec.get("features") or []):
-        ld["hasMenu"] = f"{url}menu/" if dec.get("pages") == "multi" else f"{url}#menu"
+        here = page_url or url
+        ld["hasMenu"] = f"{here}menu/" if dec.get("pages") == "multi" else f"{here}#menu"
+    if languages and len(languages) > 1:
+        ld["knowsLanguage"] = languages
     if b.get("service_area"):
         ld["areaServed"] = [{"@type": "Place", "name": a} for a in b["service_area"]]
     for fact_key, ld_key in (
@@ -269,7 +396,7 @@ def build_jsonld(b: dict, url: str) -> dict:
     return ld
 
 
-def build_site_data(b: dict, palette: dict | None = None) -> dict:
+def build_site_data(b: dict, palette: dict | None = None, lang: str | None = None, i18n: dict | None = None) -> dict:
     addr = b.get("address") or {}
     country = addr.get("country")
     dec = b.get("decisions") or {}
@@ -280,12 +407,16 @@ def build_site_data(b: dict, palette: dict | None = None) -> dict:
     one_line = ", ".join(lines)
     query = ", ".join(x for x in (b.get("name"), one_line) if x)
     langs = b.get("languages") or dec.get("languages") or ["en"]
-    locale = langs[0].replace("-", "_")
-    if "_" not in locale and country:
-        locale = f"{locale}_{country}"
-    label = CATEGORY_LABELS.get(b.get("category", ""), "Local business")
+    i18n = i18n or build_i18n(b)
+    current = lang or i18n["default"]
+    current_locale = next(loc for loc in i18n["locales"] if loc["code"] == current)
+    locale = current_locale["og_locale"]
+    is_default = current == i18n["default"]
+    page_url = f"{url}{current_locale['path']}/" if i18n["enabled"] else url
+    label = b.get("category_label") or CATEGORY_LABELS.get(b.get("category", ""), "Local business")
     place = addr.get("locality") or addr.get("region")
-    what_where = f"{label} in {place}" if place else label
+    ui_strings = load_ui(current)
+    what_where = ui_strings["seo.what_where"].replace("{what}", label).replace("{where}", place) if place else label
 
     contact = {}
     if b.get("phone"):
@@ -349,15 +480,20 @@ def build_site_data(b: dict, palette: dict | None = None) -> dict:
         "badge": dec.get("badge", True) is not False,
         "badge_url": SHINGLE_URL,
         "seo": {
-            "title": f"{b.get('name')} · {what_where}",
+            "title": f"{b.get('name')} · {b['tagline']}"
+            if not is_default and b.get("tagline")
+            else f"{b.get('name')} · {what_where}",
             "description": (
                 b.get("description") or b.get("tagline") or f"{b.get('name')}: {what_where[0].lower()}{what_where[1:]}."
             )[:160],
             "locale": locale,
-            "lang": langs[0],
+            "lang": current,
+            "dir": current_locale["dir"],
             "og_image": f"{url}og.png",
         },
-        "jsonld": build_jsonld(b, url),
+        "i18n": i18n,
+        "lang": current,
+        "jsonld": build_jsonld(b, url, page_url, langs),
         "shingle_version": VERSION,
     }
 
@@ -535,16 +671,43 @@ def sync(site: Path, palettes_path: Path, directions_path: Path, write: bool = T
     directions = json.loads(directions_path.read_text(encoding="utf-8"))
     palette = resolve_palette(business, palettes)
     direction_id, direction = resolve_direction(business, directions)
-    data = build_site_data(business, palette)
+    i18n = build_i18n(business)
+    data = build_site_data(business, palette, i18n["default"], i18n)
+    translations = business.get("translations") or {}
+    ui = {}
+    for loc in i18n["locales"]:
+        strings = load_ui(loc["code"])
+        strings.pop("_native_name", None)
+        ui[loc["code"]] = strings
 
     outputs = {
         "src/data/site.json": json.dumps(data, indent=2, ensure_ascii=False) + "\n",
+        "src/data/ui.json": json.dumps(ui, indent=2, ensure_ascii=False) + "\n",
         "src/styles/theme.css": build_theme_css(palette, direction_id, direction),
         "src/styles/fonts.css": build_fonts_css(direction),
         "public/robots.txt": f"User-agent: *\nAllow: /\n\nSitemap: {data['business']['url']}sitemap-index.xml\n",
     }
     if business.get("domain"):
         outputs["public/CNAME"] = business["domain"] + "\n"
+    i18n_report = {
+        "languages": [loc["code"] for loc in i18n["locales"]],
+        "default": i18n["default"],
+        "untranslated": {},
+        "draft": [],
+    }
+    if i18n["enabled"]:
+        for loc in i18n["locales"][1:]:
+            code = loc["code"]
+            overlay = translations.get(code) or {}
+            lang_data = build_site_data(translated_business(business, code), palette, code, i18n)
+            lang_data["review"] = overlay.get("review", "draft")
+            outputs[f"src/data/site.{code}.json"] = json.dumps(lang_data, indent=2, ensure_ascii=False) + "\n"
+            base = {k: v for k, v in business.items() if k != "translations"}
+            missing = untranslated_paths(base, overlay)
+            if missing:
+                i18n_report["untranslated"][code] = missing
+            if lang_data["review"] != "reviewed":
+                i18n_report["draft"].append(code)
 
     manifest = load_manifest(site)
     result = {"site": str(site), "written": [], "unchanged": [], "removed": [], "packages": []}
@@ -555,6 +718,11 @@ def sync(site: Path, palettes_path: Path, directions_path: Path, write: bool = T
         if "public/CNAME" not in outputs and cname.exists():
             cname.unlink()
             result["removed"].append("public/CNAME")
+        for stale in sorted((site / "src/data").glob("site.*.json")):
+            rel = stale.relative_to(site).as_posix()
+            if rel not in outputs:
+                stale.unlink()
+                result["removed"].append(rel)
         wanted = font_packages(direction)
         result["packages"] = update_package_json(site, wanted, manifest.get("font_packages", []))
         if manifest.get("font_packages") != wanted or not (site / MANIFEST).exists():
@@ -562,6 +730,60 @@ def sync(site: Path, palettes_path: Path, directions_path: Path, write: bool = T
             save_manifest(site, manifest)
     result["status"] = file_status(site, manifest)
     result["warnings"] = report.warnings
+    result["i18n"] = i18n_report
+    return result
+
+
+# (template file, site file, monolingual file it replaces)
+I18N_OVERLAY = [
+    ("i18n/src/pages/[lang]/index.astro", "src/pages/[lang]/index.astro", "src/pages/index.astro"),
+    ("i18n/src/pages/404.astro", "src/pages/404.astro", "src/pages/404.astro"),
+]
+
+
+def _is_pristine(site: Path, rel: str, manifest: dict) -> bool:
+    """True when the file is exactly what Shingle wrote (template copy or recorded hash)."""
+    path = site / rel
+    if not path.exists():
+        return True
+    if manifest["files"].get(rel) == sha(path):
+        return True
+    original = TEMPLATE_DIR / rel
+    return original.exists() and original.read_bytes() == path.read_bytes()
+
+
+def init_i18n(site: Path) -> dict:
+    """Add the multi-language page scaffolding. Never overwrites a page the owner edited."""
+    business, report = normalize(json.loads((site / "business.json").read_text(encoding="utf-8")))
+    if report.errors:
+        raise SystemExit("error: business.json is invalid; run validate_input.py")
+    i18n = build_i18n(business)
+    if not i18n["enabled"]:
+        raise SystemExit("error: `languages` in business.json needs two or more entries for a multi-language site")
+    manifest = load_manifest(site)
+    result = {"created": [], "replaced": [], "kept": [], "warnings": []}
+    for src_rel, dest_rel, replaces in I18N_OVERLAY:
+        src, dest, old = TEMPLATE_DIR / src_rel, site / dest_rel, site / replaces
+        if not src.exists():
+            raise SystemExit(f"error: template overlay missing: {src}")
+        if dest.exists() and dest_rel != replaces:
+            result["kept"].append(dest_rel)
+            continue
+        if old.exists() and not _is_pristine(site, replaces, manifest):
+            result["kept"].append(replaces)
+            result["warnings"].append(
+                f"{replaces} was edited by hand: move its content into the [lang] pages yourself "
+                f"(the multi-language version was not written to avoid overwriting your edits)"
+            )
+            if dest_rel == replaces:
+                continue
+        if old.exists() and dest_rel != replaces and _is_pristine(site, replaces, manifest):
+            old.unlink()
+            result["replaced"].append(replaces)
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        existed = dest.exists()
+        dest.write_bytes(src.read_bytes())
+        result["replaced" if existed else "created"].append(dest_rel)
     return result
 
 
@@ -590,6 +812,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--record", nargs="+", metavar="PATH", help="record hashes for these generated files")
     ap.add_argument("--record-all", action="store_true", help="record hashes for all generated files")
     ap.add_argument("--status", action="store_true", help="report status only, write nothing")
+    ap.add_argument("--init-i18n", action="store_true", help="add src/pages/[lang]/ for a multi-language site")
     ap.add_argument("--palettes", type=Path, default=REFS / "palettes.json")
     ap.add_argument("--directions", type=Path, default=REFS / "directions.json")
     ap.add_argument("--json", action="store_true")
@@ -604,6 +827,18 @@ def main(argv: list[str] | None = None) -> int:
             print(f"recorded {len(out['recorded'])} file(s); {out['tracked']} tracked")
             for s in out["skipped"]:
                 print(f"  skipped (missing or a data file): {s}")
+        return 0
+
+    if args.init_i18n:
+        out = init_i18n(site)
+        if args.json:
+            print(json.dumps(out, indent=2))
+        else:
+            for key in ("created", "replaced", "kept"):
+                if out[key]:
+                    print(f"{key}: {', '.join(out[key])}")
+            for w in out["warnings"]:
+                print(f"warning: {w}")
         return 0
 
     out = sync(site, args.palettes, args.directions, write=not args.status)
@@ -632,6 +867,17 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"    {rel}")
     for w in out["warnings"]:
         print(f"warning: {w}")
+    i18n = out["i18n"]
+    if len(i18n["languages"]) > 1:
+        print(f"languages: {', '.join(i18n['languages'])} (default {i18n['default']})")
+        for code, paths in i18n["untranslated"].items():
+            print(
+                f"  {code}: {len(paths)} text field(s) fall back to {i18n['default']}: {', '.join(paths[:6])}{' …' if len(paths) > 6 else ''}"
+            )
+        for code in i18n["draft"]:
+            print(
+                f'  {code}: translation still marked draft (set translations.{code}.review to "reviewed" after a native speaker checks it)'
+            )
     return 0
 
 

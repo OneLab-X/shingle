@@ -1,12 +1,14 @@
 ---
 /** Opening hours as a table, today's row highlighted in the browser. Unknown days show a TODO. */
-import site from "../data/site.json";
+import { getSite, useT } from "../lib/i18n";
 import Todo from "./Todo.astro";
 
 interface Props {
   class?: string;
 }
 const { class: className } = Astro.props;
+const site = getSite(Astro.currentLocale);
+const t = useT(Astro.currentLocale);
 const { hours } = site;
 ---
 
@@ -14,12 +16,12 @@ const { hours } = site;
   hours.known ? (
     <div class:list={["hours", className]}>
       <table>
-        <caption class="sr-only">Opening hours</caption>
+        <caption class="sr-only">{t("hours.opening")}</caption>
         <tbody>
           {hours.days.map((d) => (
             <tr data-day={d.key}>
-              <th scope="row">{d.label}</th>
-              <td>{d.closed ? "Closed" : d.unknown ? <Todo label={`hours for ${d.label}`} /> : d.ranges.map((r) => r.text).join(", ")}</td>
+              <th scope="row">{t(`day_long.${d.key}`)}</th>
+              <td>{d.closed ? t("hours.closed") : d.unknown ? <Todo label={`hours for ${d.label}`} /> : d.ranges.map((r) => r.text).join(", ")}</td>
             </tr>
           ))}
         </tbody>

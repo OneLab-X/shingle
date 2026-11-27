@@ -1,0 +1,97 @@
+---
+/** Footer with NAP (name, address, phone) exactly as in business.json, hours, socials, badge. */
+import { getSite, useT } from "../lib/i18n";
+import Icon from "./Icon.astro";
+import LanguageSwitcher from "./LanguageSwitcher.astro";
+import Todo from "./Todo.astro";
+
+const site = getSite(Astro.currentLocale);
+const t = useT(Astro.currentLocale);
+const { business, contact, hours, badge, badge_url } = site;
+const languageName = site.i18n.locales.find((l) => l.code === site.lang)?.label ?? site.lang;
+const year = new Date().getFullYear();
+const socialIcon = (key: string) =>
+  (["instagram", "facebook", "x", "tiktok", "youtube", "linkedin"].includes(key) ? key : "link") as
+    | "instagram" | "facebook" | "x" | "tiktok" | "youtube" | "linkedin" | "link";
+const groups = hours.groups.filter((g) => !g.unknown);
+const dayRange = (keys: string[]) =>
+  keys.length === 1 ? t(`day_short.${keys[0]}`) : `${t(`day_short.${keys[0]}`)}–${t(`day_short.${keys[keys.length - 1]}`)}`;
+---
+
+<footer class="site-footer">
+  <div class="wrap grid gap-10 py-14 md:grid-cols-3">
+    <div>
+      <p class="name">{business.name}</p>
+      {
+        business.address_lines.length > 0 && (
+          <address>
+            {business.address_lines.map((line) => (
+              <span class="block">{line}</span>
+            ))}
+          </address>
+        )
+      }
+    </div>
+    <div>
+      <p class="label">{t("contact.title")}</p>
+      <ul class="list-none p-0 space-y-1">
+        {contact.tel && <li><a href={contact.tel.href}>{contact.tel.label}</a></li>}
+        {contact.email && <li><a href={contact.email.href}>{contact.email.label}</a></li>}
+        {contact.whatsapp && <li><a href={contact.whatsapp.href} target="_blank" rel="noopener noreferrer">{t("contact.whatsapp")}</a></li>}
+      </ul>
+      {
+        business.socials.length > 0 && (
+          <ul class="socials list-none p-0 mt-4 flex gap-3">
+            {business.socials.map((s) => (
+              <li>
+                <a href={s.url} target="_blank" rel="noopener noreferrer me" aria-label={`${business.name} on ${s.label}`}>
+                  <Icon name={socialIcon(s.key)} />
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+    {
+      groups.length > 0 && (
+        <div>
+          <p class="label">{t("hours.title")}</p>
+          <dl class="hours-mini">
+            {groups.map((g) => (
+              <div>
+                <dt>{dayRange(g.keys)}</dt>
+                <dd>{g.closed ? t("hours.closed") : g.text}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      )
+    }
+  </div>
+  <div class="wrap legal py-5 flex flex-wrap justify-between gap-3">
+    <p>© {year} {business.name}</p>
+    <LanguageSwitcher />
+    {badge && <p><a href={badge_url}>{t("footer.built_with")}</a></p>}
+  </div>
+  {
+    (site as { review?: string }).review === "draft" && (
+      <div class="wrap pb-6">
+        <Todo as="p" label={`native-speaker review of the ${languageName} text`} message={t("review.draft", { language: languageName })} />
+      </div>
+    )
+  }
+</footer>
+
+<style>
+  .site-footer { border-top: 1px solid var(--sh-border); background: var(--sh-surface); font-size: 0.9375rem; }
+  .name { font-family: var(--sh-font-display); font-size: 1.25rem; font-weight: var(--sh-heading-weight); margin-bottom: 0.5rem; text-transform: var(--sh-heading-case); }
+  .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: var(--sh-ui-tracking); color: var(--sh-muted); font-weight: 700; margin-bottom: 0.5rem; }
+  a { color: var(--sh-text); }
+  .socials a { display: inline-grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--sh-border); border-radius: 50%; }
+  .hours-mini div { display: flex; gap: 1rem; justify-content: space-between; max-width: 18rem; }
+  .hours-mini dt { font-weight: 600; }
+  .hours-mini dd { margin: 0; font-variant-numeric: tabular-nums; }
+  .legal { border-top: 1px solid var(--sh-border); color: var(--sh-muted); font-size: 0.8125rem; }
+  .legal a { color: var(--sh-muted); }
+</style>

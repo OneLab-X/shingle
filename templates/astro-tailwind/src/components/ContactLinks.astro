@@ -1,6 +1,6 @@
 ---
 /** Contact actions that work without a backend: call, WhatsApp, email, booking link, directions. */
-import site from "../data/site.json";
+import { getSite, useT } from "../lib/i18n";
 import Icon from "./Icon.astro";
 
 interface Props {
@@ -9,14 +9,17 @@ interface Props {
   class?: string;
 }
 const { show = ["booking", "tel", "whatsapp", "email", "directions"], class: className } = Astro.props;
+const site = getSite(Astro.currentLocale);
+const t = useT(Astro.currentLocale);
+const labels: Record<string, string> = { whatsapp: t("contact.whatsapp"), booking: t("contact.book_online") };
 const c = site.contact as Record<string, { href: string; label: string } | undefined>;
 const items = show
   .map((key) => {
-    if (key === "directions") return site.maps ? { key, href: site.maps.directions, label: "Directions", icon: "pin" as const } : null;
+    if (key === "directions") return site.maps ? { key, href: site.maps.directions, label: t("action.directions"), icon: "pin" as const } : null;
     const item = c[key];
     if (!item) return null;
     const icon = ({ tel: "phone", whatsapp: "chat", email: "mail", booking: "calendar" } as const)[key];
-    return { key, href: item.href, label: item.label, icon };
+    return { key, href: item.href, label: labels[key] ?? item.label, icon };
   })
   .filter((x): x is NonNullable<typeof x> => x !== null);
 ---

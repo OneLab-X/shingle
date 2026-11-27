@@ -1,0 +1,55 @@
+---
+/**
+ * Starter home page for multi-language sites, rendered once per language at /<lang>/.
+ * Shingle rewrites this for each business; this is a working baseline. Text comes from
+ * src/data/site.<lang>.json (business facts) and src/data/ui.json (interface text).
+ */
+import Base from "../../layouts/Base.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import ContactLinks from "../../components/ContactLinks.astro";
+import Hours from "../../components/Hours.astro";
+import OpenStatus from "../../components/OpenStatus.astro";
+import MapEmbed from "../../components/MapEmbed.astro";
+import Todo from "../../components/Todo.astro";
+import { getSite, langPaths, useT } from "../../lib/i18n";
+
+export const getStaticPaths = langPaths;
+
+const { lang } = Astro.props;
+const site = getSite(lang);
+const t = useT(lang);
+const { business } = site;
+const place = business.address?.locality ?? business.address?.region;
+---
+
+<Base>
+  <Header nav={[{ href: "#visit", label: t("nav.visit") }]} />
+  <main id="main">
+    <section class="wrap section">
+      <p class="eyebrow">{business.category_label}{place && ` · ${place}`}</p>
+      <h1 class="mt-4 max-w-4xl">{business.name}</h1>
+      {
+        business.tagline ? (
+          <p class="mt-6 text-xl">{business.tagline}</p>
+        ) : (
+          /* TODO(shingle): one-sentence tagline in the owner's words, in every language */
+          <Todo as="p" label="a one-sentence tagline" />
+        )
+      }
+      <div class="mt-6"><OpenStatus /></div>
+      <ContactLinks class="mt-8" />
+    </section>
+
+    <section id="visit" class="bg-surface section">
+      <div class="wrap grid gap-12 md:grid-cols-2">
+        <div>
+          <h2>{t("nav.visit")}</h2>
+          <Hours class="mt-6" />
+        </div>
+        <MapEmbed />
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Base>

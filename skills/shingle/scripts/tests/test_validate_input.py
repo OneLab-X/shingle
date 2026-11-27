@@ -165,6 +165,84 @@ class NormalizeTests(unittest.TestCase):
         self.assertTrue(any("postal" in w for w in r.warnings))
 
 
+class LanguageTests(unittest.TestCase):
+    BASE = {
+        "name": "Casa",
+        "category": "cafe",
+        "languages": ["pt", "en"],
+        "phone": "+351213000000",
+        "tagline": "Café em Lisboa",
+        "facts": {
+            "menu": [{"name": "Bolo", "description": "De laranja", "price": "€3"}],
+            "team": [{"name": "Ana", "role": "Dona"}],
+        },
+    }
+
+    def run_normalize(self, **extra):
+        data = {**self.BASE, **extra}
+        return v.normalize(data)
+
+    def test_languages_normalized_and_deduped(self):
+        out, r = self.run_normalize(languages=["PT", "en_gb", "pt", "en-GB"])
+        self.assertEqual(out["languages"], ["pt", "en-GB"])
+        self.assertTrue(any("twice" in w for w in r.warnings))
+
+    def test_warns_without_ui_dictionary_and_for_rtl(self):
+        _, r = self.run_normalize(languages=["pt", "xx", "ar"])
+        text = " ".join(r.warnings)
+        self.assertIn("no interface dictionary for 'xx'", text)
+        self.assertIn("right-to-left", text)
+
+    def test_valid_translation_overlay(self):
+        tr = {
+            "en": {
+                "review": "draft",
+                "tagline": "Cafe in Lisbon",
+                "facts": {
+                    "menu": [{"name": "Cake", "description": "Orange", "price": "€3"}],
+                    "team": [{"name": "Ana", "role": "Owner"}],
+                },
+            }
+        }
+        _, r = self.run_normalize(translations=tr)
+        self.assertEqual(r.errors, [])
+        self.assertEqual([w for w in r.warnings if "translations" in w], [])
+
+    def test_locked_fields_error(self):
+        tr = {"en": {"phone": "+1", "facts": {"menu": [{"price": "€4"}], "team": [{"name": "Anne"}]}}}
+        _, r = self.run_normalize(translations=tr)
+        text = " ".join(r.errors)
+        self.assertIn("translations.en.phone", text)
+        self.assertIn("translations.en.facts.menu.0.price", text)
+        self.assertIn("translations.en.facts.team.0.name", text)
+
+    def test_dish_names_may_be_translated(self):
+        tr = {"en": {"facts": {"menu": [{"name": "Cake"}]}}}
+        _, r = self.run_normalize(translations=tr)
+        self.assertEqual(r.errors, [])
+
+    def test_bad_keys_and_review_state(self):
+        _, r = self.run_normalize(translations={"fr": {}, "en": {"review": "done"}, "pt": {}})
+        text = " ".join(r.errors + r.warnings)
+        self.assertIn("'fr' is not in languages", text)
+        self.assertIn("review must be one of", text)
+        self.assertIn("default language is written at the top level", text)
+
+    def test_warnings_for_array_length_unknown_key_and_missing_language(self):
+        tr = {"en": {"facts": {"menu": [{"name": "a"}, {"name": "b"}]}, "nonsense": 1}}
+        _, r = self.run_normalize(translations=tr)
+        text = " ".join(r.warnings)
+        self.assertIn("2 items but the default language has 1", text)
+        self.assertIn("translations.en.nonsense", text)
+        _, r = self.run_normalize(languages=["pt", "en", "es"], translations=tr)
+        self.assertIn("no translations for 'es'", " ".join(r.warnings))
+
+    def test_single_language_ignores_translations(self):
+        _, r = self.run_normalize(languages=["pt"], translations={"en": {"tagline": "x"}})
+        self.assertEqual(r.errors, [])
+        self.assertTrue(any("ignored" in w for w in r.warnings))
+
+
 class CliTests(unittest.TestCase):
     def run_cli(self, *args):
         return subprocess.run([sys.executable, str(SCRIPTS / "validate_input.py"), *args], capture_output=True, text=True)

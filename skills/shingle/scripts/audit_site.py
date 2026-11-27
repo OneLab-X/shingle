@@ -57,6 +57,7 @@ class Page(HTMLParser):
         self.title = None
         self._in_title = False
         self.meta: dict[str, str] = {}
+        self.meta_list: list[tuple[str, str]] = []  # every <meta>, in order (og:locale:alternate repeats)
         self.links: list[dict] = []  # <link>
         self.anchors: list[dict] = []  # <a>
         self.imgs: list[dict] = []
@@ -86,9 +87,10 @@ class Page(HTMLParser):
             self._in_title = True
             self.title = ""
         elif tag == "meta":
-            key = a.get("name") or a.get("property")
+            key = a.get("name") or a.get("property") or a.get("http-equiv")
             if key:
                 self.meta[key.lower()] = a.get("content", "")
+                self.meta_list.append((key.lower(), a.get("content", "")))
         elif tag == "link":
             self.links.append(a)
         elif tag == "img":
@@ -377,6 +379,112 @@ class Audit:
         if total > PAGE_WEIGHT_WARN:
             self.add("warning", rel, f"initial page weight about {total // 1024} KB; aim for under {PAGE_WEIGHT_WARN // 1024} KB")
 
+    # -- multi-language
+    @staticmethod
+    def alternates(p: Page) -> dict[str, str]:
+        out = {}
+        for lk in p.links:
+            if "alternate" in lk.get("rel", "").split() and lk.get("hreflang"):
+                out[lk["hreflang"]] = lk.get("href", "")
+        return out
+
+    def page_for(self, href: str) -> str | None:
+        """Relative dist path of the HTML page an absolute or root-relative URL points at."""
+        target, _ = self.resolve(urlparse(href).path or "/", "index.html")
+        return target.relative_to(self.dist).as_posix() if target else None
+
+    def check_i18n(self) -> None:
+        langs = list(self.business.get("languages") or [])
+        if len(langs) < 2:
+            self.add("error", "(site)", "pages carry hreflang alternates but business.json lists fewer than 2 languages")
+            return
+        default = langs[0]
+        prefix = {code: code.lower() for code in langs}
+        by_lang: dict[str, dict[str, str]] = {code: {} for code in langs}  # lang -> {path under prefix: rel file}
+        for rel in self.pages:
+            head, _, tail = rel.partition("/")
+            for code, pre in prefix.items():
+                if head == pre and tail:
+                    by_lang[code][tail] = rel
+        for code in langs:
+            if not by_lang[code]:
+                self.add("error", "(site)", f"no pages under /{prefix[code]}/ for language {code!r}")
+        base_set = set(by_lang[default])
+        for code in langs[1:]:
+            missing, extra = base_set - set(by_lang[code]), set(by_lang[code]) - base_set
+            if missing:
+                self.add(
+                    "error",
+                    "(site)",
+                    f"/{prefix[code]}/ lacks pages that exist in /{prefix[default]}/: {', '.join(sorted(missing))}",
+                )
+            if extra:
+                self.add(
+                    "error", "(site)", f"/{prefix[code]}/ has pages missing in /{prefix[default]}/: {', '.join(sorted(extra))}"
+                )
+
+        index = self.pages.get("index.html")
+        want = f"/{prefix[default]}/"
+        if index is None:
+            self.add("error", "index.html", f"no redirect page at / (expected to send visitors to {want})")
+        elif want not in index.meta.get("refresh", ""):
+            self.add("error", "index.html", f"the page at / does not redirect to the default language {want}")
+
+        for code in langs:
+            for tail, rel in sorted(by_lang[code].items()):
+                p = self.pages[rel]
+                if (p.lang or "").lower() != code.lower():
+                    self.add("error", rel, f"<html lang={p.lang!r}> but the page is in {code!r}")
+                alts = self.alternates(p)
+                for want_code in [*langs, "x-default"]:
+                    if want_code not in alts:
+                        self.add("error", rel, f"missing hreflang alternate for {want_code!r}")
+                for hl, href in alts.items():
+                    if not href.startswith("http"):
+                        self.add("error", rel, f"hreflang {hl!r} href must be absolute, got {href!r}")
+                    target = self.page_for(href)
+                    if target is None:
+                        self.add("error", rel, f"hreflang {hl!r} points at {href!r}, which is not a page in dist")
+                        continue
+                    expected = by_lang.get(hl, {}).get(tail) if hl != "x-default" else by_lang[default].get(tail)
+                    if expected and target != expected:
+                        self.add(
+                            "error",
+                            rel,
+                            f"hreflang {hl!r} should point at the same page in that language ({expected}), not {target}",
+                        )
+                    back_href = self.alternates(self.pages[target]).get(code) if target in self.pages else None
+                    if not back_href or self.page_for(back_href) != rel:
+                        self.add(
+                            "error",
+                            rel,
+                            f"hreflang {hl!r} target {target} does not link back to this page (alternates must be reciprocal)",
+                        )
+                canonical = next((lk.get("href", "") for lk in p.links if "canonical" in lk.get("rel", "").split()), "")
+                if canonical and self.page_for(canonical) != rel:
+                    self.add(
+                        "error",
+                        rel,
+                        f"canonical {canonical!r} is not this page; each language needs a self-referencing canonical",
+                    )
+                if alts.get(code) and self.page_for(alts[code]) != rel:
+                    self.add("error", rel, f"its own hreflang {code!r} entry does not point at itself")
+                locales = [v for k, v in p.meta_list if k == "og:locale:alternate"]
+                if not p.meta.get("og:locale"):
+                    self.add("error", rel, "missing og:locale")
+                if len(set(locales)) != len(langs) - 1:
+                    self.add("error", rel, f"expected {len(langs) - 1} og:locale:alternate tags, found {len(set(locales))}")
+                if not any(a.get("hreflang") and a.get("lang") for a in p.anchors):
+                    self.add("error", rel, "no language switcher (links with hreflang and lang attributes)")
+
+        sitemap = self.dist / "sitemap-0.xml"
+        if sitemap.exists():
+            xml = sitemap.read_text(encoding="utf-8")
+            if "xhtml:link" not in xml or "hreflang=" not in xml:
+                self.add("error", "sitemap-0.xml", "sitemap has no xhtml:link hreflang alternates")
+        elif not (self.dist / "sitemap.xml").exists():
+            self.add("warning", "(site)", "no sitemap-0.xml to check hreflang alternates in")
+
     def check_site(self) -> None:
         robots = self.dist / "robots.txt"
         if not robots.exists():
@@ -426,9 +534,15 @@ class Audit:
         self.load()
         if not self.pages:
             self.add("error", "(site)", f"no HTML pages in {self.dist}; did the build run?")
+        languages = self.business.get("languages") or []
+        self.multilingual = len(languages) > 1 or any(self.alternates(p) for p in self.pages.values())
         for rel, p in self.pages.items():
+            if self.multilingual and rel == "index.html" and "refresh" in p.meta:
+                continue  # the language redirect page at "/" has no content of its own
             self.check_page(rel, p)
         self.check_site()
+        if self.multilingual:
+            self.check_i18n()
         if src and src.exists():
             self.scan_src(src)
         errors = [i for i in self.issues if i["severity"] == "error"]

@@ -48,6 +48,7 @@ def jsonld(**overrides) -> str:
 def page(
     body: str,
     *,
+    lang: str = "en",
     title: str = "Marigold Kitchen · Goan restaurant in Lisboa",
     description: str = "Family-run Goan restaurant in Bairro Alto, Lisbon. Fish curries, xacuti and bebinca. Open Tuesday to Sunday.",
     ld: str | None = None,
@@ -56,7 +57,7 @@ def page(
 ) -> str:
     ld = jsonld() if ld is None else ld
     return f"""<!doctype html>
-<html lang="en">
+<html lang="{lang}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -114,4 +115,77 @@ def build_good_dist(root: Path) -> Path:
     (dist / "_astro").mkdir()
     (dist / "_astro" / "app.css").write_text("body{background:var(--sh-background)}", encoding="utf-8")
     write_json(root / "business.json", BUSINESS)
+    return dist
+
+
+# ---------------------------------------------------------------- multi-language fixtures
+
+I18N_BUSINESS = {**BUSINESS, "languages": ["pt", "en"]}
+I18N_PAGES = ["", "contact/"]  # path under the language prefix
+
+
+def i18n_page(code: str, tail: str, langs=("pt", "en"), *, tweaks=frozenset()) -> str:
+    """One page of a bilingual site; `tweaks` introduce one specific defect."""
+    base = "https://marigoldkitchen.pt"
+    links = []
+    for other in langs:
+        if "one_way" in tweaks and code == "en" and other == "pt":
+            continue  # the English page forgets to link back
+        href = f"{base}/{other}/{tail}"
+        if "wrong_target" in tweaks and code == "pt" and other == "en":
+            href = f"{base}/en/"
+        links.append(f'<link rel="alternate" hreflang="{other}" href="{href}">')
+    if "no_xdefault" not in tweaks:
+        links.append(f'<link rel="alternate" hreflang="x-default" href="{base}/{langs[0]}/{tail}">')
+    og = "".join(f'<meta property="og:locale:alternate" content="{o}_XX">' for o in langs if o != code)
+    if "no_og_alternate" in tweaks:
+        og = ""
+    head = "\n".join(links) + f'<meta property="og:locale" content="{code}_XX">' + og
+    path = f"/{code}/{tail}"
+    if "other_canonical" in tweaks and code == "en":
+        path = f"/{langs[0]}/{tail}"
+    switcher = (
+        ""
+        if "no_switcher" in tweaks
+        else "".join(f'<a href="/{o}/{tail}" hreflang="{o}" lang="{o}">{o.upper()}</a>' for o in langs if o != code)
+    )
+    html_lang = "fr" if "wrong_lang" in tweaks and code == "en" else code
+    other_link = "/contact/" if not tail else "/"
+    title = "Marigold Kitchen" if not tail else "Contact · Marigold Kitchen"
+    body = f'<main id="main"><h1>{title}</h1><nav aria-label="Language">{switcher}</nav><a href="/{code}{other_link}">link</a></main>'
+    return page(body, lang=html_lang, title=title, path=path, head_extra=head)
+
+
+def build_i18n_dist(root: Path, *, tweaks=frozenset(), langs=("pt", "en")) -> Path:
+    dist = root / "dist"
+    dist.mkdir(parents=True)
+    for code in langs:
+        for tail in I18N_PAGES:
+            if "missing_page" in tweaks and code == "en" and tail == "contact/":
+                continue
+            out = dist / code / tail / "index.html"
+            out.parent.mkdir(parents=True, exist_ok=True)
+            out.write_text(i18n_page(code, tail, langs, tweaks=tweaks), encoding="utf-8")
+    if "no_redirect" not in tweaks:
+        target = "/en/" if "bad_redirect" in tweaks else f"/{langs[0]}/"
+        (dist / "index.html").write_text(
+            f'<!doctype html><title>Redirecting</title><meta http-equiv="refresh" content="0;url={target}"><link rel="canonical" href="https://marigoldkitchen.pt{target}">',
+            encoding="utf-8",
+        )
+    (dist / "404.html").write_text(
+        page('<main><h1>Not found</h1><a href="/pt/">Home</a></main>', title="Not found · Marigold Kitchen"), encoding="utf-8"
+    )
+    (dist / "favicon.svg").write_text("<svg xmlns='http://www.w3.org/2000/svg'/>", encoding="utf-8")
+    (dist / "og.png").write_bytes(b"\x89PNG\r\n")
+    (dist / "robots.txt").write_text(
+        "User-agent: *\nAllow: /\nSitemap: https://marigoldkitchen.pt/sitemap-index.xml\n", encoding="utf-8"
+    )
+    (dist / "sitemap-index.xml").write_text("<sitemapindex/>", encoding="utf-8")
+    alt = (
+        ""
+        if "no_sitemap_alternates" in tweaks
+        else '<xhtml:link rel="alternate" hreflang="en" href="https://marigoldkitchen.pt/en/"/>'
+    )
+    (dist / "sitemap-0.xml").write_text(f"<urlset>{alt}</urlset>", encoding="utf-8")
+    write_json(root / "business.json", I18N_BUSINESS)
     return dist

@@ -48,3 +48,11 @@ Marker regions (`<!-- shingle:begin -->`) break when users reformat or move code
 files. A per-file hash is invisible, survives formatting by the user's editor only as "edited"
 (the safe direction), and needs no parsing. The trade-off: any edit makes a whole file "edited";
 the pending-file merge covers that.
+
+## Multiple languages
+Translations are data in business.json, so they follow the same rules as every other fact: edit
+`translations.<lang>` and re-run `sync.py`, which rewrites `src/data/site.<lang>.json` and
+`src/data/ui.json`. Page files under `src/pages/[lang]/` are ordinary generated files: edited ones
+are never overwritten (`sync.py --init-i18n` also leaves an edited `index.astro` or `404.astro`
+alone and tells you). Removing a language from `languages` deletes its data file but leaves any
+pages you wrote.

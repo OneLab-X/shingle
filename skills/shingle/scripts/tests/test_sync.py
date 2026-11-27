@@ -93,6 +93,205 @@ class DataTests(unittest.TestCase):
         self.assertIn("additionalType", sync.build_jsonld(b, "https://x.com/"))
 
 
+BILINGUAL = {
+    "name": "Oficina do Azulejo",
+    "category": "ecommerce-boutique",
+    "domain": "oficina.example",
+    "address": {"street": "Rua do Século 12", "locality": "Lisboa", "postal_code": "1200-433", "country": "PT"},
+    "phone": "+351213000000",
+    "languages": ["pt", "en"],
+    "tagline": "Cerâmica feita à mão em Lisboa",
+    "description": "Loja de cerâmica e azulejos pintados à mão.",
+    "hours": {"mon": [["10:00", "19:00"]]},
+    "facts": {"products": [{"name": "Azulejo", "text": "Pintado à mão", "price": "€18"}]},
+    "decisions": {"design": {"direction": "handmade", "palette": "terracotta-sun"}},
+    "translations": {
+        "en": {
+            "review": "draft",
+            "tagline": "Handmade ceramics in Lisbon",
+            "description": "Shop selling hand-painted ceramics and tiles.",
+            "facts": {"products": [{"name": "Tile", "text": "Hand painted", "price": "€18"}]},
+        }
+    },
+}
+
+
+class I18nDataTests(unittest.TestCase):
+    def test_og_locale(self):
+        self.assertEqual(sync.og_locale("pt", "PT"), "pt_PT")
+        self.assertEqual(sync.og_locale("pt", "BR"), "pt_BR")
+        self.assertEqual(sync.og_locale("en", "PT"), "en_US")  # English is not Portugal's language: default region
+        self.assertEqual(sync.og_locale("en", "GB"), "en_GB")
+        self.assertEqual(sync.og_locale("pt-BR", "PT"), "pt_BR")  # explicit region wins
+        self.assertEqual(sync.og_locale("xx", None), "xx_XX")
+
+    def test_build_i18n(self):
+        b, _ = sync.normalize(copy.deepcopy(BILINGUAL))
+        i18n = sync.build_i18n(b)
+        self.assertTrue(i18n["enabled"])
+        self.assertEqual(i18n["default"], "pt")
+        self.assertEqual([loc["path"] for loc in i18n["locales"]], ["pt", "en"])
+        self.assertEqual([loc["label"] for loc in i18n["locales"]], ["Português", "English"])
+        self.assertEqual({loc["dir"] for loc in i18n["locales"]}, {"ltr"})
+        mono = sync.build_i18n({"name": "X", "languages": ["en"], "address": {"country": "US"}})
+        self.assertFalse(mono["enabled"])
+        self.assertEqual(sync.build_i18n({"name": "X"})["default"], "en")
+
+    def test_merge_translation(self):
+        base = {"a": "x", "n": {"p": 1, "q": [1, 2]}, "l": [1, 2, 3]}
+        merged = sync.merge_translation(base, {"a": "y", "n": {"q": [9]}, "l": [7]})
+        self.assertEqual(merged, {"a": "y", "n": {"p": 1, "q": [9]}, "l": [7]})
+        self.assertEqual(base["a"], "x")  # input untouched
+
+    def test_translated_business(self):
+        b, _ = sync.normalize(copy.deepcopy(BILINGUAL))
+        en = sync.translated_business(b, "en")
+        self.assertEqual(en["tagline"], "Handmade ceramics in Lisbon")
+        self.assertEqual(en["facts"]["products"][0]["price"], "€18")
+        self.assertEqual(en["phone"], "+351213000000")
+        self.assertNotIn("translations", en)
+        self.assertNotIn("review", en)
+
+    def test_untranslated_paths(self):
+        b, _ = sync.normalize(copy.deepcopy(BILINGUAL))
+        base = {k: v for k, v in b.items() if k != "translations"}
+        self.assertEqual(sync.untranslated_paths(base, b["translations"]["en"]), [])
+        partial = {"tagline": "x"}
+        self.assertEqual(sorted(sync.untranslated_paths(base, partial)), ["description", "facts.products[0].text"])
+
+    def test_page_data_per_language(self):
+        b, _ = sync.normalize(copy.deepcopy(BILINGUAL))
+        i18n = sync.build_i18n(b)
+        pt = sync.build_site_data(b, None, "pt", i18n)
+        en = sync.build_site_data(sync.translated_business(b, "en"), None, "en", i18n)
+        self.assertEqual((pt["lang"], pt["seo"]["lang"], pt["seo"]["locale"]), ("pt", "pt", "pt_PT"))
+        self.assertEqual((en["lang"], en["seo"]["lang"], en["seo"]["locale"]), ("en", "en", "en_US"))
+        self.assertEqual(en["business"]["tagline"], "Handmade ceramics in Lisbon")
+        self.assertEqual(en["seo"]["title"], "Oficina do Azulejo · Handmade ceramics in Lisbon")
+        self.assertTrue(pt["seo"]["title"].startswith("Oficina do Azulejo · "))
+        self.assertEqual(pt["jsonld"]["url"], "https://oficina.example/pt/")
+        self.assertEqual(en["jsonld"]["url"], "https://oficina.example/en/")
+        self.assertEqual(en["jsonld"]["@id"], pt["jsonld"]["@id"])
+        self.assertEqual(en["jsonld"]["knowsLanguage"], ["pt", "en"])
+        self.assertEqual(en["jsonld"]["description"], "Shop selling hand-painted ceramics and tiles.")
+
+    def test_monolingual_has_no_language_prefix(self):
+        b, _ = sync.normalize(copy.deepcopy(BUSINESS))
+        d = sync.build_site_data(b)
+        self.assertFalse(d["i18n"]["enabled"])
+        self.assertEqual(d["jsonld"]["url"], "https://marigoldkitchen.pt/")
+        self.assertNotIn("knowsLanguage", d["jsonld"])
+
+    def test_hours_groups_have_day_keys(self):
+        h = sync.build_hours({"mon": [["09:00", "17:00"]], "tue": [["09:00", "17:00"]], "wed": []}, False, None)
+        self.assertEqual(h["groups"][0]["keys"], ["mon", "tue"])
+        self.assertEqual(h["groups"][0]["label"], "Mon–Tue")
+
+    def test_ui_strings_fall_back_to_english(self):
+        ui = sync.load_ui("xx")
+        self.assertEqual(ui["skip.content"], "Skip to content")
+        self.assertIsNone(ui["_native_name"])
+        self.assertEqual(sync.load_ui("pt-BR")["skip.content"], "Saltar para o conteúdo")
+
+
+class I18nSyncTests(unittest.TestCase):
+    def test_bilingual_cycle(self):
+        with tempfile.TemporaryDirectory() as d:
+            site = make_site(Path(d), copy.deepcopy(BILINGUAL))
+            out = run_sync(site)
+            for rel in ("src/data/site.json", "src/data/site.en.json", "src/data/ui.json"):
+                self.assertIn(rel, out["written"])
+            self.assertEqual(out["i18n"]["languages"], ["pt", "en"])
+            self.assertEqual(out["i18n"]["draft"], ["en"])
+            self.assertNotIn("en", out["i18n"]["untranslated"])
+            en = json.loads((site / "src/data/site.en.json").read_text())
+            self.assertEqual(en["review"], "draft")
+            self.assertEqual(en["lang"], "en")
+            ui = json.loads((site / "src/data/ui.json").read_text())
+            self.assertEqual(sorted(ui), ["en", "pt"])
+            self.assertEqual(ui["pt"]["status.closed_today"], "Fechado · abre hoje às {time}")
+            self.assertNotIn("_native_name", ui["pt"])
+            self.assertEqual(json.loads((site / "src/data/site.json").read_text())["lang"], "pt")
+
+            # marking the translation reviewed clears the draft flag
+            b = json.loads((site / "business.json").read_text())
+            b["translations"]["en"]["review"] = "reviewed"
+            write_json(site / "business.json", b)
+            out = run_sync(site)
+            self.assertEqual(out["i18n"]["draft"], [])
+            self.assertEqual(json.loads((site / "src/data/site.en.json").read_text())["review"], "reviewed")
+
+            # going back to one language removes the stale file
+            b["languages"] = ["pt"]
+            write_json(site / "business.json", b)
+            out = run_sync(site)
+            self.assertIn("src/data/site.en.json", out["removed"])
+            self.assertFalse((site / "src/data/site.en.json").exists())
+            self.assertFalse(json.loads((site / "src/data/site.json").read_text())["i18n"]["enabled"])
+
+    def test_data_files_are_not_tracked(self):
+        with tempfile.TemporaryDirectory() as d:
+            site = make_site(Path(d), copy.deepcopy(BILINGUAL))
+            run_sync(site)
+            self.assertFalse(any(r.startswith("src/data/") for r in sync.candidate_files(site)))
+
+    def test_invalid_overlay_stops_sync(self):
+        with tempfile.TemporaryDirectory() as d:
+            b = copy.deepcopy(BILINGUAL)
+            b["translations"]["en"]["phone"] = "+1"
+            with self.assertRaises(SystemExit):
+                run_sync(make_site(Path(d), b))
+
+
+class InitI18nTests(unittest.TestCase):
+    TEMPLATE = sync.TEMPLATE_DIR
+
+    def bilingual_site(self, root: Path) -> Path:
+        return make_site(root, copy.deepcopy(BILINGUAL))
+
+    def test_requires_two_languages(self):
+        with tempfile.TemporaryDirectory() as d:
+            site = make_site(Path(d), copy.deepcopy(BUSINESS))
+            with self.assertRaises(SystemExit):
+                sync.init_i18n(site)
+
+    def test_pristine_pages_are_replaced(self):
+        with tempfile.TemporaryDirectory() as d:
+            site = self.bilingual_site(Path(d))
+            (site / "src/pages/index.astro").write_bytes((self.TEMPLATE / "src/pages/index.astro").read_bytes())
+            (site / "src/pages/404.astro").write_bytes((self.TEMPLATE / "src/pages/404.astro").read_bytes())
+            out = sync.init_i18n(site)
+            self.assertIn("src/pages/[lang]/index.astro", out["created"])
+            self.assertIn("src/pages/index.astro", out["replaced"])
+            self.assertIn("src/pages/404.astro", out["replaced"])
+            self.assertFalse((site / "src/pages/index.astro").exists())
+            self.assertIn("getStaticPaths", (site / "src/pages/[lang]/index.astro").read_text())
+            self.assertIn("page.not_found", (site / "src/pages/404.astro").read_text())
+
+    def test_edited_pages_are_never_overwritten(self):
+        with tempfile.TemporaryDirectory() as d:
+            site = self.bilingual_site(Path(d))  # make_site writes its own index.astro: not the template's
+            (site / "src/pages/404.astro").write_text("<h1>My own 404</h1>\n")
+            out = sync.init_i18n(site)
+            self.assertEqual((site / "src/pages/index.astro").read_text(), "<h1>Home</h1>\n")
+            self.assertEqual((site / "src/pages/404.astro").read_text(), "<h1>My own 404</h1>\n")
+            self.assertTrue(any("edited by hand" in w for w in out["warnings"]))
+
+    def test_second_run_keeps_existing_language_pages(self):
+        with tempfile.TemporaryDirectory() as d:
+            site = self.bilingual_site(Path(d))
+            sync.init_i18n(site)
+            page = site / "src/pages/[lang]/index.astro"
+            page.write_text("<h1>mine</h1>\n")
+            out = sync.init_i18n(site)
+            self.assertEqual(page.read_text(), "<h1>mine</h1>\n")
+            self.assertIn("src/pages/[lang]/index.astro", out["kept"])
+
+    def test_template_overlay_files_exist(self):
+        for src_rel, _, _ in sync.I18N_OVERLAY:
+            self.assertTrue((self.TEMPLATE / src_rel).is_file(), src_rel)
+
+
 class ThemeTests(unittest.TestCase):
     def test_theme_css(self):
         palettes = json.loads((REFS / "palettes.json").read_text())

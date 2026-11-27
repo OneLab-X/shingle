@@ -1,12 +1,22 @@
 ---
 /** Light/dark switch. Rendered only when the palette has a dark mode. Remembers the choice. */
-import site from "../data/site.json";
+import { getSite, useT } from "../lib/i18n";
 import Icon from "./Icon.astro";
+
+const site = getSite(Astro.currentLocale);
+const t = useT(Astro.currentLocale);
 ---
 
 {
   site.theme.dark && (
-    <button type="button" class="theme-toggle" data-theme-toggle aria-label="Switch to dark theme">
+    <button
+      type="button"
+      class="theme-toggle"
+      data-theme-toggle
+      data-to-dark={t("theme.to_dark")}
+      data-to-light={t("theme.to_light")}
+      aria-label={t("theme.to_dark")}
+    >
       <Icon name="moon" class="i-moon" />
       <Icon name="sun" class="i-sun" />
     </button>
@@ -19,7 +29,7 @@ import Icon from "./Icon.astro";
     const root = document.documentElement;
     const isDark = () =>
       root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
-    const label = () => btn.setAttribute("aria-label", isDark() ? "Switch to light theme" : "Switch to dark theme");
+    const label = () => btn.setAttribute("aria-label", (isDark() ? btn.dataset.toLight : btn.dataset.toDark) ?? "");
     label();
     btn.addEventListener("click", () => {
       const next = isDark() ? "light" : "dark";

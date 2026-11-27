@@ -243,15 +243,34 @@
     ],
     "groups": [
       {
+        "keys": [
+          "mon",
+          "tue",
+          "wed",
+          "thu",
+          "fri"
+        ],
         "text": "5:30 am–9 pm",
+        "closed": false,
+        "unknown": false,
         "label": "Mon–Fri"
       },
       {
+        "keys": [
+          "sat"
+        ],
         "text": "7 am–2 pm",
+        "closed": false,
+        "unknown": false,
         "label": "Sat"
       },
       {
+        "keys": [
+          "sun"
+        ],
         "text": "8 am–12 pm",
+        "closed": false,
+        "unknown": false,
         "label": "Sun"
       }
     ],
@@ -323,8 +342,24 @@
     "description": "A coached strength gym in East Austin. Small classes, real barbells, a boxing corner, and coaches who learn your name.",
     "locale": "en_US",
     "lang": "en",
+    "dir": "ltr",
     "og_image": "https://forge-strength.example/og.png"
   },
+  "i18n": {
+    "enabled": false,
+    "default": "en",
+    "locales": [
+      {
+        "code": "en",
+        "path": "en",
+        "hreflang": "en",
+        "og_locale": "en_US",
+        "label": "English",
+        "dir": "ltr"
+      }
+    ]
+  },
+  "lang": "en",
   "jsonld": {
     "@context": "https://schema.org",
     "@type": "ExerciseGym",

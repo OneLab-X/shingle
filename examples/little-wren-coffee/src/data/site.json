@@ -228,15 +228,34 @@
     ],
     "groups": [
       {
+        "keys": [
+          "mon",
+          "tue",
+          "wed",
+          "thu",
+          "fri"
+        ],
         "text": "07:30–16:00",
+        "closed": false,
+        "unknown": false,
         "label": "Mon–Fri"
       },
       {
+        "keys": [
+          "sat"
+        ],
         "text": "09:00–16:00",
+        "closed": false,
+        "unknown": false,
         "label": "Sat"
       },
       {
+        "keys": [
+          "sun"
+        ],
         "text": "10:00–15:00",
+        "closed": false,
+        "unknown": false,
         "label": "Sun"
       }
     ],
@@ -306,8 +325,24 @@
     "description": "A small coffee bar and bakery in Leeds city centre. Espresso, filter coffee and buns baked here every morning.",
     "locale": "en_GB",
     "lang": "en",
+    "dir": "ltr",
     "og_image": "https://little-wren.example/og.png"
   },
+  "i18n": {
+    "enabled": false,
+    "default": "en",
+    "locales": [
+      {
+        "code": "en",
+        "path": "en",
+        "hreflang": "en",
+        "og_locale": "en_GB",
+        "label": "English",
+        "dir": "ltr"
+      }
+    ]
+  },
+  "lang": "en",
   "jsonld": {
     "@context": "https://schema.org",
     "@type": "CafeOrCoffeeShop",

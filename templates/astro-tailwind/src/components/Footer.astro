@@ -1,14 +1,21 @@
 ---
 /** Footer with NAP (name, address, phone) exactly as in business.json, hours, socials, badge. */
-import site from "../data/site.json";
+import { getSite, useT } from "../lib/i18n";
 import Icon from "./Icon.astro";
+import LanguageSwitcher from "./LanguageSwitcher.astro";
+import Todo from "./Todo.astro";
 
+const site = getSite(Astro.currentLocale);
+const t = useT(Astro.currentLocale);
 const { business, contact, hours, badge, badge_url } = site;
+const languageName = site.i18n.locales.find((l) => l.code === site.lang)?.label ?? site.lang;
 const year = new Date().getFullYear();
 const socialIcon = (key: string) =>
   (["instagram", "facebook", "x", "tiktok", "youtube", "linkedin"].includes(key) ? key : "link") as
     | "instagram" | "facebook" | "x" | "tiktok" | "youtube" | "linkedin" | "link";
-const groups = hours.groups.filter((g) => g.text !== "Hours not set");
+const groups = hours.groups.filter((g) => !g.unknown);
+const dayRange = (keys: string[]) =>
+  keys.length === 1 ? t(`day_short.${keys[0]}`) : `${t(`day_short.${keys[0]}`)}–${t(`day_short.${keys[keys.length - 1]}`)}`;
 ---
 
 <footer class="site-footer">
@@ -26,11 +33,11 @@ const groups = hours.groups.filter((g) => g.text !== "Hours not set");
       }
     </div>
     <div>
-      <p class="label">Contact</p>
+      <p class="label">{t("contact.title")}</p>
       <ul class="list-none p-0 space-y-1">
         {contact.tel && <li><a href={contact.tel.href}>{contact.tel.label}</a></li>}
         {contact.email && <li><a href={contact.email.href}>{contact.email.label}</a></li>}
-        {contact.whatsapp && <li><a href={contact.whatsapp.href} target="_blank" rel="noopener noreferrer">WhatsApp</a></li>}
+        {contact.whatsapp && <li><a href={contact.whatsapp.href} target="_blank" rel="noopener noreferrer">{t("contact.whatsapp")}</a></li>}
       </ul>
       {
         business.socials.length > 0 && (
@@ -49,12 +56,12 @@ const groups = hours.groups.filter((g) => g.text !== "Hours not set");
     {
       groups.length > 0 && (
         <div>
-          <p class="label">Hours</p>
+          <p class="label">{t("hours.title")}</p>
           <dl class="hours-mini">
             {groups.map((g) => (
               <div>
-                <dt>{g.label}</dt>
-                <dd>{g.text}</dd>
+                <dt>{dayRange(g.keys)}</dt>
+                <dd>{g.closed ? t("hours.closed") : g.text}</dd>
               </div>
             ))}
           </dl>
@@ -64,8 +71,16 @@ const groups = hours.groups.filter((g) => g.text !== "Hours not set");
   </div>
   <div class="wrap legal py-5 flex flex-wrap justify-between gap-3">
     <p>© {year} {business.name}</p>
-    {badge && <p><a href={badge_url}>Built with Shingle</a></p>}
+    <LanguageSwitcher />
+    {badge && <p><a href={badge_url}>{t("footer.built_with")}</a></p>}
   </div>
+  {
+    (site as { review?: string }).review === "draft" && (
+      <div class="wrap pb-6">
+        <Todo as="p" label={`native-speaker review of the ${languageName} text`} message={t("review.draft", { language: languageName })} />
+      </div>
+    )
+  }
 </footer>
 
 <style>

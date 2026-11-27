@@ -95,7 +95,7 @@ Rules:
 ```
 - `og.png`: the template renders a typographic card (name, what, locality on the palette) to
   `public/og.png` at build time; swap for a real photo later (TODO in handoff).
-- `<html lang="…">` set per language. Multi-language: `hreflang` alternates + `x-default`.
+- `<html lang="…">` set per language. Multi-language: see section 7.
 
 ## 4. Sitemap and robots
 - `@astrojs/sitemap` with `site: "https://<domain>"` in `astro.config.mjs` writes
@@ -129,3 +129,29 @@ Rules:
 - Descriptive link text (no "click here"). Alt text describes the image, no "image of".
 - Images: `astro:assets` `<Image>` with width/height (no layout shift), `loading="lazy"` below
   the fold, modern formats.
+
+## 7. Multiple languages
+Sites with 2+ `languages` have one copy of every page per language at `/<code>/…` (the code
+lower-cased: `/pt/`, `/en/`, `/pt-br/`). `/` is a static redirect to the default language.
+On **every** page, in `<head>`, list **all** languages including the page itself, plus `x-default`:
+```html
+<html lang="pt" dir="ltr">
+<link rel="canonical" href="https://{domain}/pt/{path}">                 <!-- self-referencing, per language -->
+<link rel="alternate" hreflang="pt" href="https://{domain}/pt/{path}">
+<link rel="alternate" hreflang="en" href="https://{domain}/en/{path}">
+<link rel="alternate" hreflang="x-default" href="https://{domain}/pt/{path}">   <!-- default language -->
+<meta property="og:locale" content="pt_PT">
+<meta property="og:locale:alternate" content="en_US">
+```
+- Alternates must be **absolute**, **reciprocal** (A lists B and B lists A) and point at the same
+  page in the other language.
+- Never canonical one language to another: each language page is its own canonical.
+- The sitemap carries the alternates as `xhtml:link` (the template turns this on via the sitemap
+  integration's `i18n` option).
+- JSON-LD: same `@id` on every page, per-language `url`, `description` and `hasMenu`, and
+  `knowsLanguage` listing the languages. Address, phone and hours are identical in every language
+  (NAP consistency).
+- Title, description, headings and alt text are translated; prices, phone numbers and the business
+  name are not.
+- The language switcher links carry `lang` and `hreflang` so assistive tech reads each label in its
+  own language.

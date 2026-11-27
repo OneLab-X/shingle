@@ -3,6 +3,8 @@
  * Image placeholder sized for the real photo. Never a stock or AI photo of the business.
  * Swap for <Image src={import("../../public/images/...")} alt="..." /> when the owner sends it.
  */
+import { useT } from "../lib/i18n";
+
 interface Props {
   /** The shot to add, e.g. "Dining room at night". */
   subject: string;
@@ -11,6 +13,7 @@ interface Props {
   class?: string;
 }
 const { subject, width = 1200, height = 800, class: className } = Astro.props;
+const t = useT(Astro.currentLocale);
 const id = `ph-${Math.random().toString(36).slice(2, 8)}`;
 ---
 
@@ -24,7 +27,7 @@ const id = `ph-${Math.random().toString(36).slice(2, 8)}`;
     </defs>
     <rect width="100%" height="100%" fill={`url(#${id})`}></rect>
   </svg>
-  <figcaption><span>Photo to add</span>{subject} · {width}×{height}</figcaption>
+  <figcaption><span>{t("placeholder.photo")}</span>{subject} · {width}×{height}</figcaption>
 </figure>
 
 <style>

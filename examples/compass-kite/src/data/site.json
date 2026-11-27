@@ -184,11 +184,26 @@
     ],
     "groups": [
       {
+        "keys": [
+          "mon",
+          "tue",
+          "wed",
+          "thu",
+          "fri"
+        ],
         "text": "10 am–6 pm",
+        "closed": false,
+        "unknown": false,
         "label": "Mon–Fri"
       },
       {
+        "keys": [
+          "sat",
+          "sun"
+        ],
         "text": "Hours not set",
+        "closed": false,
+        "unknown": true,
         "label": "Sat–Sun"
       }
     ],
@@ -258,8 +273,24 @@
     "description": "A two-person travel studio planning tailor-made trips by rail, road and ferry, for travellers who would rather see one region well than ten in a hurry.",
     "locale": "en_CA",
     "lang": "en",
+    "dir": "ltr",
     "og_image": "https://compass-kite.example/og.png"
   },
+  "i18n": {
+    "enabled": false,
+    "default": "en",
+    "locales": [
+      {
+        "code": "en",
+        "path": "en",
+        "hreflang": "en",
+        "og_locale": "en_CA",
+        "label": "English",
+        "dir": "ltr"
+      }
+    ]
+  },
+  "lang": "en",
   "jsonld": {
     "@context": "https://schema.org",
     "@type": "TravelAgency",
