@@ -1,11 +1,11 @@
 ---
 import { url } from "../lib/url";
+import { getSite, locales, localeOf, pathIn, splitPath, useT } from "../lib/i18n";
 /**
  * Page shell: SEO head (title, description, canonical, Open Graph, JSON-LD), theme handling,
  * skip link. All business facts come from src/data/site.json (generated from business.json).
  */
 import "../styles/global.css";
-import site from "../data/site.json";
 
 interface Props {
   /** Page title. Home page: omit to use "<name> · <what> in <where>". */
@@ -17,12 +17,24 @@ interface Props {
 }
 
 const { title, description, jsonld = [], noindex = false } = Astro.props;
-const { business, seo, theme } = site;
-const isHome = Astro.url.pathname === url("/");
+const current = localeOf(Astro.currentLocale);
+const site = getSite(current.code);
+const t = useT(current.code);
+const { business, seo, theme, i18n } = site;
+// Astro.site is the production URL, or SHINGLE_SITE for previews served from a sub-folder.
+const origin = Astro.site?.origin ?? new URL(business.url).origin;
+const isHome = splitPath(Astro.url.pathname).rest === "/";
+// One <link rel="alternate" hreflang> per language (including this page) plus x-default.
+const alternates = i18n.enabled && !noindex
+  ? [
+      ...locales.map((l) => ({ hreflang: l.hreflang, href: new URL(pathIn(Astro.url.pathname, l), origin).href })),
+      { hreflang: "x-default", href: new URL(pathIn(Astro.url.pathname, locales[0]), origin).href },
+    ]
+  : [];
 const pageTitle = title ? `${title} · ${business.name}` : seo.title;
 const pageDescription = description ?? seo.description;
-const canonical = new URL(Astro.url.pathname, business.url).href;
-const ogImage = new URL("/og.png", business.url).href;
+const canonical = new URL(Astro.url.pathname, origin).href;
+const ogImage = new URL(url("/og.png"), origin).href;
 
 const businessLd = isHome
   ? site.jsonld
@@ -32,19 +44,21 @@ const businessLd = isHome
       url: canonical,
       name: pageTitle,
       about: { "@id": `${business.url}#business` },
+      ...(i18n.enabled ? { inLanguage: seo.lang } : {}),
     };
 const ldBlocks = [businessLd, ...jsonld];
 const json = (data: unknown) => JSON.stringify(data).replace(/</g, "\\u003c");
 ---
 
 <!doctype html>
-<html lang={seo.lang}>
+<html lang={seo.lang} dir={seo.dir}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
     <link rel="canonical" href={canonical} />
+    {alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
     {(noindex || process.env.SHINGLE_PREVIEW) && <meta name="robots" content="noindex" />}
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={business.name} />
@@ -56,6 +70,7 @@ const json = (data: unknown) => JSON.stringify(data).replace(/</g, "\\u003c");
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={`${business.name}: ${business.category_label}`} />
     <meta property="og:locale" content={seo.locale} />
+    {i18n.enabled && locales.filter((l) => l.code !== current.code).map((l) => <meta property="og:locale:alternate" content={l.og_locale} />)}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="theme-color" content={theme.colors.light?.background} media="(prefers-color-scheme: light)" />
     {theme.dark && <meta name="theme-color" content={theme.colors.dark?.background} media="(prefers-color-scheme: dark)" />}
@@ -75,7 +90,7 @@ const json = (data: unknown) => JSON.stringify(data).replace(/</g, "\\u003c");
     <slot name="head" />
   </head>
   <body class="bg-bg text-ink">
-    <a class="skip-link" href="#main">Skip to content</a>
+    <a class="skip-link" href="#main">{t("skip.content")}</a>
     <slot />
   </body>
 </html>

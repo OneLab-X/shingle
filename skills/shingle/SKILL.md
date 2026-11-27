@@ -41,6 +41,7 @@ drop anything already answered or inferable, then ask in rounds (max 4 questions
 3 rounds). Cover: primary goal and CTA, one page vs multi-page, tone, imagery source, languages,
 booking/contact method, and which features (menu, pricing, gallery, testimonials, FAQ, blog).
 Save answers under `decisions` in business.json so re-runs do not ask again.
+With 2+ languages also set `languages` (first = default) and read `SK/references/i18n.md`.
 
 ## Step 4: DESIGN
 1. Read `SK/references/design-directions.md`. Pick ONE direction that fits category + tone
@@ -79,7 +80,9 @@ Save answers under `decisions` in business.json so re-runs do not ask again.
    Netlify Forms). Never invent an endpoint ID: leave it as a TODO.
 8. "Built with Shingle" footer badge stays on unless `decisions.badge` is false
    (one line: `"badge": false` in business.json).
-9. Run `python3 SK/scripts/sync.py <target> --record-all` to store file hashes for safe re-runs.
+9. 2+ languages: run `sync.py <target> --init-i18n`, draft `translations` per `SK/references/i18n.md`
+   (never translate prices, numbers or contact details), and write pages under `src/pages/[lang]/`.
+10. Run `python3 SK/scripts/sync.py <target> --record-all` to store file hashes for safe re-runs.
 
 ## Step 6: VERIFY
 1. Check `node -v` is 22.23.4 or newer (Astro 7); if not, say so and use `nvm use` (the template
@@ -93,7 +96,8 @@ Save answers under `decisions` in business.json so re-runs do not ask again.
 ## Step 7: HANDOFF
 Reply with, in this order:
 1. **Decisions**: category, pages, direction, palette, CTA, languages, contact method.
-2. **Placeholders to fill**: every `TODO(shingle)` with file:line (from the audit report).
+2. **Placeholders to fill**: every `TODO(shingle)` with file:line (from the audit report). With
+   several languages, include each draft translation that needs a native-speaker review.
 3. **Deploy** (pick one; all are static `dist/`), see `SK/references/deploy.md` for details:
    - GitHub Pages: push, then enable Pages with the included workflow `.github/workflows/deploy.yml`.
    - Netlify: `npx netlify-cli deploy --prod --dir=dist`

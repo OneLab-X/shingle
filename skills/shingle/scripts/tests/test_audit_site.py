@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from helpers import SCRIPTS, build_good_dist, jsonld, page
+from helpers import SCRIPTS, build_good_dist, build_i18n_dist, jsonld, page
 
 import audit_site
 
@@ -123,6 +123,52 @@ class BadSiteTests(unittest.TestCase):
             errs = messages(audit(dist))
             for expected in ["no lang", "missing <title>", "missing meta description", "viewport", "canonical", "og:image"]:
                 self.assertIn(expected, errs)
+
+
+class I18nAuditTests(unittest.TestCase):
+    def audit_defect(self, *tweaks, **kw):
+        with tempfile.TemporaryDirectory() as d:
+            dist = build_i18n_dist(Path(d), tweaks=frozenset(tweaks), **kw)
+            return audit(dist)
+
+    def test_good_bilingual_site_passes(self):
+        report = self.audit_defect()
+        self.assertEqual(report["errors"], [], messages(report))
+        self.assertEqual(report["warnings"], [], messages(report, "warnings"))
+        self.assertEqual(report["pages"], 6)  # redirect, 404, 2 languages x 2 pages
+
+    def test_three_languages_pass(self):
+        with tempfile.TemporaryDirectory() as d:
+            dist = build_i18n_dist(Path(d), langs=("pt", "en", "es"))
+            business = json.loads((Path(d) / "business.json").read_text())
+            business["languages"] = ["pt", "en", "es"]
+            report = audit_site.Audit(dist, business).run(None)
+            self.assertEqual(report["errors"], [], messages(report))
+
+    def test_each_defect_is_reported(self):
+        cases = {
+            "no_xdefault": "missing hreflang alternate for 'x-default'",
+            "one_way": "does not link back",
+            "wrong_target": "should point at the same page in that language",
+            "wrong_lang": "<html lang='fr'> but the page is in 'en'",
+            "other_canonical": "self-referencing canonical",
+            "no_og_alternate": "og:locale:alternate",
+            "no_switcher": "no language switcher",
+            "missing_page": "lacks pages that exist in /pt/",
+            "no_redirect": "no redirect page at /",
+            "bad_redirect": "does not redirect to the default language /pt/",
+            "no_sitemap_alternates": "xhtml:link hreflang alternates",
+        }
+        for tweak, expected in cases.items():
+            with self.subTest(tweak):
+                report = self.audit_defect(tweak)
+                self.assertIn(expected, messages(report))
+                self.assertFalse(report["ok"])
+
+    def test_monolingual_site_skips_language_checks(self):
+        with tempfile.TemporaryDirectory() as d:
+            dist = build_good_dist(Path(d))
+            self.assertNotIn("hreflang", messages(audit(dist)))
 
 
 class CliTests(unittest.TestCase):

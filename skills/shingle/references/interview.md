@@ -54,9 +54,12 @@ Refined and quiet / Playful.
 Never offer stock-photo hotlinking or AI-generated photos of the real business, staff, or food.
 
 ### languages (round 2, only when not inferable)
-"Which languages should the site be in?" Options: the local language(s) and English. If more
-than one: plan `/<lang>/` routes and a language switch; copy is written for each language, and
-any text you cannot write reliably becomes a TODO for a native speaker to check.
+"Which languages should the site be in?" Options: the local language(s) and English. The
+language the owner wrote the facts in is the default (first in `languages`). If more than one:
+the site gets `/<lang>/` routes, a language switcher and hreflang tags. Then ask once:
+"Who writes the other languages?" Claude drafts and you review (Recommended) / I will write them.
+With a draft, store it under `translations.<lang>` with `review: "draft"` (see `i18n.md`); the
+site shows a visible review notice until the owner sets `review` to `"reviewed"`.
 
 ### contact_method (round 2, multiSelect)
 "How should people reach you?" Options built from available facts: Phone call, WhatsApp, Email,

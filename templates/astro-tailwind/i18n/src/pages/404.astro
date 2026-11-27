@@ -1,0 +1,25 @@
+---
+/**
+ * Language-neutral 404 for multi-language sites (hosts serve /404.html for every unknown URL,
+ * so it cannot know the visitor's language): shows the message in every language.
+ */
+import Base from "../layouts/Base.astro";
+import { locales, useT } from "../lib/i18n";
+import { url } from "../lib/url";
+
+const entries = locales.map((l) => ({ locale: l, t: useT(l.code) }));
+---
+
+<Base title={entries[0].t("page.not_found")} description={entries.map(({ t }) => t("page.not_found_text")).join(" ")} noindex>
+  <main id="main" class="wrap section">
+    {
+      entries.map(({ locale, t }, i) => (
+        <section lang={locale.code} class="mb-12">
+          {i === 0 ? <h1>{t("page.not_found")}</h1> : <h2>{t("page.not_found")}</h2>}
+          <p class="mt-4">{t("page.not_found_text")}</p>
+          <p class="mt-6"><a class="btn btn-primary" href={url("/", locale.path)}>{t("page.go_home")}</a></p>
+        </section>
+      ))
+    }
+  </main>
+</Base>

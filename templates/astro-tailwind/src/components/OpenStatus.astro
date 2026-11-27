@@ -3,8 +3,14 @@
  * Live "Open now · until 17:00" / "Closed · opens Tue 09:00" pill, computed in the visitor's
  * browser in the business's time zone. Hidden when hours or the time zone are unknown.
  */
-import site from "../data/site.json";
+import { getSite, useT } from "../lib/i18n";
+const site = getSite(Astro.currentLocale);
+const t = useT(Astro.currentLocale);
 const { hours } = site;
+// Interface text for the in-browser script (it cannot import the dictionary).
+const strings: Record<string, string> = {};
+for (const key of ["status.open_until", "status.closed_today", "status.closed_tomorrow", "status.closed_day", "time.am", "time.pm"]) strings[key] = t(key);
+for (const d of hours.days) strings[`day_long.${d.key}`] = t(`day_long.${d.key}`);
 const enabled = hours.known && Boolean(hours.timezone);
 ---
 
@@ -19,7 +25,7 @@ const enabled = hours.known && Boolean(hours.timezone);
 
 {
   enabled && (
-    <script is:inline define:vars={{ days: hours.days, tz: hours.timezone, twelve: hours.format === "12h" }}>
+    <script is:inline define:vars={{ days: hours.days, tz: hours.timezone, twelve: hours.format === "12h", strings }}>
       (() => {
         const el = document.querySelector("[data-open-status]");
         if (!el) return;
@@ -33,22 +39,26 @@ const enabled = hours.known && Boolean(hours.timezone);
         const fmt = (t) => {
           if (!twelve) return t;
           const h = Number(t.slice(0, 2)), m = t.slice(3);
-          return `${h % 12 || 12}${m === "00" ? "" : ":" + m} ${h < 12 ? "am" : "pm"}`;
+          return `${h % 12 || 12}${m === "00" ? "" : ":" + m} ${h < 12 ? strings["time.am"] : strings["time.pm"]}`;
         };
+        const say = (key, vars) => strings[key].replace(/\{(\w+)\}/g, (_, name) => vars[name] ?? "");
         const byKey = Object.fromEntries(days.map((d) => [d.key, d]));
         const at = (offset) => byKey[keys[(today + offset + 7) % 7]];
         // open now? check today's ranges and yesterday's past-midnight range
         for (const r of at(0).ranges) {
           const o = mins(r.open), c = mins(r.close) <= o ? mins(r.close) + 1440 : mins(r.close);
-          if (now >= o && now < c) return show(true, `Open now · until ${fmt(r.close)}`);
+          if (now >= o && now < c) return show(true, say("status.open_until", { time: fmt(r.close) }));
         }
         for (const r of at(-1).ranges) {
-          if (mins(r.close) <= mins(r.open) && now < mins(r.close)) return show(true, `Open now · until ${fmt(r.close)}`);
+          if (mins(r.close) <= mins(r.open) && now < mins(r.close)) return show(true, say("status.open_until", { time: fmt(r.close) }));
         }
         for (let i = 0; i < 7; i++) {
           const d = at(i);
           const next = d.ranges.find((r) => i > 0 || mins(r.open) > now);
-          if (next) return show(false, `Closed · opens ${i === 0 ? "today" : i === 1 ? "tomorrow" : d.label} ${fmt(next.open)}`);
+          if (next) {
+            const time = fmt(next.open);
+            return show(false, i === 0 ? say("status.closed_today", { time }) : i === 1 ? say("status.closed_tomorrow", { time }) : say("status.closed_day", { day: strings[`day_long.${d.key}`], time }));
+          }
         }
         function show(open, text) {
           el.querySelector("[data-text]").textContent = text;

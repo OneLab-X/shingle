@@ -3,13 +3,15 @@
  * Click-to-load map: no third-party request until the visitor asks for it (privacy and speed).
  * Without JavaScript it still offers "Open in Google Maps" and "Directions".
  */
-import site from "../data/site.json";
+import { getSite, useT } from "../lib/i18n";
 import Icon from "./Icon.astro";
 
 interface Props {
   class?: string;
 }
 const { class: className } = Astro.props;
+const site = getSite(Astro.currentLocale);
+const t = useT(Astro.currentLocale);
 const { maps, business } = site;
 ---
 
@@ -25,16 +27,16 @@ const { maps, business } = site;
         </address>
         <div class="flex flex-wrap gap-3">
           <button type="button" class="btn btn-primary" data-map-load>
-            Show map
+            {t("action.show_map")}
           </button>
           <a class="btn btn-quiet" href={maps.search} target="_blank" rel="noopener noreferrer">
-            Open in Google Maps
+            {t("action.open_in_maps")}
           </a>
         </div>
       </div>
       <template data-map-template>
         <iframe
-          title={`Map showing ${business.name} at ${business.address_one_line}`}
+          title={t("map.title", { name: business.name, address: business.address_one_line ?? "" })}
           src={maps.embed}
           width="600"
           height="400"

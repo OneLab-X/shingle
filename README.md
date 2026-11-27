@@ -43,7 +43,7 @@ Shingle then:
 2. **Picks the closest category** of 13 (restaurant, dental clinic, plumber…) and loads only that playbook.
 3. **Interviews you** with a few multiple-choice rounds (max 4 questions, a recommended answer each): goal, pages, tone, photos, booking, features.
 4. **Proposes 2–3 palettes and a design direction**, all checked for WCAG AA contrast.
-5. **Builds an Astro + Tailwind site** with real copy from your facts, LocalBusiness JSON-LD, Open Graph, sitemap, robots, favicon, dark mode, and contact links that work without a backend.
+5. **Builds an Astro + Tailwind site** (one copy per language if you list several) with real copy from your facts, LocalBusiness JSON-LD, Open Graph, sitemap, robots, favicon, dark mode, and contact links that work without a backend.
 6. **Audits it** (broken links, alt text, meta tags, JSON-LD and NAP consistency, fake reviews, lorem ipsum, emoji icons, purple gradients…), fixes what it finds, and starts a preview.
 7. **Hands over**: decisions made, every placeholder still to fill (file:line), and one-command deploys to GitHub Pages, Netlify or Cloudflare Pages.
 
@@ -51,13 +51,13 @@ Re-run `/shingle` after editing `business.json` and it updates the site **withou
 
 ## Gallery
 
-Eight fictional businesses, eight design directions. Every one was generated from a short `business.json`, and CI rebuilds and audits all of them on every pull request.
+Nine fictional businesses (one of them bilingual), eight design directions. Every one was generated from a short `business.json`, and CI rebuilds and audits all of them on every pull request.
 
 | | | |
 |---|---|---|
 | [![Marigold Kitchen](docs/media/examples/marigold-kitchen.png)](https://onelab-x.github.io/shingle/examples/marigold-kitchen/)<br>**[Marigold Kitchen](examples/marigold-kitchen/)** · restaurant · Broadsheet | [![Brightwater Family Dental](docs/media/examples/brightwater-dental.png)](https://onelab-x.github.io/shingle/examples/brightwater-dental/)<br>**[Brightwater Family Dental](examples/brightwater-dental/)** · dental clinic · Clinical Calm | [![Ridgeback Plumbing & Gas](docs/media/examples/ridgeback-plumbing.png)](https://onelab-x.github.io/shingle/examples/ridgeback-plumbing/)<br>**[Ridgeback Plumbing & Gas](examples/ridgeback-plumbing/)** · plumber · Swiss Grid |
 | [![Little Wren Coffee](docs/media/examples/little-wren-coffee.png)](https://onelab-x.github.io/shingle/examples/little-wren-coffee/)<br>**[Little Wren Coffee](examples/little-wren-coffee/)** · cafe · Handmade | [![Forge Strength Club](docs/media/examples/forge-strength.png)](https://onelab-x.github.io/shingle/examples/forge-strength/)<br>**[Forge Strength Club](examples/forge-strength/)** · gym · Poster | [![Northlight Studio](docs/media/examples/northlight-studio.png)](https://onelab-x.github.io/shingle/examples/northlight-studio/)<br>**[Northlight Studio](examples/northlight-studio/)** · photographer · Gallery |
-| [![Linden Hair & Skin](docs/media/examples/linden-hair.png)](https://onelab-x.github.io/shingle/examples/linden-hair/)<br>**[Linden Hair & Skin](examples/linden-hair/)** · salon · Quiet Luxury | [![Compass & Kite Journeys](docs/media/examples/compass-kite.png)](https://onelab-x.github.io/shingle/examples/compass-kite/)<br>**[Compass & Kite Journeys](examples/compass-kite/)** · travel agency · Wayfinder | |
+| [![Linden Hair & Skin](docs/media/examples/linden-hair.png)](https://onelab-x.github.io/shingle/examples/linden-hair/)<br>**[Linden Hair & Skin](examples/linden-hair/)** · salon · Quiet Luxury | [![Compass & Kite Journeys](docs/media/examples/compass-kite.png)](https://onelab-x.github.io/shingle/examples/compass-kite/)<br>**[Compass & Kite Journeys](examples/compass-kite/)** · travel agency · Wayfinder | [![Barro & Luz (pt + en)](docs/media/examples/barro-e-luz.png)](https://onelab-x.github.io/shingle/examples/barro-e-luz/)<br>**[Barro & Luz](examples/barro-e-luz/)** · ceramics shop · Handmade · **pt + en** |
 
 Each example's README explains its design choices and lists the placeholders the owner still needs to fill.
 
@@ -91,11 +91,15 @@ Each category is one short Markdown playbook: audience, tone, required sections,
 
 **Which Node and Python versions?** Node 22.23.4+ (Astro 7) for the site. The helper scripts use only the Python 3.9+ standard library.
 
+**Can the site be in two languages?** Yes. List them in `languages` (the first is the default) and Shingle builds `/pt/`, `/en/` and so on with hreflang, a language switcher and translated interface text (en, pt, es, fr, de, it; others fall back to English). Claude drafts the translations from your facts and the site shows a visible "native speaker should review this" notice until you mark them reviewed. Prices, phone numbers and names are never translated. [Example](examples/barro-e-luz/).
+
 **Can it do online stores or bookings?** It links to the shop or booking tool you already use (Shopify, Square, Calendly…). It does not build carts or take payments.
 
 ## Roadmap
 
-- [ ] Multi-language sites (`/en/`, `/pt/`) with hreflang, driven by `languages`
+- [x] Multi-language sites (`/en/`, `/pt/`) with hreflang, driven by `languages`
+- [ ] Right-to-left languages (Arabic, Hebrew)
+- [ ] Optional "suggest my language" banner (no automatic redirect, which hurts SEO)
 - [ ] Import from a Google Business Profile export
 - [ ] More categories: vet, accountant, florist, driving school, coworking
 - [ ] More design directions and palettes from the community

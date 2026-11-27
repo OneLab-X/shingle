@@ -4,10 +4,12 @@ Thanks for helping. The most useful contributions, roughly in order:
 
 1. **A new category** (vet, accountant, florist…): one Markdown file and one JSON entry.
    [Guide, under 10 minutes →](docs/adding-a-category.md)
-2. **A palette**: add it to `skills/shingle/references/palettes.json`; the contrast check tells you if it passes WCAG AA.
-3. **A design direction**: prose in `design-directions.md` plus tokens in `directions.json`, and an example that uses it.
-4. **An example site** for a category that has none yet.
-5. Bug fixes in the scripts, the template or the skill instructions.
+2. **An interface language**: one JSON file of translated buttons and labels.
+   [Guide →](docs/adding-a-language.md)
+3. **A palette**: add it to `skills/shingle/references/palettes.json`; the contrast check tells you if it passes WCAG AA.
+4. **A design direction**: prose in `design-directions.md` plus tokens in `directions.json`, and an example that uses it.
+5. **An example site** for a category that has none yet.
+6. Bug fixes in the scripts, the template or the skill instructions.
 
 ## Repo map
 

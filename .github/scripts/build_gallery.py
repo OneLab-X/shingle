@@ -44,10 +44,12 @@ def main() -> None:
             (out / "shots").mkdir(exist_ok=True)
             shutil.copy(shot, out / "shots" / shot.name)
             img = f'<img src="{base}/shots/{shot.name}" alt="Screenshot of the {html.escape(b["name"])} example" width="1280" height="800" loading="lazy">'
+        languages = b.get("languages") or []
+        langs = f" · {' + '.join(html.escape(code) for code in languages)}" if len(languages) > 1 else ""
         cards.append(
             f"""<li><a href="{base}/examples/{ex.name}/">{img}
 <h2>{html.escape(b["name"])}</h2>
-<p>{html.escape(b["category"])} · {html.escape(directions.get(design.get("direction", ""), {}).get("name", ""))} · {html.escape(palettes.get(design.get("palette", ""), {}).get("name", ""))}</p></a>
+<p>{html.escape(b["category"])} · {html.escape(directions.get(design.get("direction", ""), {}).get("name", ""))} · {html.escape(palettes.get(design.get("palette", ""), {}).get("name", ""))}{langs}</p></a>
 <p class="src"><a href="https://github.com/OneLab-X/shingle/tree/main/examples/{ex.name}">Source and business.json</a></p></li>"""
         )
 

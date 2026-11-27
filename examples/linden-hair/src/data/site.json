@@ -225,19 +225,42 @@
     ],
     "groups": [
       {
+        "keys": [
+          "mon"
+        ],
         "text": "Closed",
+        "closed": true,
+        "unknown": false,
         "label": "Mon"
       },
       {
+        "keys": [
+          "tue",
+          "wed",
+          "thu",
+          "fri"
+        ],
         "text": "9 am–7 pm",
+        "closed": false,
+        "unknown": false,
         "label": "Tue–Fri"
       },
       {
+        "keys": [
+          "sat"
+        ],
         "text": "8 am–4 pm",
+        "closed": false,
+        "unknown": false,
         "label": "Sat"
       },
       {
+        "keys": [
+          "sun"
+        ],
         "text": "Closed",
+        "closed": true,
+        "unknown": false,
         "label": "Sun"
       }
     ],
@@ -311,8 +334,24 @@
     "description": "A small salon on Gertrude Street for considered colour, precise cuts and unhurried facials.",
     "locale": "en_AU",
     "lang": "en",
+    "dir": "ltr",
     "og_image": "https://linden-hair.example/og.png"
   },
+  "i18n": {
+    "enabled": false,
+    "default": "en",
+    "locales": [
+      {
+        "code": "en",
+        "path": "en",
+        "hreflang": "en",
+        "og_locale": "en_AU",
+        "label": "English",
+        "dir": "ltr"
+      }
+    ]
+  },
+  "lang": "en",
   "jsonld": {
     "@context": "https://schema.org",
     "@type": "HairSalon",

@@ -2,7 +2,7 @@
   "version": 1,
   "files": {
     "README.md": "sha256:7f8075388f92862a77482c3c4f8af676082745491bc316ac03bd6cd72767d543",
-    "astro.config.mjs": "sha256:d737127a7babc5f8ee4922d9a26c00858391fc73945151b00d12061d6419aab6",
+    "astro.config.mjs": "sha256:026a682cba1683df4113b5c0ae157a712c9e23f62f452e4655e54e8a678b015e",
     "src/components/ContactLinks.astro": "sha256:d86d4bb1c372ae46a4e05517a6b4c7d7a60b3bfc7ad3e3d9585a2e470c44d137",
     "src/components/Footer.astro": "sha256:1b0ce525507240734d54b2127c3e7245c8687e373cb6c45ef08a3e8e8e687658",
     "src/components/Header.astro": "sha256:95203cb720fc299d777f9054421afbeccc57a1612a73940d4717ed12848d3608",
@@ -26,6 +26,6 @@
     "@fontsource-variable/work-sans",
     "@fontsource/anton"
   ],
-  "generated_at": "2026-11-27T03:24:11Z",
+  "generated_at": "2026-11-27T04:49:44Z",
   "shingle_version": "0.1.0"
 }

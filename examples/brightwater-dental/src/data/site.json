@@ -219,15 +219,34 @@
     ],
     "groups": [
       {
+        "keys": [
+          "mon",
+          "tue",
+          "wed",
+          "thu"
+        ],
         "text": "7 am–6 pm",
+        "closed": false,
+        "unknown": false,
         "label": "Mon–Thu"
       },
       {
+        "keys": [
+          "fri"
+        ],
         "text": "7 am–1 pm",
+        "closed": false,
+        "unknown": false,
         "label": "Fri"
       },
       {
+        "keys": [
+          "sat",
+          "sun"
+        ],
         "text": "Closed",
+        "closed": true,
+        "unknown": false,
         "label": "Sat–Sun"
       }
     ],
@@ -299,8 +318,24 @@
     "description": "General and family dental care for adults and children: check-ups, fillings, crowns, root canals and whitening, with same-day emergency appointments when we hav",
     "locale": "en_US",
     "lang": "en",
+    "dir": "ltr",
     "og_image": "https://brightwater-dental.example/og.png"
   },
+  "i18n": {
+    "enabled": false,
+    "default": "en",
+    "locales": [
+      {
+        "code": "en",
+        "path": "en",
+        "hreflang": "en",
+        "og_locale": "en_US",
+        "label": "English",
+        "dir": "ltr"
+      }
+    ]
+  },
+  "lang": "en",
   "jsonld": {
     "@context": "https://schema.org",
     "@type": "Dentist",

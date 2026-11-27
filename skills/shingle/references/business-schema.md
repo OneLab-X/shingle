@@ -39,6 +39,7 @@ except `name` and `category`; leave unknowns out (never write guesses).
     "google_maps": "https://maps.app.goo.gl/xxxx"
   },
   "languages": ["en", "pt"],
+  "translations": { "pt": { "review": "draft", "tagline": "Cozinha caseira goesa em Hackney" } },
   "service_area": [],
   "images": [
     { "src": "public/images/dining-room.jpg", "alt": "Dining room with blue tiles", "subject": "interior" }
@@ -67,6 +68,7 @@ except `name` and `category`; leave unknowns out (never write guesses).
 | Field | Rule |
 |---|---|
 | `name` | Exactly as the owner writes it (keep capitalization, accents, ampersands). |
+| `category_label` | Optional human label used in titles and eyebrows ("Ceramics shop"). Defaults to the category's label. Translatable. |
 | `slug` | Derived: lowercase ASCII, hyphens. Used for the folder name. |
 | `category` | One of the file names in `categories/` without `.md`. |
 | `domain` | Bare host, no scheme or path (`example.com`). Site URL is `https://<domain>`. |
@@ -79,3 +81,27 @@ except `name` and `category`; leave unknowns out (never write guesses).
 | `facts` | Extra **verified** facts the owner stated (cuisine, specialties, licence numbers, founding year). Only facts in here may appear as claims on the site. |
 | `decisions` | Interview and design answers. Present keys are not asked again on re-runs. |
 | `decisions.badge` | `false` removes the "Built with Shingle" footer badge. |
+
+## Multiple languages
+`languages` lists the site's languages; the **first is the default** (it is what the top-level fields
+are written in, and what `x-default` points at). Everything else lives in `translations`:
+
+```json
+"languages": ["pt", "en"],
+"tagline": "Cerâmica pintada à mão",
+"translations": {
+  "en": {
+    "review": "draft",
+    "tagline": "Hand-painted ceramics",
+    "facts": { "products": [{ "name": "Hand-painted tile", "price": "€18" }] }
+  }
+}
+```
+- `translations.<lang>` is an overlay: objects merge into the default-language data, arrays replace
+  the original array whole (so list every item), anything missing falls back to the default language.
+- `review`: `"draft"` (default) shows a visible "native speaker should review" notice on that
+  language's pages; set `"reviewed"` once someone has checked the text.
+- **Locked fields** must be identical in every language, and `validate_input.py` fails otherwise:
+  `price`, `phone`, `whatsapp`, `email`, `url`, `href`, `booking_url`, `domain`, `slug`, `category`,
+  and the `name` of people (under `team`, `staff`, `coaches`…). Dish and product names may be translated.
+- Only keys that exist in the default language are used; unknown keys are ignored with a warning.

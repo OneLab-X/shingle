@@ -1,8 +1,8 @@
 ---
-import { url } from "../lib/url";
+import { getSite, lurl, useT } from "../lib/i18n";
 /** Site header: wordmark, navigation, primary call to action. Restyle freely per direction. */
-import site from "../data/site.json";
 import ThemeToggle from "./ThemeToggle.astro";
+import LanguageSwitcher from "./LanguageSwitcher.astro";
 
 interface Props {
   nav?: { href: string; label: string }[];
@@ -10,12 +10,14 @@ interface Props {
 }
 const { nav = [], cta } = Astro.props;
 const current = Astro.url.pathname;
+const site = getSite(Astro.currentLocale);
+const t = useT(Astro.currentLocale);
 ---
 
 <header class="site-header">
   <div class="wrap flex items-center justify-between gap-6 py-4">
-    <a href={url("/")} class="wordmark">{site.business.name}</a>
-    <nav aria-label="Main" class="flex items-center gap-5 flex-wrap justify-end">
+    <a href={lurl("/", Astro.currentLocale)} class="wordmark">{site.business.name}</a>
+    <nav aria-label={t("nav.main")} class="flex items-center gap-5 flex-wrap justify-end">
       {
         nav.map((item) => (
           <a href={item.href} aria-current={current === item.href ? "page" : undefined}>
@@ -24,6 +26,7 @@ const current = Astro.url.pathname;
         ))
       }
       {cta && <a class="btn btn-primary" href={cta.href}>{cta.label}</a>}
+      <LanguageSwitcher />
       <ThemeToggle />
     </nav>
   </div>

@@ -166,6 +166,13 @@ COUNTRY_NAMES = {
     "morocco": "MA",
 }
 
+UI_STRINGS_DIR = Path(__file__).resolve().parent.parent / "references" / "ui-strings"
+RTL_LANGUAGES = {"ar", "he", "fa", "ur"}
+# Leaves a translation overlay must never change: they are facts, not prose.
+LOCKED_KEYS = {"price", "phone", "whatsapp", "email", "url", "href", "booking_url", "domain", "slug", "category"}
+PEOPLE_SEGMENTS = {"team", "people", "staff", "coaches", "stylists", "members"}
+REVIEW_STATES = ("draft", "reviewed")
+
 POSTAL_PATTERNS = {
     "US": r"\d{5}(-\d{4})?",
     "CA": r"[A-Za-z]\d[A-Za-z] ?\d[A-Za-z]\d",
@@ -228,6 +235,7 @@ KEY_ORDER = [
     "name",
     "slug",
     "category",
+    "category_label",
     "tagline",
     "description",
     "domain",
@@ -242,6 +250,7 @@ KEY_ORDER = [
     "hours_note",
     "socials",
     "languages",
+    "translations",
     "service_area",
     "images",
     "facts",
@@ -608,6 +617,108 @@ def normalize_socials(value, report: Report) -> dict[str, str]:
 # ---------------------------------------------------------------- main normalize
 
 
+def ui_languages() -> set[str]:
+    return {p.stem for p in UI_STRINGS_DIR.glob("*.json")} if UI_STRINGS_DIR.is_dir() else {"en"}
+
+
+def normalize_languages(value, report: Report) -> list[str]:
+    """Return unique language codes like 'en' or 'pt-BR'; the first entry is the default language."""
+    langs = value if isinstance(value, list) else [value]
+    clean: list[str] = []
+    for lang in langs:
+        code = str(lang).strip().replace("_", "-")
+        if not re.fullmatch(r"[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*", code):
+            report.warnings.append(f"languages: {lang!r} is not a language code like 'en' or 'pt-BR'")
+            continue
+        parts = code.split("-")
+        norm = "-".join([parts[0].lower()] + [p.upper() if len(p) == 2 else p for p in parts[1:]])
+        if norm in clean:
+            report.warnings.append(f"languages: {norm!r} is listed twice; keeping one")
+            continue
+        clean.append(norm)
+    known = ui_languages()
+    for code in clean:
+        base = code.split("-")[0]
+        if base in RTL_LANGUAGES:
+            report.warnings.append(
+                f"languages: {code!r} is written right-to-left; Shingle's templates are left-to-right only, so layout needs manual work"
+            )
+        elif base not in known and len(clean) > 1:
+            report.warnings.append(
+                f"languages: no interface dictionary for {base!r}; English interface text will be used "
+                f"(add references/ui-strings/{base}.json, see docs/adding-a-language.md)"
+            )
+    return clean
+
+
+def _locked(key: str, path: list[str]) -> bool:
+    if key in LOCKED_KEYS:
+        return True
+    return key == "name" and (not path or any(seg in PEOPLE_SEGMENTS for seg in path))
+
+
+def _compare_overlay(base, over, path: list[str], lang: str, report: Report) -> None:
+    where = ".".join(["translations", lang, *path])
+    if isinstance(over, dict):
+        if not isinstance(base, dict):
+            report.errors.append(f"{where}: expected {type(base).__name__} like the original, got an object")
+            return
+        for key, value in over.items():
+            if not path and key == "review":
+                continue
+            if key not in base:
+                report.warnings.append(f"{where}.{key}: not present in the default language, will be ignored")
+                continue
+            if _locked(key, path) and value != base[key]:
+                report.errors.append(
+                    f"{where}.{key}: {value!r} differs from {base[key]!r}; prices, numbers, contact details and names must not be translated"
+                )
+                continue
+            _compare_overlay(base[key], value, [*path, key], lang, report)
+    elif isinstance(over, list):
+        if not isinstance(base, list):
+            report.errors.append(f"{where}: expected {type(base).__name__} like the original, got a list")
+            return
+        if len(over) != len(base):
+            report.warnings.append(
+                f"{where}: {len(over)} items but the default language has {len(base)}; arrays replace the original whole"
+            )
+        for i, (b, o) in enumerate(zip(base, over)):  # noqa: B905 (Python 3.9 support)
+            _compare_overlay(b, o, [*path, str(i)], lang, report)
+    elif isinstance(base, (dict, list)):
+        report.errors.append(f"{where}: expected {type(base).__name__} like the original, got {type(over).__name__}")
+
+
+def check_translations(d: dict, report: Report) -> None:
+    langs = d.get("languages") or []
+    tr = d["translations"]
+    if not isinstance(tr, dict):
+        report.errors.append("translations must be an object keyed by language code")
+        return
+    if len(langs) < 2:
+        report.warnings.append("translations are ignored: add more than one language to `languages`")
+        return
+    default = langs[0]
+    for raw, overlay in list(tr.items()):
+        code = str(raw).strip().replace("_", "-")
+        if code == default:
+            report.warnings.append(f"translations.{raw}: the default language is written at the top level of business.json")
+            continue
+        if code not in langs:
+            report.errors.append(f"translations.{raw}: {code!r} is not in languages {langs}")
+            continue
+        if not isinstance(overlay, dict):
+            report.errors.append(f"translations.{raw} must be an object")
+            continue
+        review = overlay.get("review", "draft")
+        if review not in REVIEW_STATES:
+            report.errors.append(f"translations.{raw}.review must be one of {', '.join(REVIEW_STATES)}")
+        _compare_overlay(d, overlay, [], code, report)
+    for code in langs[1:]:
+        if code not in tr:
+            report.warnings.append(f"no translations for {code!r}: its pages will show the default-language text")
+
+
 def normalize(data: dict) -> tuple[dict, Report]:
     r = Report()
     d = json.loads(json.dumps(data))  # deep copy
@@ -750,18 +861,11 @@ def normalize(data: dict) -> tuple[dict, Report]:
     if d.get("socials"):
         d["socials"] = normalize_socials(d["socials"], r)
 
-    # languages
+    # languages + translations
     if d.get("languages"):
-        langs = d["languages"] if isinstance(d["languages"], list) else [d["languages"]]
-        clean_langs = []
-        for lang in langs:
-            code = str(lang).strip().replace("_", "-")
-            if re.fullmatch(r"[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*", code):
-                parts = code.split("-")
-                clean_langs.append("-".join([parts[0].lower()] + [p.upper() if len(p) == 2 else p for p in parts[1:]]))
-            else:
-                r.warnings.append(f"languages: {lang!r} is not a language code like 'en' or 'pt-BR'")
-        d["languages"] = clean_langs
+        d["languages"] = normalize_languages(d["languages"], r)
+    if d.get("translations"):
+        check_translations(d, r)
 
     # images
     for i, img in enumerate(d.get("images") or []):

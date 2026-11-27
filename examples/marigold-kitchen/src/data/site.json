@@ -271,19 +271,42 @@
     ],
     "groups": [
       {
+        "keys": [
+          "mon"
+        ],
         "text": "Closed",
+        "closed": true,
+        "unknown": false,
         "label": "Mon"
       },
       {
+        "keys": [
+          "tue",
+          "wed",
+          "thu"
+        ],
         "text": "17:30–22:30",
+        "closed": false,
+        "unknown": false,
         "label": "Tue–Thu"
       },
       {
+        "keys": [
+          "fri",
+          "sat"
+        ],
         "text": "12:00–15:00, 17:30–23:00",
+        "closed": false,
+        "unknown": false,
         "label": "Fri–Sat"
       },
       {
+        "keys": [
+          "sun"
+        ],
         "text": "12:00–16:00",
+        "closed": false,
+        "unknown": false,
         "label": "Sun"
       }
     ],
@@ -354,8 +377,24 @@
     "description": "Family-run Goan restaurant on Fenwick Lane, Hackney. Coconut fish curry, pork vindaloo made the Margão way, and bebinca for afters.",
     "locale": "en_GB",
     "lang": "en",
+    "dir": "ltr",
     "og_image": "https://marigold-kitchen.example/og.png"
   },
+  "i18n": {
+    "enabled": false,
+    "default": "en",
+    "locales": [
+      {
+        "code": "en",
+        "path": "en",
+        "hreflang": "en",
+        "og_locale": "en_GB",
+        "label": "English",
+        "dir": "ltr"
+      }
+    ]
+  },
+  "lang": "en",
   "jsonld": {
     "@context": "https://schema.org",
     "@type": "Restaurant",
