@@ -105,3 +105,12 @@ are written in, and what `x-default` points at). Everything else lives in `trans
   `price`, `phone`, `whatsapp`, `email`, `url`, `href`, `booking_url`, `domain`, `slug`, `category`,
   and the `name` of people (under `team`, `staff`, `coaches`…). Dish and product names may be translated.
 - Only keys that exist in the default language are used; unknown keys are ignored with a warning.
+
+## Fields written by the Google Business Profile import
+`import_gbp.py` adds these (see `google-business-profile.md`); the site only uses them if a page asks:
+- `imported_from`: `{source, file, location, imported_at}`, a record of where the facts came from.
+- `category_label`: Google's primary category wording, e.g. "Indian restaurant" (used in titles).
+- `facts.google_categories`: primary + additional categories, verbatim.
+- `facts.attributes`: attributes the owner answered "yes" to, verbatim ("Wheelchair accessible entrance").
+- `facts.opening_date`: Google's opening date (`YYYY` / `YYYY-MM` / `YYYY-MM-DD`). It is **not** copied to
+  JSON-LD `foundingDate`: say it on the site only if the owner confirms.

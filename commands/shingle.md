@@ -1,6 +1,6 @@
 ---
 description: Build (or update) a website for a business from its details or a business.json file
-argument-hint: "[path/to/business.json | business details as free text]"
+argument-hint: "[path/to/business.json | Google Business Profile export | business details as free text]"
 ---
 
 Build a website for a business using the **shingle** skill. Load it and follow its workflow
@@ -9,7 +9,9 @@ from Step 1 (INTAKE) through Step 7 (HANDOFF). Do not skip the interview or the 
 Input from the user: $ARGUMENTS
 
 How to treat the input:
-- If it is a path to an existing `.json` file, read it as `business.json`.
+- If it is a path to a Google Business Profile export (`.csv`, `.tsv`, `.xlsx`, or a `.json` with
+  `title` / `storefrontAddress` / `regularHours`), import it as the skill's Step 1 describes.
+- If it is a path to any other existing `.json` file, read it as `business.json`.
 - If it is a path to a folder containing `.shingle/manifest.json`, this is an update of a site
   Shingle built: follow the skill's "Updating an existing site" section.
 - If it is free text, extract the business details from it.

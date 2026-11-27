@@ -1,0 +1,35 @@
+{
+  "name": "locations/123456789",
+  "title": "Barro & Luz",
+  "storeCode": "BL1",
+  "languageCode": "pt",
+  "phoneNumbers": { "primaryPhone": "+351 21 000 0000", "additionalPhones": ["+351 91 000 0000"] },
+  "categories": {
+    "primaryCategory": { "name": "categories/gcid:gift_shop", "displayName": "Gift shop" },
+    "additionalCategories": [{ "name": "categories/gcid:pottery_store", "displayName": "Pottery store" }]
+  },
+  "storefrontAddress": {
+    "regionCode": "PT",
+    "languageCode": "pt",
+    "postalCode": "1200-286",
+    "administrativeArea": "Lisboa",
+    "locality": "Lisboa",
+    "addressLines": ["Rua do Norte 41"]
+  },
+  "websiteUri": "https://barroeluz.example/",
+  "regularHours": {
+    "periods": [
+      { "openDay": "TUESDAY", "openTime": { "hours": 10 }, "closeDay": "TUESDAY", "closeTime": { "hours": 19 } },
+      { "openDay": "WEDNESDAY", "openTime": { "hours": 10 }, "closeDay": "WEDNESDAY", "closeTime": { "hours": 13, "minutes": 30 } },
+      { "openDay": "WEDNESDAY", "openTime": { "hours": 14, "minutes": 30 }, "closeDay": "WEDNESDAY", "closeTime": { "hours": 19 } },
+      { "openDay": "FRIDAY", "openTime": { "hours": 18 }, "closeDay": "SATURDAY", "closeTime": { "hours": 2 } },
+      { "openDay": "SATURDAY", "openTime": {}, "closeDay": "SUNDAY", "closeTime": {} }
+    ]
+  },
+  "specialHours": { "specialHourPeriods": [{ "startDate": { "year": 2026, "month": 12, "day": 25 }, "closed": true }] },
+  "latlng": { "latitude": 38.7117, "longitude": -9.1440 },
+  "openInfo": { "status": "OPEN", "openingDate": { "year": 2021, "month": 5 } },
+  "profile": { "description": "Small ceramics shop and studio in Bairro Alto." },
+  "metadata": { "mapsUri": "https://maps.google.com/?cid=123456789", "newReviewUri": "https://search.google.com/local/writereview?placeid=abc" },
+  "labels": ["lisbon"]
+}

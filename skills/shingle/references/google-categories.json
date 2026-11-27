@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "_note": "Maps Google Business Profile category names to Shingle categories. Rules are checked in order and the first keyword found (case-insensitive, whole words) in the Google category wins. `schema_type` is optional: set it only when schema.org has a more specific type than the category default. Add a rule here when import_gbp.py reports an unmatched category.",
+  "rules": [
+    { "keywords": ["dentist", "dental", "orthodontist", "endodontist"], "category": "dental-clinic" },
+    { "keywords": ["law firm", "lawyer", "attorney", "solicitor", "notary", "legal"], "category": "law-firm" },
+    { "keywords": ["real estate", "estate agent", "letting agent", "property management", "realtor"], "category": "real-estate" },
+    { "keywords": ["travel agency", "tour operator", "tours", "travel agent"], "category": "travel-agency" },
+    { "keywords": ["photographer", "photography", "videographer", "photo studio"], "category": "photographer" },
+    { "keywords": ["plumber", "plumbing"], "category": "contractor-home-services", "schema_type": "Plumber" },
+    { "keywords": ["electrician", "electrical"], "category": "contractor-home-services", "schema_type": "Electrician" },
+    { "keywords": ["roofing", "roofer"], "category": "contractor-home-services", "schema_type": "RoofingContractor" },
+    { "keywords": ["hvac", "heating", "air conditioning"], "category": "contractor-home-services", "schema_type": "HVACBusiness" },
+    { "keywords": ["locksmith"], "category": "contractor-home-services", "schema_type": "Locksmith" },
+    { "keywords": ["painter", "painting contractor"], "category": "contractor-home-services", "schema_type": "HousePainter" },
+    { "keywords": ["moving company", "removals"], "category": "contractor-home-services", "schema_type": "MovingCompany" },
+    { "keywords": ["general contractor", "builder", "construction", "carpenter", "handyman", "landscaper", "landscaping", "cleaning service", "house cleaning", "contractor"], "category": "contractor-home-services" },
+    { "keywords": ["coffee shop", "cafe", "café", "bakery", "tea house", "tea room", "juice bar", "ice cream", "patisserie", "dessert shop"], "category": "cafe" },
+    { "keywords": ["restaurant", "pizza", "bistro", "brasserie", "takeaway", "take away", "diner", "eatery", "steakhouse", "sushi", "trattoria", "pub"], "category": "restaurant" },
+    { "keywords": ["hair salon", "barber", "beauty salon", "nail salon", "spa", "massage", "day spa", "hairdresser", "skin care", "beautician", "waxing"], "category": "salon-spa" },
+    { "keywords": ["gym", "fitness", "yoga", "pilates", "crossfit", "martial arts", "boxing", "personal trainer", "climbing"], "category": "gym-fitness" },
+    { "keywords": ["non-profit", "nonprofit", "charity", "foundation", "community center", "food bank", "association"], "category": "nonprofit" },
+    { "keywords": ["clothing store", "boutique", "gift shop", "book store", "bookstore", "jewelry", "jewellery", "florist", "home goods", "furniture store", "shop", "store"], "category": "ecommerce-boutique" }
+  ],
+  "fallback": "generic-local-business"
+}

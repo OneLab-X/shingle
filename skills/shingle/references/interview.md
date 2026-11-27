@@ -11,6 +11,8 @@ Goal: collect the few decisions that change the site, in as few rounds as possib
 - Every question must stand alone: say what it is for in the question text.
 - The user can always pick "Other"; accept free text and map it to the closest decision.
 - Use `multiSelect: true` only for features and contact methods.
+- After a Google Business Profile import, name, address, phone, hours, website, description and
+  category are known: never ask for them again. Still ask goal, CTA, tone, imagery, features.
 - Before asking, drop questions that are answered in business.json `decisions`, inferable from
   the facts, or irrelevant to this category. Typical inferences:
   - Only one contact method given: that is the contact method. Do not ask.
