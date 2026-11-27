@@ -1,0 +1,26 @@
+---
+/** Poster signature: a tilted band repeating the gym's own words (from facts.offer_words). */
+import site from "../data/site.json";
+const words = ((site.business.facts as { offer_words?: string[] }).offer_words ?? []).map((w) => w.toUpperCase());
+const run = [...words, ...words, ...words];
+---
+
+<div class="clip"><div class="band" role="presentation">
+  <div class="track" aria-hidden="true">
+    {[0, 1].map(() => <span class="run">{run.map((w) => <span class="word">{w}<span class="star"></span></span>)}</span>)}
+  </div>
+  <p class="sr-only">{words.join(", ")}</p>
+</div></div>
+
+<style>
+  .clip { overflow: hidden; padding-block: 1.5rem; }
+  .band { background: var(--sh-primary); color: var(--sh-on-primary); transform: rotate(-3deg); width: 110%; margin-left: -5%; border-block: 4px solid var(--sh-text); overflow: hidden; }
+  .track { display: flex; width: max-content; }
+  .run { display: flex; padding-block: 0.9rem; }
+  .word { font-family: var(--sh-font-display); font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1; padding-inline: 1.25rem; display: inline-flex; align-items: center; gap: 2.5rem; }
+  .star { width: 0.45em; height: 0.45em; background: currentColor; transform: rotate(45deg); flex: none; }
+  @media (prefers-reduced-motion: no-preference) {
+    .track { animation: slide 28s linear infinite; }
+    @keyframes slide { to { transform: translateX(-50%); } }
+  }
+</style>

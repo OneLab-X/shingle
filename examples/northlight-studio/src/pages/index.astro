@@ -1,0 +1,136 @@
+---
+import { url } from "../lib/url";
+/**
+ * Northlight Studio · single page. Direction: gallery (image-first, numbered margin captions,
+ * contact-sheet strip on phones). Palette: darkroom. Travelling photographer: no map.
+ */
+import Base from "../layouts/Base.astro";
+import Footer from "../components/Footer.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
+import Todo from "../components/Todo.astro";
+import site from "../data/site.json";
+
+const { business, contact } = site;
+type Shot = { subject: string; place: string; shape: "tall" | "wide" | "square" };
+const facts = business.facts as {
+  about: string;
+  services: { name: string; text: string; price: string | null }[];
+  portfolio: Shot[];
+  process: string;
+};
+const dims = { tall: [800, 1100], wide: [1200, 800], square: [900, 900] } as const;
+const pad = (n: number) => String(n).padStart(2, "0");
+---
+
+<Base>
+  <header class="wrap top">
+    <a href={url("/")} class="logo">{business.name}</a>
+    <nav aria-label="Main">
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a href="#enquire">Enquire</a>
+      <ThemeToggle />
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="wrap intro">
+      <h1>{business.tagline}</h1>
+      <p class="caption-style">{business.description}</p>
+    </section>
+
+    <section id="work" class="work" aria-label="Selected work">
+      {/* TODO(shingle): six portfolio photos from Mairi, matching the subjects in business.json facts.portfolio */}
+      <ol class="grid">
+        {
+          facts.portfolio.map((shot, i) => (
+            <li class:list={["shot", shot.shape]}>
+              <figure data-shingle-todo={`Portfolio photo ${pad(i + 1)}: ${shot.subject}, ${shot.place} (${dims[shot.shape].join("×")})`}>
+                <svg viewBox={`0 0 ${dims[shot.shape][0]} ${dims[shot.shape][1]}`} role="img" aria-label={`Placeholder for portfolio photo: ${shot.subject}`}>
+                  <rect width="100%" height="100%" class="frame-fill" />
+                  <rect x="4%" y="4%" width="92%" height="92%" class="frame-line" />
+                  <text x="50%" y="50%" text-anchor="middle" class="frame-text">Photo to add</text>
+                </svg>
+                <figcaption>
+                  <span class="num">{pad(i + 1)}</span> — {shot.subject}, <em>{shot.place}</em>
+                </figcaption>
+              </figure>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <section id="about" class="wrap section about" aria-labelledby="about-title">
+      <h2 id="about-title" class="label">About</h2>
+      <p class="about-text">{facts.about}</p>
+    </section>
+
+    <section class="wrap section services" aria-labelledby="services-title">
+      <h2 id="services-title" class="label">Services</h2>
+      <dl>
+        {
+          facts.services.map((s) => (
+            <div>
+              <dt>{s.name}</dt>
+              <dd>
+                <p>{s.text}</p>
+                <p class="price">{s.price ?? <Todo label={`price for ${s.name.toLowerCase()}`} />}</p>
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+      <p class="area">Travelling to {business.service_area.join(", ")} and anywhere else in Scotland.</p>
+    </section>
+
+    <section id="enquire" class="wrap section enquire" aria-labelledby="enquire-title">
+      <h2 id="enquire-title">Is your date free?</h2>
+      <p>{facts.process}</p>
+      {contact.email && <a class="mail" href={`${contact.email.href}?subject=${encodeURIComponent("Date enquiry")}`}>{contact.email.label}</a>}
+      {contact.tel && <p class="tel">or call <a href={contact.tel.href}>{contact.tel.label}</a></p>}
+    </section>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .top { display: flex; justify-content: space-between; align-items: baseline; padding-block: 1.5rem; }
+  .logo { font-family: var(--sh-font-display); font-size: 1.75rem; color: var(--sh-text); text-decoration: none; }
+  nav { display: flex; align-items: center; gap: 1.5rem; }
+  nav a { color: var(--sh-text); text-decoration: none; text-transform: uppercase; letter-spacing: var(--sh-ui-tracking); font-size: 0.8125rem; }
+  @media (max-width: 40rem) { nav a { display: none; } }
+  .intro { padding-block: clamp(2rem, 8vw, 6rem) clamp(2rem, 5vw, 3.5rem); display: grid; gap: 1.25rem; }
+  .intro h1 { font-style: italic; max-width: 18ch; }
+  .caption-style { text-transform: uppercase; letter-spacing: var(--sh-ui-tracking); font-size: 0.8125rem; color: var(--sh-muted); max-width: 52ch; }
+
+  .grid { list-style: none; margin: 0; padding: 0 4px; display: grid; gap: 6px; grid-template-columns: repeat(6, 1fr); grid-auto-flow: dense; }
+  .shot.tall { grid-column: span 2; grid-row: span 2; }
+  .shot.wide { grid-column: span 4; grid-row: span 2; }
+  .shot.square { grid-column: span 2; grid-row: span 2; }
+  figure { margin: 0; height: 100%; display: flex; flex-direction: column; }
+  figure svg { width: 100%; flex: 1; display: block; min-height: 12rem; }
+  .frame-fill { fill: var(--sh-surface); }
+  .frame-line { fill: none; stroke: var(--sh-border); stroke-width: 2; }
+  .frame-text { fill: var(--sh-muted); font-family: var(--sh-font-body); font-size: 28px; letter-spacing: 4px; text-transform: uppercase; }
+  figcaption { padding: 0.5rem 0.25rem 1rem; font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--sh-muted); }
+  figcaption em { font-family: var(--sh-font-display); text-transform: none; font-size: 1rem; letter-spacing: 0; color: var(--sh-text); }
+  .num { color: var(--sh-primary); font-weight: 600; }
+  @media (max-width: 48rem) {
+    .grid { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 8px; padding-inline: 1rem; }
+    .shot { flex: 0 0 78%; scroll-snap-align: center; }
+  }
+
+  .label { font-family: var(--sh-font-body); font-size: 0.8125rem; text-transform: uppercase; letter-spacing: var(--sh-ui-tracking); color: var(--sh-muted); font-weight: 500; border-top: 1px solid var(--sh-border); padding-top: 1rem; margin-bottom: 1.5rem; }
+  .about-text { font-family: var(--sh-font-display); font-size: clamp(1.5rem, 3vw, 2.25rem); line-height: 1.3; max-width: 32ch; }
+  .services dl { margin: 0; display: grid; gap: 2rem; }
+  @media (min-width: 48rem) { .services dl { grid-template-columns: repeat(3, 1fr); } }
+  .services dt { font-family: var(--sh-font-display); font-size: 1.75rem; font-style: italic; }
+  .services dd { margin: 0.5rem 0 0; }
+  .price { margin-top: 0.75rem; text-transform: uppercase; letter-spacing: var(--sh-ui-tracking); font-size: 0.875rem; font-weight: 600; }
+  .area { margin-top: 2.5rem; color: var(--sh-muted); }
+  .enquire { text-align: center; display: grid; justify-items: center; gap: 1rem; }
+  .enquire h2 { font-style: italic; }
+  .mail { font-family: var(--sh-font-display); font-size: clamp(1.5rem, 5vw, 3.25rem); color: var(--sh-text); text-decoration-thickness: 1px; overflow-wrap: anywhere; }
+  .tel { color: var(--sh-muted); }
+</style>

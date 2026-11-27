@@ -1,0 +1,39 @@
+---
+/** Contact actions that work without a backend: call, WhatsApp, email, booking link, directions. */
+import site from "../data/site.json";
+import Icon from "./Icon.astro";
+
+interface Props {
+  /** Which actions to show, in order. Defaults to everything available. */
+  show?: ("tel" | "whatsapp" | "email" | "booking" | "directions")[];
+  class?: string;
+}
+const { show = ["booking", "tel", "whatsapp", "email", "directions"], class: className } = Astro.props;
+const c = site.contact as Record<string, { href: string; label: string } | undefined>;
+const items = show
+  .map((key) => {
+    if (key === "directions") return site.maps ? { key, href: site.maps.directions, label: "Directions", icon: "pin" as const } : null;
+    const item = c[key];
+    if (!item) return null;
+    const icon = ({ tel: "phone", whatsapp: "chat", email: "mail", booking: "calendar" } as const)[key];
+    return { key, href: item.href, label: item.label, icon };
+  })
+  .filter((x): x is NonNullable<typeof x> => x !== null);
+---
+
+<ul class:list={["flex flex-wrap gap-3 list-none p-0", className]}>
+  {
+    items.map((item, i) => (
+      <li>
+        <a
+          class:list={["btn", i === 0 ? "btn-primary" : "btn-quiet"]}
+          href={item.href}
+          {...(item.href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+        >
+          <Icon name={item.icon} />
+          <span>{item.label}</span>
+        </a>
+      </li>
+    ))
+  }
+</ul>

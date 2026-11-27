@@ -1,0 +1,81 @@
+---
+import { url } from "../lib/url";
+/**
+ * Page shell: SEO head (title, description, canonical, Open Graph, JSON-LD), theme handling,
+ * skip link. All business facts come from src/data/site.json (generated from business.json).
+ */
+import "../styles/global.css";
+import site from "../data/site.json";
+
+interface Props {
+  /** Page title. Home page: omit to use "<name> · <what> in <where>". */
+  title?: string;
+  description?: string;
+  /** Extra JSON-LD objects for this page (FAQPage, BreadcrumbList, ...). */
+  jsonld?: Record<string, unknown>[];
+  noindex?: boolean;
+}
+
+const { title, description, jsonld = [], noindex = false } = Astro.props;
+const { business, seo, theme } = site;
+const isHome = Astro.url.pathname === url("/");
+const pageTitle = title ? `${title} · ${business.name}` : seo.title;
+const pageDescription = description ?? seo.description;
+const canonical = new URL(Astro.url.pathname, business.url).href;
+const ogImage = new URL("/og.png", business.url).href;
+
+const businessLd = isHome
+  ? site.jsonld
+  : {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      url: canonical,
+      name: pageTitle,
+      about: { "@id": `${business.url}#business` },
+    };
+const ldBlocks = [businessLd, ...jsonld];
+const json = (data: unknown) => JSON.stringify(data).replace(/</g, "\\u003c");
+---
+
+<!doctype html>
+<html lang={seo.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <link rel="canonical" href={canonical} />
+    {(noindex || process.env.SHINGLE_PREVIEW) && <meta name="robots" content="noindex" />}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={business.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${business.name}: ${business.category_label}`} />
+    <meta property="og:locale" content={seo.locale} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content={theme.colors.light?.background} media="(prefers-color-scheme: light)" />
+    {theme.dark && <meta name="theme-color" content={theme.colors.dark?.background} media="(prefers-color-scheme: dark)" />}
+    <link rel="icon" href={url("/favicon.svg")} type="image/svg+xml" />
+    <link rel="sitemap" href={url("/sitemap-index.xml")} />
+    {
+      theme.dark && (
+        <script is:inline>
+          try {
+            const t = localStorage.getItem("theme");
+            if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+          } catch {}
+        </script>
+      )
+    }
+    {ldBlocks.map((block) => <script type="application/ld+json" set:html={json(block)} />)}
+    <slot name="head" />
+  </head>
+  <body class="bg-bg text-ink">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <slot />
+  </body>
+</html>

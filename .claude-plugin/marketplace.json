@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "shingle",
+  "description": "Shingle: turn a business's basic details into a finished website.",
+  "owner": {
+    "name": "OneLab-X",
+    "url": "https://github.com/OneLab-X"
+  },
+  "plugins": [
+    {
+      "name": "shingle",
+      "source": "./",
+      "description": "Business details in, distinctive production-ready website out.",
+      "version": "0.1.0",
+      "category": "productivity",
+      "tags": [
+        "website",
+        "local-business",
+        "astro",
+        "seo"
+      ]
+    }
+  ]
+}

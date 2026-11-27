@@ -1,0 +1,154 @@
+---
+import { url } from "../lib/url";
+/**
+ * Compass & Kite Journeys · single page. Direction: wayfinder (a dotted route line runs down
+ * the page linking numbered pins, ending at the contact section). Palette: lagoon.
+ */
+import Base from "../layouts/Base.astro";
+import Footer from "../components/Footer.astro";
+import Stop from "../components/Stop.astro";
+import Hours from "../components/Hours.astro";
+import MapEmbed from "../components/MapEmbed.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
+import Todo from "../components/Todo.astro";
+import site from "../data/site.json";
+
+const { business, contact } = site;
+const facts = business.facts as {
+  trips: { name: string; days: number; route: string; season: string }[];
+  process: { title: string; text: string }[];
+  pricing: string;
+};
+---
+
+<Base>
+  <header class="wrap top">
+    <a href={url("/")} class="logo"><svg class="compass" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.75"/><path d="M12 4l2.5 8L12 20l-2.5-8z" fill="currentColor"/></svg> {business.name}</a>
+    <nav aria-label="Main">
+      <a href="#trips">Trips</a>
+      <a href="#how">How it works</a>
+      <a href="#plan">Plan</a>
+      <ThemeToggle />
+    </nav>
+  </header>
+
+  <main id="main" class="wrap route">
+    <section class="hero">
+      <Stop n={1} label="Start" />
+      <h1>{business.tagline}</h1>
+      <p class="lead">{business.description}</p>
+      {contact.email && <a class="btn btn-primary ticket" href={`${contact.email.href}?subject=${encodeURIComponent("Trip idea")}`}>Start planning a trip</a>}
+    </section>
+
+    <section id="trips" class="section" aria-labelledby="trips-title">
+      <Stop n={2} label="Routes we love" />
+      <h2 id="trips-title">Trips to start from</h2>
+      <p class="mt-3 muted">{facts.pricing}</p>
+      <ul class="tickets">
+        {
+          facts.trips.map((t) => (
+            <li class="ticket-card">
+              <div class="main">
+                <h3>{t.name}</h3>
+                <p class="stops">{t.route}</p>
+              </div>
+              <div class="stub">
+                <p><strong>{t.days}</strong> days</p>
+                <p class="season">{t.season}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section id="how" class="section" aria-labelledby="how-title">
+      <Stop n={3} label="How it works" />
+      <h2 id="how-title">From idea to itinerary</h2>
+      <ol class="steps">
+        {
+          facts.process.map((p) => (
+            <li>
+              <h3>{p.title}</h3>
+              <p>{p.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="mt-8 small">
+        {/* TODO(shingle): Ontario TICO registration number, exactly as on the certificate */}
+        <Todo label="TICO registration number" />
+      </p>
+    </section>
+
+    <section id="plan" class="section plan" aria-labelledby="plan-title">
+      <Stop n={4} label="Destination" />
+      <h2 id="plan-title">Tell us where you're dreaming of</h2>
+      <div class="plan-grid">
+        <div>
+          {contact.email && <a class="big-mail" href={contact.email.href}>{contact.email.label}</a>}
+          {contact.tel && <p class="mt-4">or call <a href={contact.tel.href}>{contact.tel.label}</a></p>}
+          <h3 class="mt-10">Office</h3>
+          <address>{business.address_lines.map((l) => <span>{l}</span>)}</address>
+          <Hours class="mt-4" />
+        </div>
+        <MapEmbed />
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .top { display: flex; justify-content: space-between; align-items: center; padding-block: 1.5rem; }
+  .logo { font-family: var(--sh-font-display); font-weight: 700; font-size: 1.375rem; color: var(--sh-text); text-decoration: none; display: inline-flex; gap: 0.5rem; align-items: center; }
+  .compass { color: var(--sh-primary); }
+  nav { display: flex; align-items: center; gap: 1.25rem; }
+  nav a { color: var(--sh-text); font-weight: 600; text-decoration: none; }
+  @media (max-width: 40rem) { nav a { display: none; } }
+
+  .route { --route-offset: 3.25rem; position: relative; padding-left: var(--route-offset); }
+  .route::before {
+    content: ""; position: absolute; left: 1.2rem; top: 1.5rem; bottom: 4rem;
+    border-left: 3px dotted var(--sh-primary);
+  }
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .route::before { transform-origin: top; animation: draw linear both; animation-timeline: scroll(root); }
+      @keyframes draw { from { transform: scaleY(0.15); } to { transform: scaleY(1); } }
+    }
+  }
+  .hero { padding-block: clamp(2rem, 7vw, 5rem) 2rem; }
+  .hero h1 { max-width: 15ch; }
+  .lead { font-size: 1.25rem; margin-top: 1.5rem; }
+  .muted { color: var(--sh-muted); }
+  .ticket { margin-top: 2rem; }
+  .tickets { list-style: none; padding: 0; margin-top: 2rem; display: grid; gap: 1.25rem; }
+  @media (min-width: 56rem) { .tickets { grid-template-columns: 1fr 1fr; } }
+  .ticket-card {
+    display: grid; grid-template-columns: 1fr auto; background: var(--sh-surface); border-radius: var(--sh-radius);
+  }
+  .ticket-card .main { padding: 1.5rem; min-width: 0; }
+  @media (max-width: 40rem) {
+    .route { --route-offset: 2.5rem; }
+    .route::before { left: 0.85rem; }
+    .ticket-card { grid-template-columns: 1fr; }
+    .stub { border-left: 0; border-top: 2px dashed var(--sh-border); display: flex; gap: 1rem; align-items: baseline; justify-content: flex-start; text-align: left; padding-block: 1rem; }
+    .stub p { margin: 0; }
+    .stub strong { display: inline; font-size: 1.75rem; }
+  }
+  .ticket-card h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+  .stops { color: var(--sh-muted); font-size: 0.9375rem; }
+  .stub { padding: 1.5rem; border-left: 2px dashed var(--sh-border); text-align: center; display: grid; align-content: center; min-width: 8rem; }
+  .stub strong { font-family: var(--sh-font-display); font-size: 2.5rem; line-height: 1; color: var(--sh-primary); display: block; }
+  .season { font-size: 0.8125rem; color: var(--sh-muted); margin-top: 0.5rem; }
+  .steps { list-style: none; padding: 0; margin-top: 2rem; display: grid; gap: 1.5rem; counter-reset: step; }
+  @media (min-width: 56rem) { .steps { grid-template-columns: repeat(3, 1fr); } }
+  .steps li { border-top: 3px solid var(--sh-primary); padding-top: 1rem; }
+  .steps h3 { font-size: 1.375rem; margin-bottom: 0.4rem; }
+  .small { font-size: 0.9375rem; }
+  .plan-grid { display: grid; gap: 3rem; margin-top: 2rem; }
+  @media (min-width: 56rem) { .plan-grid { grid-template-columns: 1fr 1fr; } }
+  .big-mail { font-family: var(--sh-font-display); font-size: clamp(1.5rem, 4vw, 2.5rem); font-weight: 700; overflow-wrap: anywhere; }
+  address { display: flex; flex-direction: column; margin-top: 0.5rem; }
+</style>

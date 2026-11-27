@@ -1,0 +1,45 @@
+---
+/** Light/dark switch. Rendered only when the palette has a dark mode. Remembers the choice. */
+import site from "../data/site.json";
+import Icon from "./Icon.astro";
+---
+
+{
+  site.theme.dark && (
+    <button type="button" class="theme-toggle" data-theme-toggle aria-label="Switch to dark theme">
+      <Icon name="moon" class="i-moon" />
+      <Icon name="sun" class="i-sun" />
+    </button>
+  )
+}
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>("[data-theme-toggle]");
+  if (btn) {
+    const root = document.documentElement;
+    const isDark = () =>
+      root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+    const label = () => btn.setAttribute("aria-label", isDark() ? "Switch to light theme" : "Switch to dark theme");
+    label();
+    btn.addEventListener("click", () => {
+      const next = isDark() ? "light" : "dark";
+      root.dataset.theme = next;
+      try {
+        localStorage.setItem("theme", next);
+      } catch {}
+      label();
+    });
+  }
+</script>
+
+<style>
+  .theme-toggle { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; color: inherit; background: transparent; border: 1px solid var(--sh-border); cursor: pointer; }
+  .theme-toggle :global(svg) { grid-area: 1 / 1; }
+  .theme-toggle :global(.i-sun) { display: none; }
+  :global(:root[data-theme="dark"]) .theme-toggle :global(.i-sun) { display: block; }
+  :global(:root[data-theme="dark"]) .theme-toggle :global(.i-moon) { display: none; }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme="light"])) .theme-toggle :global(.i-sun) { display: block; }
+    :global(:root:not([data-theme="light"])) .theme-toggle :global(.i-moon) { display: none; }
+  }
+</style>

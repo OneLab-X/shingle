@@ -1,0 +1,39 @@
+---
+/**
+ * Image placeholder sized for the real photo. Never a stock or AI photo of the business.
+ * Swap for <Image src={import("../../public/images/...")} alt="..." /> when the owner sends it.
+ */
+interface Props {
+  /** The shot to add, e.g. "Dining room at night". */
+  subject: string;
+  width?: number;
+  height?: number;
+  class?: string;
+}
+const { subject, width = 1200, height = 800, class: className } = Astro.props;
+const id = `ph-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<figure class:list={["placeholder-image", className]} data-shingle-todo={`Photo: ${subject} (${width}×${height})`}>
+  <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`Placeholder for a photo: ${subject}`} preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <pattern id={id} width="24" height="24" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <rect width="24" height="24" fill="var(--sh-surface)"></rect>
+        <line x1="0" y1="0" x2="0" y2="24" stroke="var(--sh-border)" stroke-width="10"></line>
+      </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill={`url(#${id})`}></rect>
+  </svg>
+  <figcaption><span>Photo to add</span>{subject} · {width}×{height}</figcaption>
+</figure>
+
+<style>
+  .placeholder-image { position: relative; margin: 0; overflow: hidden; border-radius: var(--sh-radius); }
+  .placeholder-image svg { display: block; width: 100%; height: 100%; }
+  figcaption {
+    position: absolute; inset: auto 0.75rem 0.75rem 0.75rem; padding: 0.5rem 0.75rem;
+    background: var(--sh-background); color: var(--sh-text); font-size: 0.8125rem;
+    border: 1px dashed var(--sh-muted); width: fit-content; max-width: calc(100% - 1.5rem);
+  }
+  figcaption span { display: block; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.6875rem; color: var(--sh-muted); }
+</style>

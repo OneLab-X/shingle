@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://compass-kite.example/sitemap-index.xml

@@ -1,0 +1,212 @@
+{
+  "schema_version": 1,
+  "name": "Marigold Kitchen",
+  "slug": "marigold-kitchen",
+  "category": "restaurant",
+  "tagline": "Goan home cooking in Hackney",
+  "description": "Family-run Goan restaurant on Fenwick Lane, Hackney. Coconut fish curry, pork vindaloo made the Margão way, and bebinca for afters.",
+  "domain": "marigold-kitchen.example",
+  "address": {
+    "street": "27 Fenwick Lane",
+    "locality": "London",
+    "postal_code": "E8 4QT",
+    "country": "GB"
+  },
+  "phone": "+442079460321",
+  "phone_display": "020 7946 0321",
+  "email": "hello@marigold-kitchen.example",
+  "hours": {
+    "mon": [],
+    "tue": [
+      [
+        "17:30",
+        "22:30"
+      ]
+    ],
+    "wed": [
+      [
+        "17:30",
+        "22:30"
+      ]
+    ],
+    "thu": [
+      [
+        "17:30",
+        "22:30"
+      ]
+    ],
+    "fri": [
+      [
+        "12:00",
+        "15:00"
+      ],
+      [
+        "17:30",
+        "23:00"
+      ]
+    ],
+    "sat": [
+      [
+        "12:00",
+        "15:00"
+      ],
+      [
+        "17:30",
+        "23:00"
+      ]
+    ],
+    "sun": [
+      [
+        "12:00",
+        "16:00"
+      ]
+    ]
+  },
+  "hours_note": "Last orders 45 minutes before closing.",
+  "languages": [
+    "en"
+  ],
+  "facts": {
+    "cuisine": [
+      "Goan",
+      "Indian"
+    ],
+    "price_range": "££",
+    "story": "Marigold Kitchen cooks the food of Goa's south coast: coconut, kokum, vinegar and plenty of chilli. Recipes come from the family kitchen in Margão.",
+    "neighbourhood": "Hackney",
+    "transport": "5 minutes' walk from Hackney Central Overground.",
+    "booking_policy": "Bookings by phone. Walk-ins welcome at the bar. Groups of 8 or more please call ahead.",
+    "dietary_note": "V vegetarian · VG vegan · GF gluten-free. Tell us about allergies when you order; our kitchen handles nuts, gluten and shellfish.",
+    "menu": [
+      {
+        "section": "Small plates",
+        "items": [
+          {
+            "name": "Prawn rissois",
+            "description": "Half-moon pastries, prawn and coconut béchamel",
+            "price": "£7.50"
+          },
+          {
+            "name": "Chouriço pão",
+            "description": "Goan pork sausage in soft bread, onion, green chilli",
+            "price": "£8"
+          },
+          {
+            "name": "Beef croquettes",
+            "description": "Spiced minced beef, crumbed and fried, mustard dip",
+            "price": "£7"
+          },
+          {
+            "name": "Mushroom xacuti tartlet",
+            "description": "Roasted coconut and poppy seed masala",
+            "price": "£6.50",
+            "dietary": [
+              "V"
+            ]
+          }
+        ]
+      },
+      {
+        "section": "Curries",
+        "items": [
+          {
+            "name": "Fish curry rice",
+            "description": "Kingfish in coconut and kokum, red rice",
+            "price": "£17",
+            "dietary": [
+              "GF"
+            ]
+          },
+          {
+            "name": "Pork vindaloo",
+            "description": "Slow-cooked pork shoulder, palm vinegar, Kashmiri chilli",
+            "price": "£18",
+            "dietary": [
+              "GF"
+            ]
+          },
+          {
+            "name": "Chicken cafreal",
+            "description": "Grilled chicken, coriander and green chilli marinade",
+            "price": "£16.50",
+            "dietary": [
+              "GF"
+            ]
+          },
+          {
+            "name": "Chickpea and pumpkin tonak",
+            "description": "Toasted coconut gravy, coriander",
+            "price": "£14",
+            "dietary": [
+              "VG",
+              "GF"
+            ]
+          }
+        ]
+      },
+      {
+        "section": "Sweet",
+        "items": [
+          {
+            "name": "Bebinca",
+            "description": "Layered coconut and egg cake, vanilla ice cream",
+            "price": "£7.50",
+            "dietary": [
+              "V"
+            ]
+          },
+          {
+            "name": "Serradura",
+            "description": "Sawdust pudding: cream and crushed biscuit",
+            "price": "£6.50",
+            "dietary": [
+              "V"
+            ]
+          }
+        ]
+      }
+    ],
+    "faq": [
+      {
+        "q": "Do you take bookings?",
+        "a": "Yes, by phone. Walk-ins are welcome at the bar. For groups of 8 or more please call ahead."
+      },
+      {
+        "q": "Can you cook mild?",
+        "a": "Yes. Most curries can be made milder; ask your server."
+      },
+      {
+        "q": "Is there step-free access?",
+        "a": "Yes, the dining room is on the ground floor with a step-free entrance."
+      }
+    ]
+  },
+  "decisions": {
+    "goal": "reservations",
+    "cta": {
+      "label": "Book a table",
+      "action": "tel"
+    },
+    "pages": "single",
+    "tone": "warm",
+    "imagery": "svg-placeholders",
+    "languages": [
+      "en"
+    ],
+    "contact_method": [
+      "tel",
+      "email",
+      "map"
+    ],
+    "features": [
+      "menu",
+      "faq",
+      "map"
+    ],
+    "design": {
+      "direction": "broadsheet",
+      "palette": "saffron-ink"
+    },
+    "badge": true
+  }
+}

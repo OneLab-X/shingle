@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "name": "Little Wren Coffee",
+  "slug": "little-wren-coffee",
+  "category": "cafe",
+  "tagline": "Coffee, cardamom buns and a window seat on Kirkgate",
+  "description": "A small coffee bar and bakery in Leeds city centre. Espresso, filter coffee and buns baked here every morning.",
+  "domain": "little-wren.example",
+  "address": {
+    "street": "8 Kirkgate",
+    "locality": "Leeds",
+    "postal_code": "LS1 6BY",
+    "country": "GB"
+  },
+  "phone": "+441134960412",
+  "phone_display": "0113 496 0412",
+  "email": "hello@little-wren.example",
+  "hours": {
+    "mon": [
+      [
+        "07:30",
+        "16:00"
+      ]
+    ],
+    "tue": [
+      [
+        "07:30",
+        "16:00"
+      ]
+    ],
+    "wed": [
+      [
+        "07:30",
+        "16:00"
+      ]
+    ],
+    "thu": [
+      [
+        "07:30",
+        "16:00"
+      ]
+    ],
+    "fri": [
+      [
+        "07:30",
+        "16:00"
+      ]
+    ],
+    "sat": [
+      [
+        "09:00",
+        "16:00"
+      ]
+    ],
+    "sun": [
+      [
+        "10:00",
+        "15:00"
+      ]
+    ]
+  },
+  "languages": [
+    "en"
+  ],
+  "facts": {
+    "menu": [
+      {
+        "section": "Coffee",
+        "items": [
+          {
+            "name": "Espresso",
+            "price": "£2.60"
+          },
+          {
+            "name": "Flat white",
+            "price": "£3.40"
+          },
+          {
+            "name": "Filter, by the cup",
+            "description": "Ask what's on today",
+            "price": "£3.20"
+          },
+          {
+            "name": "Oat or soy milk",
+            "price": "no charge"
+          }
+        ]
+      },
+      {
+        "section": "Baked here",
+        "items": [
+          {
+            "name": "Cardamom bun",
+            "price": "£3.20"
+          },
+          {
+            "name": "Cinnamon knot",
+            "price": "£3.20"
+          },
+          {
+            "name": "Rye and seed loaf",
+            "description": "Whole loaves on Fridays and Saturdays",
+            "price": "£5"
+          }
+        ]
+      },
+      {
+        "section": "Not coffee",
+        "items": [
+          {
+            "name": "Chai",
+            "price": "£3.40"
+          },
+          {
+            "name": "Hot chocolate",
+            "price": "£3.40"
+          },
+          {
+            "name": "Loose-leaf tea",
+            "price": "£2.80"
+          }
+        ]
+      }
+    ],
+    "good_to_know": [
+      {
+        "title": "Dogs welcome",
+        "text": "Water bowl by the door."
+      },
+      {
+        "title": "Laptops",
+        "text": "Welcome on weekdays. We keep the window seat laptop-free at weekends."
+      },
+      {
+        "title": "Step-free",
+        "text": "Level entrance from Kirkgate."
+      }
+    ],
+    "find_us": "Between the market and the parish church, opposite the bus stop."
+  },
+  "decisions": {
+    "goal": "visits",
+    "cta": {
+      "label": "Get directions",
+      "action": "map"
+    },
+    "pages": "single",
+    "tone": "warm",
+    "imagery": "svg-placeholders",
+    "languages": [
+      "en"
+    ],
+    "contact_method": [
+      "tel",
+      "email",
+      "map"
+    ],
+    "features": [
+      "menu",
+      "map"
+    ],
+    "design": {
+      "direction": "handmade",
+      "palette": "espresso-cream"
+    },
+    "badge": true
+  }
+}

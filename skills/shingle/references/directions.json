@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "_note": "Machine-readable tokens for design-directions.md. sync.py turns these into src/styles/theme.css and src/styles/fonts.css.",
+  "directions": {
+    "broadsheet": {
+      "name": "Broadsheet",
+      "fonts": {
+        "display": { "family": "Fraunces Variable", "package": "@fontsource-variable/fraunces", "imports": ["@fontsource-variable/fraunces"], "fallback": "Georgia, 'Times New Roman', serif" },
+        "body": { "family": "Source Serif 4 Variable", "package": "@fontsource-variable/source-serif-4", "imports": ["@fontsource-variable/source-serif-4"], "fallback": "Georgia, serif" }
+      },
+      "tokens": { "scale": 1.333, "h1": "clamp(2.75rem, 7vw, 5.5rem)", "body-size": "1.125rem", "line-height": "1.65", "space-unit": "8px", "section-gap": "clamp(4rem, 10vw, 8rem)", "radius": "0px", "measure": "68ch", "heading-weight": "700", "heading-tracking": "-0.01em", "heading-case": "none", "ui-tracking": "0.06em", "border-width": "1px", "transition": "150ms" }
+    },
+    "swiss-grid": {
+      "name": "Swiss Grid",
+      "fonts": {
+        "display": { "family": "Archivo Variable", "package": "@fontsource-variable/archivo", "imports": ["@fontsource-variable/archivo/wdth.css"], "fallback": "'Helvetica Neue', Arial, sans-serif" },
+        "body": { "family": "IBM Plex Sans Variable", "package": "@fontsource-variable/ibm-plex-sans", "imports": ["@fontsource-variable/ibm-plex-sans"], "fallback": "'Helvetica Neue', Arial, sans-serif" }
+      },
+      "tokens": { "scale": 1.25, "h1": "clamp(2.5rem, 6vw, 4.75rem)", "body-size": "1.0625rem", "line-height": "1.6", "space-unit": "4px", "section-gap": "clamp(4rem, 8vw, 7rem)", "radius": "2px", "measure": "70ch", "heading-weight": "800", "heading-tracking": "-0.02em", "heading-case": "none", "ui-tracking": "0.02em", "border-width": "1px", "transition": "120ms" }
+    },
+    "handmade": {
+      "name": "Handmade",
+      "fonts": {
+        "display": { "family": "Young Serif", "package": "@fontsource/young-serif", "imports": ["@fontsource/young-serif"], "fallback": "Georgia, serif" },
+        "body": { "family": "Nunito Sans Variable", "package": "@fontsource-variable/nunito-sans", "imports": ["@fontsource-variable/nunito-sans"], "fallback": "'Trebuchet MS', sans-serif" }
+      },
+      "tokens": { "scale": 1.25, "h1": "clamp(2.5rem, 6vw, 4.5rem)", "body-size": "1.0625rem", "line-height": "1.7", "space-unit": "8px", "section-gap": "clamp(4rem, 9vw, 7rem)", "radius": "16px", "measure": "64ch", "heading-weight": "400", "heading-tracking": "0", "heading-case": "none", "ui-tracking": "0.01em", "border-width": "2px", "transition": "200ms" }
+    },
+    "quiet-luxury": {
+      "name": "Quiet Luxury",
+      "fonts": {
+        "display": { "family": "Cormorant Garamond Variable", "package": "@fontsource-variable/cormorant-garamond", "imports": ["@fontsource-variable/cormorant-garamond", "@fontsource-variable/cormorant-garamond/wght-italic.css"], "fallback": "Garamond, Georgia, serif" },
+        "body": { "family": "Jost Variable", "package": "@fontsource-variable/jost", "imports": ["@fontsource-variable/jost"], "fallback": "'Century Gothic', Futura, sans-serif" }
+      },
+      "tokens": { "scale": 1.414, "h1": "clamp(2.75rem, 7vw, 6rem)", "body-size": "1rem", "line-height": "1.75", "space-unit": "8px", "section-gap": "clamp(5rem, 12vw, 10rem)", "radius": "0px", "measure": "60ch", "heading-weight": "500", "heading-tracking": "0", "heading-case": "none", "ui-tracking": "0.14em", "border-width": "1px", "transition": "400ms" }
+    },
+    "clinical-calm": {
+      "name": "Clinical Calm",
+      "fonts": {
+        "display": { "family": "Figtree Variable", "package": "@fontsource-variable/figtree", "imports": ["@fontsource-variable/figtree"], "fallback": "system-ui, sans-serif" },
+        "body": { "family": "Atkinson Hyperlegible", "package": "@fontsource/atkinson-hyperlegible", "imports": ["@fontsource/atkinson-hyperlegible/400.css", "@fontsource/atkinson-hyperlegible/700.css"], "fallback": "system-ui, sans-serif" }
+      },
+      "tokens": { "scale": 1.2, "h1": "clamp(2.25rem, 5vw, 3.75rem)", "body-size": "1.125rem", "line-height": "1.65", "space-unit": "8px", "section-gap": "clamp(4rem, 8vw, 6rem)", "radius": "12px", "measure": "66ch", "heading-weight": "700", "heading-tracking": "-0.01em", "heading-case": "none", "ui-tracking": "0", "border-width": "1px", "transition": "150ms" }
+    },
+    "poster": {
+      "name": "Poster",
+      "fonts": {
+        "display": { "family": "Anton", "package": "@fontsource/anton", "imports": ["@fontsource/anton"], "fallback": "Impact, 'Arial Narrow', sans-serif" },
+        "body": { "family": "Work Sans Variable", "package": "@fontsource-variable/work-sans", "imports": ["@fontsource-variable/work-sans"], "fallback": "Arial, sans-serif" }
+      },
+      "tokens": { "scale": 1.5, "h1": "clamp(3.5rem, 12vw, 9rem)", "body-size": "1.0625rem", "line-height": "1.55", "space-unit": "4px", "section-gap": "clamp(3rem, 7vw, 6rem)", "radius": "0px", "measure": "62ch", "heading-weight": "400", "heading-tracking": "0.01em", "heading-case": "uppercase", "ui-tracking": "0.08em", "border-width": "3px", "transition": "120ms" }
+    },
+    "gallery": {
+      "name": "Gallery",
+      "fonts": {
+        "display": { "family": "Instrument Serif", "package": "@fontsource/instrument-serif", "imports": ["@fontsource/instrument-serif/400.css", "@fontsource/instrument-serif/400-italic.css"], "fallback": "Georgia, serif" },
+        "body": { "family": "Instrument Sans Variable", "package": "@fontsource-variable/instrument-sans", "imports": ["@fontsource-variable/instrument-sans"], "fallback": "system-ui, sans-serif" }
+      },
+      "tokens": { "scale": 1.25, "h1": "clamp(2.5rem, 6vw, 5rem)", "body-size": "1rem", "line-height": "1.6", "space-unit": "4px", "section-gap": "clamp(3rem, 8vw, 6rem)", "radius": "0px", "measure": "62ch", "heading-weight": "400", "heading-tracking": "-0.01em", "heading-case": "none", "ui-tracking": "0.08em", "border-width": "1px", "transition": "250ms" }
+    },
+    "wayfinder": {
+      "name": "Wayfinder",
+      "fonts": {
+        "display": { "family": "Bricolage Grotesque Variable", "package": "@fontsource-variable/bricolage-grotesque", "imports": ["@fontsource-variable/bricolage-grotesque"], "fallback": "system-ui, sans-serif" },
+        "body": { "family": "Literata Variable", "package": "@fontsource-variable/literata", "imports": ["@fontsource-variable/literata"], "fallback": "Georgia, serif" }
+      },
+      "tokens": { "scale": 1.333, "h1": "clamp(2.5rem, 6.5vw, 5rem)", "body-size": "1.0625rem", "line-height": "1.65", "space-unit": "8px", "section-gap": "clamp(4rem, 9vw, 7rem)", "radius": "8px", "measure": "66ch", "heading-weight": "700", "heading-tracking": "-0.02em", "heading-case": "none", "ui-tracking": "0.04em", "border-width": "1px", "transition": "200ms" }
+    }
+  }
+}

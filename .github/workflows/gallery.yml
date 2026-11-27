@@ -1,0 +1,59 @@
+# Publishes every example as a live preview on GitHub Pages:
+#   https://<owner>.github.io/<repo>/                       gallery index
+#   https://<owner>.github.io/<repo>/examples/<name>/       each example
+# One-time setup: repo Settings -> Pages -> Source: "GitHub Actions".
+name: Gallery
+
+on:
+  push:
+    branches: [main]
+    paths: ["examples/**", "docs/media/**", ".github/scripts/build_gallery.py", ".github/workflows/gallery.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - id: pages
+        uses: actions/configure-pages@v6
+      - name: Build each example under its sub-path (noindex previews)
+        env:
+          SHINGLE_PREVIEW: "1"
+          SHINGLE_SITE: ${{ steps.pages.outputs.origin }}
+        run: |
+          for dir in examples/*/; do
+            name=$(basename "$dir")
+            [ -f "$dir/business.json" ] || continue
+            (cd "$dir" && npm ci --no-audit --no-fund && SHINGLE_BASE="${{ steps.pages.outputs.base_path }}/examples/$name/" npm run build)
+          done
+      - name: Assemble gallery
+        run: python3 .github/scripts/build_gallery.py --out _site --base "${{ steps.pages.outputs.base_path }}"
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

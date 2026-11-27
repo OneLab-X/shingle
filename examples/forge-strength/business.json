@@ -1,0 +1,186 @@
+{
+  "schema_version": 1,
+  "name": "Forge Strength Club",
+  "slug": "forge-strength-club",
+  "category": "gym-fitness",
+  "tagline": "Strength, boxing and conditioning in East Austin",
+  "description": "A coached strength gym in East Austin. Small classes, real barbells, a boxing corner, and coaches who learn your name.",
+  "domain": "forge-strength.example",
+  "address": {
+    "street": "2210 E 6th Street",
+    "locality": "Austin",
+    "region": "TX",
+    "postal_code": "78702",
+    "country": "US"
+  },
+  "timezone": "America/Chicago",
+  "phone": "+15125550177",
+  "phone_display": "(512) 555-0177",
+  "email": "coach@forge-strength.example",
+  "hours": {
+    "mon": [
+      [
+        "05:30",
+        "21:00"
+      ]
+    ],
+    "tue": [
+      [
+        "05:30",
+        "21:00"
+      ]
+    ],
+    "wed": [
+      [
+        "05:30",
+        "21:00"
+      ]
+    ],
+    "thu": [
+      [
+        "05:30",
+        "21:00"
+      ]
+    ],
+    "fri": [
+      [
+        "05:30",
+        "21:00"
+      ]
+    ],
+    "sat": [
+      [
+        "07:00",
+        "14:00"
+      ]
+    ],
+    "sun": [
+      [
+        "08:00",
+        "12:00"
+      ]
+    ]
+  },
+  "languages": [
+    "en"
+  ],
+  "facts": {
+    "offer_words": [
+      "Strength",
+      "Boxing",
+      "Conditioning",
+      "Open 5:30am"
+    ],
+    "first_step": "Your first session is a free one-to-one intro with a coach. Call or text to book it.",
+    "classes": [
+      {
+        "name": "Barbell Club",
+        "text": "Squat, press, deadlift. Coached sets, programmed in 8-week blocks."
+      },
+      {
+        "name": "Boxing",
+        "text": "Pad work, bag rounds and footwork. No sparring unless you ask for it."
+      },
+      {
+        "name": "Engine",
+        "text": "45 minutes of rowers, bikes, sleds and carries."
+      },
+      {
+        "name": "Foundations",
+        "text": "For first-timers: learn the lifts with a coach before joining Barbell Club."
+      }
+    ],
+    "timetable": [
+      {
+        "time": "5:30 am",
+        "mon": "Barbell Club",
+        "tue": "Engine",
+        "wed": "Barbell Club",
+        "thu": "Engine",
+        "fri": "Barbell Club",
+        "sat": "",
+        "sun": ""
+      },
+      {
+        "time": "7:00 am",
+        "mon": "",
+        "tue": "",
+        "wed": "",
+        "thu": "",
+        "fri": "",
+        "sat": "Foundations",
+        "sun": ""
+      },
+      {
+        "time": "8:30 am",
+        "mon": "",
+        "tue": "",
+        "wed": "",
+        "thu": "",
+        "fri": "",
+        "sat": "Barbell Club",
+        "sun": "Engine"
+      },
+      {
+        "time": "12:00 pm",
+        "mon": "Engine",
+        "tue": "Boxing",
+        "wed": "Engine",
+        "thu": "Boxing",
+        "fri": "Engine",
+        "sat": "",
+        "sun": ""
+      },
+      {
+        "time": "6:00 pm",
+        "mon": "Boxing",
+        "tue": "Barbell Club",
+        "wed": "Boxing",
+        "thu": "Barbell Club",
+        "fri": "Foundations",
+        "sat": "",
+        "sun": ""
+      },
+      {
+        "time": "7:15 pm",
+        "mon": "Foundations",
+        "tue": "Engine",
+        "wed": "Foundations",
+        "thu": "Engine",
+        "fri": "",
+        "sat": "",
+        "sun": ""
+      }
+    ],
+    "parking": "Free parking behind the building, entrance on Navasota Street."
+  },
+  "decisions": {
+    "goal": "trial",
+    "cta": {
+      "label": "Book a free intro",
+      "action": "tel"
+    },
+    "pages": "single",
+    "tone": "bold",
+    "imagery": "typographic",
+    "languages": [
+      "en"
+    ],
+    "contact_method": [
+      "tel",
+      "email",
+      "map"
+    ],
+    "features": [
+      "classes",
+      "timetable",
+      "pricing",
+      "map"
+    ],
+    "design": {
+      "direction": "poster",
+      "palette": "volt-graphite"
+    },
+    "badge": true
+  }
+}

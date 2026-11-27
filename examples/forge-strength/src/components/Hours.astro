@@ -1,0 +1,53 @@
+---
+/** Opening hours as a table, today's row highlighted in the browser. Unknown days show a TODO. */
+import site from "../data/site.json";
+import Todo from "./Todo.astro";
+
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+const { hours } = site;
+---
+
+{
+  hours.known ? (
+    <div class:list={["hours", className]}>
+      <table>
+        <caption class="sr-only">Opening hours</caption>
+        <tbody>
+          {hours.days.map((d) => (
+            <tr data-day={d.key}>
+              <th scope="row">{d.label}</th>
+              <td>{d.closed ? "Closed" : d.unknown ? <Todo label={`hours for ${d.label}`} /> : d.ranges.map((r) => r.text).join(", ")}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {hours.note && <p class="note">{hours.note}</p>}
+    </div>
+  ) : (
+    <Todo as="p" label="opening hours" />
+  )
+}
+
+<script define:vars={{ tz: hours.timezone }}>
+  const keys = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+  let day = new Date().getDay();
+  try {
+    if (tz) {
+      const name = new Intl.DateTimeFormat("en-US", { weekday: "short", timeZone: tz }).format(new Date()).toLowerCase();
+      day = keys.indexOf(name.slice(0, 3));
+    }
+  } catch {}
+  document.querySelectorAll(`.hours tr[data-day="${keys[day]}"]`).forEach((tr) => tr.setAttribute("aria-current", "date"));
+</script>
+
+<style>
+  table { border-collapse: collapse; width: 100%; max-width: 28rem; }
+  th, td { text-align: left; padding: 0.5rem 0; border-bottom: 1px solid var(--sh-border); vertical-align: top; }
+  th { font-weight: 600; padding-right: 2rem; }
+  td { font-variant-numeric: tabular-nums; }
+  tr[aria-current="date"] th, tr[aria-current="date"] td { color: var(--sh-primary); font-weight: 700; }
+  .note { margin-top: 0.75rem; font-size: 0.9375rem; color: var(--sh-muted); }
+</style>

@@ -1,0 +1,28 @@
+name: New category
+description: Propose (or volunteer to add) a business category
+labels: ["category"]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Category id
+      description: kebab-case, e.g. veterinary-clinic
+    validations:
+      required: true
+  - type: textarea
+    id: who
+    attributes:
+      label: Which businesses and visitors is it for?
+    validations:
+      required: true
+  - type: textarea
+    id: specifics
+    attributes:
+      label: What is different from generic-local-business?
+      description: Required sections, questions to ask, schema.org type, things to never invent, compliance rules.
+  - type: checkboxes
+    id: help
+    attributes:
+      label: Contribution
+      options:
+        - label: I'd like to open the PR myself (see docs/adding-a-category.md)

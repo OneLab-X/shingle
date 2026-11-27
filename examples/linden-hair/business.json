@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "name": "Linden Hair & Skin",
+  "slug": "linden-hair-and-skin",
+  "category": "salon-spa",
+  "tagline": "Hair colour, cutting and skin treatments in Fitzroy",
+  "description": "A small salon on Gertrude Street for considered colour, precise cuts and unhurried facials.",
+  "domain": "linden-hair.example",
+  "address": {
+    "street": "141 Gertrude Street",
+    "locality": "Fitzroy",
+    "region": "VIC",
+    "postal_code": "3065",
+    "country": "AU"
+  },
+  "timezone": "Australia/Melbourne",
+  "phone": "+61355501234",
+  "phone_display": "03 5550 1234",
+  "email": "studio@linden-hair.example",
+  "hours": {
+    "mon": [],
+    "tue": [
+      [
+        "09:00",
+        "19:00"
+      ]
+    ],
+    "wed": [
+      [
+        "09:00",
+        "19:00"
+      ]
+    ],
+    "thu": [
+      [
+        "09:00",
+        "19:00"
+      ]
+    ],
+    "fri": [
+      [
+        "09:00",
+        "19:00"
+      ]
+    ],
+    "sat": [
+      [
+        "08:00",
+        "16:00"
+      ]
+    ],
+    "sun": []
+  },
+  "languages": [
+    "en"
+  ],
+  "facts": {
+    "treatments": [
+      {
+        "group": "Cutting",
+        "items": [
+          {
+            "name": "Restyle",
+            "duration": "75 min",
+            "price": "from $120"
+          },
+          {
+            "name": "Cut and finish",
+            "duration": "60 min",
+            "price": "from $95"
+          },
+          {
+            "name": "Fringe tidy",
+            "duration": "15 min",
+            "price": "$20"
+          }
+        ]
+      },
+      {
+        "group": "Colour",
+        "items": [
+          {
+            "name": "Balayage",
+            "duration": "3 hrs",
+            "price": "from $320"
+          },
+          {
+            "name": "Full colour",
+            "duration": "2 hrs",
+            "price": "from $180"
+          },
+          {
+            "name": "Gloss and tone",
+            "duration": "45 min",
+            "price": "from $85"
+          }
+        ]
+      },
+      {
+        "group": "Skin",
+        "items": [
+          {
+            "name": "Linden facial",
+            "duration": "60 min",
+            "price": "$140"
+          },
+          {
+            "name": "Express facial",
+            "duration": "30 min",
+            "price": "$80"
+          },
+          {
+            "name": "Brow shape and tint",
+            "duration": "30 min",
+            "price": "$55"
+          }
+        ]
+      }
+    ],
+    "team": [
+      {
+        "name": "Ava Linden",
+        "role": "Owner, colourist"
+      },
+      {
+        "name": "Jun Park",
+        "role": "Senior stylist"
+      },
+      {
+        "name": "Priya Raman",
+        "role": "Skin therapist"
+      }
+    ],
+    "booking_note": "New colour clients need a skin test at least 48 hours before their appointment.",
+    "cancellation": "Please give 24 hours' notice to change or cancel."
+  },
+  "decisions": {
+    "goal": "bookings",
+    "cta": {
+      "label": "Book online",
+      "action": "booking-url"
+    },
+    "booking_url": "https://book.linden-hair.example",
+    "pages": "single",
+    "tone": "refined",
+    "imagery": "svg-placeholders",
+    "languages": [
+      "en"
+    ],
+    "contact_method": [
+      "booking",
+      "tel",
+      "email",
+      "map"
+    ],
+    "features": [
+      "pricing",
+      "team",
+      "map"
+    ],
+    "schema_type": "HairSalon",
+    "design": {
+      "direction": "quiet-luxury",
+      "palette": "rose-clay"
+    },
+    "badge": true
+  }
+}

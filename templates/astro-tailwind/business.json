@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "name": "Sample Business",
+  "category": "generic-local-business",
+  "tagline": "Template sample. Shingle replaces this file with your business details.",
+  "domain": "example.com",
+  "address": { "street": "100 Example Street", "locality": "Springfield", "region": "IL", "postal_code": "62701", "country": "US" },
+  "timezone": "America/Chicago",
+  "phone": "+12025550100",
+  "email": "hello@example.com",
+  "hours": {
+    "mon": [["09:00", "17:00"]], "tue": [["09:00", "17:00"]], "wed": [["09:00", "17:00"]],
+    "thu": [["09:00", "17:00"]], "fri": [["09:00", "17:00"]], "sat": [["10:00", "14:00"]], "sun": []
+  },
+  "decisions": { "design": { "direction": "swiss-grid", "palette": "main-street" }, "badge": true }
+}

@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "files": {
+    "README.md": "sha256:5ecc2519f722106e153f81d3f4dd2f7ad24f545d99b393d46d9ee91ce5d1dc72",
+    "astro.config.mjs": "sha256:d737127a7babc5f8ee4922d9a26c00858391fc73945151b00d12061d6419aab6",
+    "src/components/ContactLinks.astro": "sha256:d86d4bb1c372ae46a4e05517a6b4c7d7a60b3bfc7ad3e3d9585a2e470c44d137",
+    "src/components/Footer.astro": "sha256:1b0ce525507240734d54b2127c3e7245c8687e373cb6c45ef08a3e8e8e687658",
+    "src/components/Header.astro": "sha256:95203cb720fc299d777f9054421afbeccc57a1612a73940d4717ed12848d3608",
+    "src/components/Hours.astro": "sha256:cc29c6113e2712e3674dcaaff4e7ec9bd8c16cec64b6c900ac58cb5b589b8f9f",
+    "src/components/Icon.astro": "sha256:afc30aec29354b6f96f0b71e9786723d5e018468b1db5027820987a2c472d47d",
+    "src/components/MapEmbed.astro": "sha256:4a7ae87399174d19dd27964fabd0f066a4cd516c0063f86a9e0331db0ca629bb",
+    "src/components/OpenStatus.astro": "sha256:fc07203011f6d6f90de2e76e3c80ae085bf00ac76beed35457361ab0c65e02e4",
+    "src/components/PlaceholderImage.astro": "sha256:5af101e831dac6bff97d4d6834527180edef6ee6aa922f852fabb0f1051b1112",
+    "src/components/ThemeToggle.astro": "sha256:a3ad5994edc4efb0932f0326d779163b289d108c7cba49d4668402d7fb47a398",
+    "src/components/Todo.astro": "sha256:3843ac271d9b09e53c3dd6aaaff8f307d4cc25ba38bc67eee71713ddecfa3afe",
+    "src/layouts/Base.astro": "sha256:c64e6ba14a8216e39d3f3d21f37042381591002f124d50a793d255a4b87ff99f",
+    "src/lib/url.ts": "sha256:daf13b734dc7beb63a124681e9cf6413ee0a6186508090a3db1977bc906c3cf7",
+    "src/pages/404.astro": "sha256:11443098d68fbf8384ff2b891312230e7cf012cb7faf2801b1d9899f2b25bf49",
+    "src/pages/favicon.svg.ts": "sha256:b6c7d8c425540bc01e3a2130d4474df14b08686219bb16b71fe7fa9b5e74aac8",
+    "src/pages/index.astro": "sha256:8bbf9be6c4b418c8ffa787f64f9779a21b52eaf8a2926e4249e7d52af8e3c355",
+    "src/pages/og.png.ts": "sha256:9a99a95ba3818f758c50d641b1c8d4bf6d7812d9d43e39d642cc91a1514e62bf",
+    "src/styles/global.css": "sha256:eebb8b1eea341f6e5590c6765cc9e25c58b69b671116ab15d64d5b632864b5b9"
+  },
+  "font_packages": [
+    "@fontsource-variable/instrument-sans",
+    "@fontsource/instrument-serif"
+  ],
+  "generated_at": "2026-11-27T03:24:21Z",
+  "shingle_version": "0.1.0"
+}

@@ -1,0 +1,145 @@
+---
+import { url } from "../lib/url";
+/** Little Wren Coffee · single page. Direction: handmade. Palette: espresso-cream. */
+import Base from "../layouts/Base.astro";
+import Footer from "../components/Footer.astro";
+import Scribble from "../components/Scribble.astro";
+import HoursStamp from "../components/HoursStamp.astro";
+import OpenStatus from "../components/OpenStatus.astro";
+import Hours from "../components/Hours.astro";
+import MapEmbed from "../components/MapEmbed.astro";
+import PlaceholderImage from "../components/PlaceholderImage.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
+import Icon from "../components/Icon.astro";
+import site from "../data/site.json";
+
+const { business, contact, maps } = site;
+type Item = { name: string; description?: string; price?: string };
+const facts = business.facts as {
+  menu: { section: string; items: Item[] }[];
+  good_to_know: { title: string; text: string }[];
+  find_us?: string;
+};
+---
+
+<Base>
+  <header class="wrap top">
+    <a href={url("/")} class="logo">{business.name}</a>
+    <nav aria-label="Main">
+      <a href="#menu">Menu</a>
+      <a href="#visit">Visit</a>
+      <ThemeToggle />
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="wrap hero">
+      <div class="copy">
+        <h1>Coffee, cardamom buns and a <Scribble>window seat</Scribble> on Kirkgate</h1>
+        <p class="lead">{business.description}</p>
+        <div class="actions">
+          {maps && <a class="btn btn-primary" href={maps.directions} target="_blank" rel="noopener noreferrer"><Icon name="pin" /> Get directions</a>}
+          <a class="btn btn-quiet" href="#menu">See the menu</a>
+        </div>
+        <OpenStatus />
+      </div>
+      <div class="art">
+        {/* TODO(shingle): photo of the counter with the morning's buns, portrait 4:5 */}
+        <PlaceholderImage subject="The counter with the morning's buns" width={800} height={1000} class="photo" />
+        <div class="stamp-wrap"><HoursStamp /></div>
+      </div>
+    </section>
+
+    <section id="menu" class="wrap section" aria-labelledby="menu-title">
+      <h2 id="menu-title">What's on the <Scribble variant={2}>counter</Scribble></h2>
+      <div class="cards">
+        {
+          facts.menu.map((s, i) => (
+            <div class:list={["card", { tilt: i === 1 }]}>
+              <h3>{s.section}</h3>
+              <ul>
+                {s.items.map((item) => (
+                  <li>
+                    <span class="name">
+                      {item.name}
+                      {item.description && <small>{item.description}</small>}
+                    </span>
+                    <span class="price">{item.price}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="know" aria-labelledby="know-title">
+      <div class="wrap section">
+        <h2 id="know-title">Good to know</h2>
+        <ul class="know-list">
+          {
+            facts.good_to_know.map((k) => (
+              <li>
+                <h3>{k.title}</h3>
+                <p>{k.text}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <section id="visit" class="wrap section visit" aria-labelledby="visit-title">
+      <div>
+        <h2 id="visit-title">Come <Scribble>find us</Scribble></h2>
+        <address class="addr">{business.address_lines.map((l) => <span>{l}</span>)}</address>
+        {facts.find_us && <p>{facts.find_us}</p>}
+        <Hours class="mt-8" />
+        <p class="mt-8">
+          {contact.tel && <a href={contact.tel.href}>{contact.tel.label}</a>}
+          {contact.email && <> · <a href={contact.email.href}>{contact.email.label}</a></>}
+        </p>
+      </div>
+      <MapEmbed />
+    </section>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .top { display: flex; justify-content: space-between; align-items: center; padding-block: 1.25rem; }
+  .logo { font-family: var(--sh-font-display); font-size: 1.5rem; color: var(--sh-text); text-decoration: none; }
+  nav { display: flex; align-items: center; gap: 1.25rem; }
+  nav a { color: var(--sh-text); font-weight: 700; text-decoration: none; }
+  .hero { display: grid; gap: 3rem; padding-block: clamp(2rem, 6vw, 5rem); align-items: center; }
+  @media (min-width: 56rem) { .hero { grid-template-columns: 1.2fr 0.8fr; } }
+  .copy { display: grid; gap: 1.5rem; }
+  .copy h1 { font-size: clamp(2.5rem, 6vw, 4.75rem); line-height: 1.08; }
+  .lead { font-size: 1.25rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+  .btn { border-radius: 999px; }
+  .art { position: relative; padding-bottom: 3rem; }
+  .art :global(.photo) { border-radius: var(--sh-radius); transform: rotate(2deg); }
+  .stamp-wrap { position: absolute; left: -3rem; top: -2rem; }
+  @media (max-width: 56rem) { .stamp-wrap { left: auto; right: 0.5rem; top: -2.5rem; } }
+  .cards { display: grid; gap: 1.5rem; margin-top: 2.5rem; }
+  @media (min-width: 48rem) { .cards { grid-template-columns: repeat(3, 1fr); } }
+  .card { background: var(--sh-surface); border-radius: var(--sh-radius); padding: 1.75rem; border: var(--sh-border-width) solid var(--sh-border); }
+  .tilt { transform: rotate(-1.5deg); background: color-mix(in srgb, var(--sh-accent) 22%, var(--sh-background)); }
+  .card h3 { font-size: 1.5rem; margin-bottom: 1rem; }
+  .card ul { list-style: none; margin: 0; padding: 0; }
+  .card li { display: flex; justify-content: space-between; gap: 1rem; padding: 0.55rem 0; border-bottom: 2px dashed var(--sh-border); }
+  .card li:last-child { border-bottom: 0; }
+  .name { font-weight: 700; }
+  .name small { display: block; font-weight: 400; color: var(--sh-muted); font-size: 0.9375rem; }
+  .price { white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .know { background: var(--sh-primary); color: var(--sh-on-primary); }
+  .know h2, .know h3 { color: var(--sh-on-primary); }
+  .know-list { list-style: none; padding: 0; margin-top: 2rem; display: grid; gap: 2rem; }
+  @media (min-width: 48rem) { .know-list { grid-template-columns: repeat(3, 1fr); } }
+  .know-list h3 { font-size: 1.5rem; margin-bottom: 0.35rem; }
+  .visit { display: grid; gap: 3rem; }
+  @media (min-width: 56rem) { .visit { grid-template-columns: 1fr 1fr; } }
+  .addr { display: flex; flex-direction: column; font-size: 1.25rem; margin: 1rem 0; font-weight: 700; }
+</style>

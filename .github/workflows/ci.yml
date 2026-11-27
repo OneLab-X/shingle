@@ -1,0 +1,120 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint and validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - name: Ruff
+        run: |
+          pip install ruff==0.17.6
+          ruff check .
+          ruff format --check .
+      - name: Palettes pass WCAG AA
+        run: python3 skills/shingle/scripts/check_contrast.py --all
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Plugin and marketplace manifests
+        run: |
+          npm install -g @anthropic-ai/claude-code
+          claude plugin validate . --strict
+          claude plugin validate .claude-plugin/plugin.json --strict
+          claude plugin validate skills --strict
+          claude plugin validate commands --strict
+      - name: SKILL.md stays under 150 lines
+        run: test "$(wc -l < skills/shingle/SKILL.md)" -lt 150
+
+  test:
+    name: Script tests (Python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.13", "3.14"]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m unittest discover -s skills/shingle/scripts/tests -t skills/shingle/scripts/tests -v
+
+  discover:
+    name: Find examples
+    runs-on: ubuntu-latest
+    outputs:
+      examples: ${{ steps.list.outputs.examples }}
+    steps:
+      - uses: actions/checkout@v7
+      - id: list
+        run: |
+          names=$(for f in examples/*/business.json; do basename "$(dirname "$f")"; done | jq -R -s -c 'split("\n")[:-1]')
+          echo "examples=$names" >> "$GITHUB_OUTPUT"
+
+  example:
+    name: Example ${{ matrix.site }}
+    needs: discover
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        site: ${{ fromJSON(needs.discover.outputs.examples) }}
+    defaults:
+      run:
+        working-directory: examples/${{ matrix.site }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: examples/${{ matrix.site }}/package-lock.json
+      - name: business.json is valid
+        run: python3 ../../skills/shingle/scripts/validate_input.py business.json
+      - name: Generated data files match business.json
+        run: |
+          python3 ../../skills/shingle/scripts/sync.py .
+          git diff --exit-code -- . || (echo "::error::Run sync.py on examples/${{ matrix.site }} and commit the result" && exit 1)
+      - run: npm ci
+      - run: npm run build
+      - name: Audit (warnings fail)
+        run: python3 ../../skills/shingle/scripts/audit_site.py dist --strict
+
+  template:
+    name: Template builds
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Build the bare template with its sample business.json
+        run: |
+          cp -R templates/astro-tailwind "$RUNNER_TEMP/site"
+          cd "$RUNNER_TEMP/site"
+          python3 "$GITHUB_WORKSPACE/skills/shingle/scripts/sync.py" .
+          npm install --no-audit --no-fund
+          npm run build
+          python3 "$GITHUB_WORKSPACE/skills/shingle/scripts/audit_site.py" dist --strict

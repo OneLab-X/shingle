@@ -1,0 +1,823 @@
+{
+  "version": 1,
+  "roles": {
+    "background": "Page background",
+    "surface": "Cards, panels, alternating sections",
+    "text": "Body and heading text",
+    "muted": "Secondary text (captions, meta); also form-field borders",
+    "primary": "Links, primary buttons, key accents",
+    "on_primary": "Text/icons on primary fills",
+    "accent": "Highlights, badges, markers, decorative fills",
+    "on_accent": "Text/icons on accent fills",
+    "border": "Decorative dividers only (not for form fields)"
+  },
+  "contrast_rules": [
+    {
+      "fg": "text",
+      "bg": "background",
+      "min": 4.5
+    },
+    {
+      "fg": "text",
+      "bg": "surface",
+      "min": 4.5
+    },
+    {
+      "fg": "muted",
+      "bg": "background",
+      "min": 4.5
+    },
+    {
+      "fg": "muted",
+      "bg": "surface",
+      "min": 4.5
+    },
+    {
+      "fg": "primary",
+      "bg": "background",
+      "min": 4.5
+    },
+    {
+      "fg": "primary",
+      "bg": "surface",
+      "min": 3.0
+    },
+    {
+      "fg": "on_primary",
+      "bg": "primary",
+      "min": 4.5
+    },
+    {
+      "fg": "on_accent",
+      "bg": "accent",
+      "min": 4.5
+    }
+  ],
+  "palettes": [
+    {
+      "id": "saffron-ink",
+      "name": "Saffron & Ink",
+      "categories": [
+        "restaurant",
+        "cafe"
+      ],
+      "moods": [
+        "warm",
+        "bold"
+      ],
+      "rationale": "Paper-warm ground with burnt-saffron action color; reads like a printed menu and makes food photos glow.",
+      "light": {
+        "background": "#FBF6EC",
+        "surface": "#F3EAD8",
+        "text": "#1E1A16",
+        "muted": "#5E5348",
+        "primary": "#B4471B",
+        "on_primary": "#FFFFFF",
+        "accent": "#E8A33D",
+        "on_accent": "#1E1A16",
+        "border": "#DCCDB4"
+      },
+      "dark": {
+        "background": "#17130F",
+        "surface": "#221C16",
+        "text": "#F5EDE0",
+        "muted": "#BDAE9B",
+        "primary": "#F08A4B",
+        "on_primary": "#1E1A16",
+        "accent": "#E8B45A",
+        "on_accent": "#17130F",
+        "border": "#3A3027"
+      }
+    },
+    {
+      "id": "espresso-cream",
+      "name": "Espresso & Cream",
+      "categories": [
+        "cafe",
+        "restaurant",
+        "ecommerce-boutique"
+      ],
+      "moods": [
+        "warm",
+        "earthy"
+      ],
+      "rationale": "Roasted browns on cream; cosy without being beige-on-beige, thanks to a deep espresso primary.",
+      "light": {
+        "background": "#F7F1E8",
+        "surface": "#EDE3D4",
+        "text": "#2B1E16",
+        "muted": "#6A5546",
+        "primary": "#6F3B22",
+        "on_primary": "#FFF8F0",
+        "accent": "#C8894E",
+        "on_accent": "#2B1E16",
+        "border": "#D9C9B3"
+      },
+      "dark": {
+        "background": "#1A1310",
+        "surface": "#261C17",
+        "text": "#F2E8DC",
+        "muted": "#BFAA98",
+        "primary": "#D9A070",
+        "on_primary": "#1A1310",
+        "accent": "#E3B27E",
+        "on_accent": "#1A1310",
+        "border": "#3D2E25"
+      }
+    },
+    {
+      "id": "olive-grove",
+      "name": "Olive Grove",
+      "categories": [
+        "restaurant",
+        "cafe",
+        "nonprofit"
+      ],
+      "moods": [
+        "earthy",
+        "calm"
+      ],
+      "rationale": "Muted olive and terracotta; Mediterranean, honest, good for seasonal or farm-to-table.",
+      "light": {
+        "background": "#F6F5EE",
+        "surface": "#E9E8DA",
+        "text": "#1F231A",
+        "muted": "#565C4A",
+        "primary": "#4F5D2F",
+        "on_primary": "#FFFFFF",
+        "accent": "#C17C3A",
+        "on_accent": "#1F231A",
+        "border": "#D4D3C0"
+      },
+      "dark": {
+        "background": "#13150F",
+        "surface": "#1D2017",
+        "text": "#EDEFE3",
+        "muted": "#ABB09C",
+        "primary": "#A9BC72",
+        "on_primary": "#13150F",
+        "accent": "#D99A5B",
+        "on_accent": "#13150F",
+        "border": "#33382A"
+      }
+    },
+    {
+      "id": "harbor-blue",
+      "name": "Harbor Blue",
+      "categories": [
+        "dental-clinic",
+        "law-firm",
+        "generic-local-business",
+        "real-estate"
+      ],
+      "moods": [
+        "calm",
+        "trustworthy",
+        "clean"
+      ],
+      "rationale": "Deep sea blue with a teal accent; trustworthy and clean without hospital-white sterility.",
+      "light": {
+        "background": "#F7FAFC",
+        "surface": "#EAF1F6",
+        "text": "#0F1F2E",
+        "muted": "#4A5D6E",
+        "primary": "#0B5F8A",
+        "on_primary": "#FFFFFF",
+        "accent": "#2BA6A0",
+        "on_accent": "#0F1F2E",
+        "border": "#D2DEE8"
+      },
+      "dark": {
+        "background": "#0C141C",
+        "surface": "#142130",
+        "text": "#E6EEF5",
+        "muted": "#9DB0C2",
+        "primary": "#5BB8E8",
+        "on_primary": "#0C141C",
+        "accent": "#4FD1C5",
+        "on_accent": "#0C141C",
+        "border": "#24364A"
+      }
+    },
+    {
+      "id": "mint-clinic",
+      "name": "Mint Clinic",
+      "categories": [
+        "dental-clinic",
+        "salon-spa"
+      ],
+      "moods": [
+        "fresh",
+        "calm",
+        "clean"
+      ],
+      "rationale": "Fresh green-teal with a warm marigold accent so the practice feels friendly, not clinical.",
+      "light": {
+        "background": "#F6FBF9",
+        "surface": "#E6F4EF",
+        "text": "#10241E",
+        "muted": "#4B6159",
+        "primary": "#0E7A5F",
+        "on_primary": "#FFFFFF",
+        "accent": "#F2A541",
+        "on_accent": "#10241E",
+        "border": "#CFE5DD"
+      },
+      "dark": {
+        "background": "#0B1714",
+        "surface": "#13231F",
+        "text": "#E4F2EE",
+        "muted": "#9CB8AF",
+        "primary": "#4CD3AC",
+        "on_primary": "#0B1714",
+        "accent": "#F5B65E",
+        "on_accent": "#0B1714",
+        "border": "#23392F"
+      }
+    },
+    {
+      "id": "counsel-navy",
+      "name": "Counsel Navy",
+      "categories": [
+        "law-firm",
+        "real-estate"
+      ],
+      "moods": [
+        "trustworthy",
+        "elegant"
+      ],
+      "rationale": "Ink navy and aged brass on paper; established and serious, never flashy.",
+      "light": {
+        "background": "#FAF9F6",
+        "surface": "#EFEDE6",
+        "text": "#14172B",
+        "muted": "#50546A",
+        "primary": "#1C2A5A",
+        "on_primary": "#FFFFFF",
+        "accent": "#A8873A",
+        "on_accent": "#14172B",
+        "border": "#DAD6CB"
+      },
+      "dark": {
+        "background": "#0E1020",
+        "surface": "#181B30",
+        "text": "#ECEAE3",
+        "muted": "#A8AABD",
+        "primary": "#9FB0EE",
+        "on_primary": "#0E1020",
+        "accent": "#D4B25E",
+        "on_accent": "#0E1020",
+        "border": "#2A2E48"
+      }
+    },
+    {
+      "id": "oxblood-ledger",
+      "name": "Oxblood Ledger",
+      "categories": [
+        "law-firm",
+        "ecommerce-boutique"
+      ],
+      "moods": [
+        "elegant",
+        "bold"
+      ],
+      "rationale": "Oxblood red with bronze; a confident alternative to the default law-firm navy.",
+      "light": {
+        "background": "#F8F5F1",
+        "surface": "#EEE7DF",
+        "text": "#1C1414",
+        "muted": "#5E4F4C",
+        "primary": "#7A1F2B",
+        "on_primary": "#FFFFFF",
+        "accent": "#7D6233",
+        "on_accent": "#F8F5F1",
+        "border": "#DDD1C6"
+      },
+      "dark": {
+        "background": "#160F10",
+        "surface": "#221819",
+        "text": "#F2E9E4",
+        "muted": "#BBA8A3",
+        "primary": "#E0808C",
+        "on_primary": "#160F10",
+        "accent": "#CDAE72",
+        "on_accent": "#160F10",
+        "border": "#3A2A2B"
+      }
+    },
+    {
+      "id": "rose-clay",
+      "name": "Rose Clay",
+      "categories": [
+        "salon-spa",
+        "ecommerce-boutique",
+        "photographer"
+      ],
+      "moods": [
+        "elegant",
+        "warm",
+        "muted"
+      ],
+      "rationale": "Dusty rose and clay; soft and grown-up rather than candy pink.",
+      "light": {
+        "background": "#FBF7F5",
+        "surface": "#F3E9E4",
+        "text": "#2A1E1E",
+        "muted": "#6B5856",
+        "primary": "#9C4F55",
+        "on_primary": "#FFFFFF",
+        "accent": "#C9A27E",
+        "on_accent": "#2A1E1E",
+        "border": "#E4D5CF"
+      },
+      "dark": {
+        "background": "#1A1314",
+        "surface": "#251C1D",
+        "text": "#F4EAE7",
+        "muted": "#C3AFAB",
+        "primary": "#E59AA0",
+        "on_primary": "#1A1314",
+        "accent": "#D9B894",
+        "on_accent": "#1A1314",
+        "border": "#3B2D2E"
+      }
+    },
+    {
+      "id": "sage-linen",
+      "name": "Sage Linen",
+      "categories": [
+        "salon-spa",
+        "dental-clinic",
+        "nonprofit"
+      ],
+      "moods": [
+        "calm",
+        "muted"
+      ],
+      "rationale": "Sage and linen with a sandalwood accent; quiet, spa-like, very restful.",
+      "light": {
+        "background": "#F5F6F1",
+        "surface": "#E8EBE2",
+        "text": "#1D2520",
+        "muted": "#535E57",
+        "primary": "#45634F",
+        "on_primary": "#FFFFFF",
+        "accent": "#B08D6B",
+        "on_accent": "#1D2520",
+        "border": "#D3D8CC"
+      },
+      "dark": {
+        "background": "#121713",
+        "surface": "#1B221D",
+        "text": "#E8EDE6",
+        "muted": "#A5B2A8",
+        "primary": "#93BFA1",
+        "on_primary": "#121713",
+        "accent": "#CFAB87",
+        "on_accent": "#121713",
+        "border": "#2D372F"
+      }
+    },
+    {
+      "id": "volt-graphite",
+      "name": "Volt Graphite",
+      "categories": [
+        "gym-fitness"
+      ],
+      "moods": [
+        "bold",
+        "energetic"
+      ],
+      "rationale": "Graphite with electric cobalt and a volt-lime highlight; dark mode is the hero mode.",
+      "light": {
+        "background": "#F4F4F0",
+        "surface": "#E4E4DE",
+        "text": "#0D0D0D",
+        "muted": "#4A4A46",
+        "primary": "#2A33E8",
+        "on_primary": "#FFFFFF",
+        "accent": "#C6F432",
+        "on_accent": "#0D0D0D",
+        "border": "#D2D2CB"
+      },
+      "dark": {
+        "background": "#0B0B0B",
+        "surface": "#171717",
+        "text": "#F2F2EE",
+        "muted": "#A3A39E",
+        "primary": "#C6F432",
+        "on_primary": "#0B0B0B",
+        "accent": "#2A33E8",
+        "on_accent": "#F2F2EE",
+        "border": "#2C2C2C"
+      }
+    },
+    {
+      "id": "ember-steel",
+      "name": "Ember Steel",
+      "categories": [
+        "gym-fitness",
+        "contractor-home-services"
+      ],
+      "moods": [
+        "bold",
+        "warm"
+      ],
+      "rationale": "Hot ember orange on steel greys; physical, energetic, workmanlike.",
+      "light": {
+        "background": "#F5F3F0",
+        "surface": "#E7E3DD",
+        "text": "#121212",
+        "muted": "#4F4A45",
+        "primary": "#C2410C",
+        "on_primary": "#FFFFFF",
+        "accent": "#FDBA4D",
+        "on_accent": "#121212",
+        "border": "#D6D0C7"
+      },
+      "dark": {
+        "background": "#121110",
+        "surface": "#1E1C1A",
+        "text": "#F3EFEA",
+        "muted": "#ABA49C",
+        "primary": "#FB8A4C",
+        "on_primary": "#121110",
+        "accent": "#FDBA4D",
+        "on_accent": "#121110",
+        "border": "#34302C"
+      }
+    },
+    {
+      "id": "blueprint",
+      "name": "Blueprint",
+      "categories": [
+        "contractor-home-services",
+        "real-estate",
+        "generic-local-business"
+      ],
+      "moods": [
+        "trustworthy",
+        "clean"
+      ],
+      "rationale": "Blueprint blue with a hi-vis yellow accent; competent and easy to scan.",
+      "light": {
+        "background": "#F4F6F8",
+        "surface": "#E3E9EF",
+        "text": "#0F1A24",
+        "muted": "#475766",
+        "primary": "#1D4E89",
+        "on_primary": "#FFFFFF",
+        "accent": "#F2B705",
+        "on_accent": "#0F1A24",
+        "border": "#CBD5DF"
+      },
+      "dark": {
+        "background": "#0B1622",
+        "surface": "#12202F",
+        "text": "#E5EDF5",
+        "muted": "#9AAEC2",
+        "primary": "#7FB2F0",
+        "on_primary": "#0B1622",
+        "accent": "#F2C230",
+        "on_accent": "#0B1622",
+        "border": "#22344A"
+      }
+    },
+    {
+      "id": "safety-orange",
+      "name": "Safety Orange",
+      "categories": [
+        "contractor-home-services",
+        "gym-fitness"
+      ],
+      "moods": [
+        "bold"
+      ],
+      "rationale": "Workwear orange and black on warm white; impossible to miss on a phone in a hurry.",
+      "light": {
+        "background": "#FAF8F5",
+        "surface": "#EFEAE3",
+        "text": "#1A1A1A",
+        "muted": "#545049",
+        "primary": "#B83E00",
+        "on_primary": "#FFFFFF",
+        "accent": "#FFB000",
+        "on_accent": "#1A1A1A",
+        "border": "#DDD6CC"
+      },
+      "dark": null
+    },
+    {
+      "id": "estate-stone",
+      "name": "Estate Stone",
+      "categories": [
+        "real-estate",
+        "law-firm",
+        "photographer"
+      ],
+      "moods": [
+        "elegant",
+        "calm"
+      ],
+      "rationale": "Stone neutrals with deep juniper and champagne; lets property photos lead.",
+      "light": {
+        "background": "#F7F6F3",
+        "surface": "#ECEAE4",
+        "text": "#1B1C1E",
+        "muted": "#55575B",
+        "primary": "#2F4A43",
+        "on_primary": "#FFFFFF",
+        "accent": "#B89B6A",
+        "on_accent": "#1B1C1E",
+        "border": "#D8D5CD"
+      },
+      "dark": {
+        "background": "#121314",
+        "surface": "#1C1D1F",
+        "text": "#EDECE8",
+        "muted": "#A9A9A6",
+        "primary": "#8FC2B3",
+        "on_primary": "#121314",
+        "accent": "#D2B888",
+        "on_accent": "#121314",
+        "border": "#2F3033"
+      }
+    },
+    {
+      "id": "terracotta-sun",
+      "name": "Terracotta Sun",
+      "categories": [
+        "travel-agency",
+        "restaurant",
+        "cafe"
+      ],
+      "moods": [
+        "warm",
+        "playful"
+      ],
+      "rationale": "Sun-baked terracotta with a sea-teal accent; holiday warmth without cliché sunset gradients.",
+      "light": {
+        "background": "#FDF7F0",
+        "surface": "#F6E9DA",
+        "text": "#241A14",
+        "muted": "#64534A",
+        "primary": "#B5482A",
+        "on_primary": "#FFFFFF",
+        "accent": "#2A9D8F",
+        "on_accent": "#241A14",
+        "border": "#E6D4C0"
+      },
+      "dark": {
+        "background": "#18110D",
+        "surface": "#241A14",
+        "text": "#F7EDE3",
+        "muted": "#C4B1A1",
+        "primary": "#F08B6B",
+        "on_primary": "#18110D",
+        "accent": "#3CC4B3",
+        "on_accent": "#18110D",
+        "border": "#3C2E25"
+      }
+    },
+    {
+      "id": "lagoon",
+      "name": "Lagoon",
+      "categories": [
+        "travel-agency",
+        "salon-spa",
+        "nonprofit"
+      ],
+      "moods": [
+        "fresh",
+        "calm"
+      ],
+      "rationale": "Deep lagoon teal with coral; coastal and fresh.",
+      "light": {
+        "background": "#F3F9FA",
+        "surface": "#E0F0F2",
+        "text": "#0B2429",
+        "muted": "#44646B",
+        "primary": "#006D77",
+        "on_primary": "#FFFFFF",
+        "accent": "#FFB4A2",
+        "on_accent": "#0B2429",
+        "border": "#C6E2E5"
+      },
+      "dark": {
+        "background": "#071B1F",
+        "surface": "#0E282D",
+        "text": "#E3F3F5",
+        "muted": "#93B8BE",
+        "primary": "#5FD0D9",
+        "on_primary": "#071B1F",
+        "accent": "#FFB4A2",
+        "on_accent": "#071B1F",
+        "border": "#1D3E44"
+      }
+    },
+    {
+      "id": "darkroom",
+      "name": "Darkroom",
+      "categories": [
+        "photographer",
+        "ecommerce-boutique"
+      ],
+      "moods": [
+        "muted",
+        "elegant"
+      ],
+      "rationale": "Near-black and silver with a safelight-red primary; neutral so the photos carry the color.",
+      "light": {
+        "background": "#F2F1EF",
+        "surface": "#E5E3E0",
+        "text": "#141414",
+        "muted": "#555350",
+        "primary": "#8C2F1C",
+        "on_primary": "#FFFFFF",
+        "accent": "#D9C7A7",
+        "on_accent": "#141414",
+        "border": "#D2CFCA"
+      },
+      "dark": {
+        "background": "#0F0F0F",
+        "surface": "#1A1A1A",
+        "text": "#EDEBE7",
+        "muted": "#A19E99",
+        "primary": "#E8735A",
+        "on_primary": "#0F0F0F",
+        "accent": "#6B5B45",
+        "on_accent": "#EDEBE7",
+        "border": "#2B2B2B"
+      }
+    },
+    {
+      "id": "gallery-white",
+      "name": "Gallery White",
+      "categories": [
+        "photographer",
+        "ecommerce-boutique",
+        "real-estate"
+      ],
+      "moods": [
+        "clean",
+        "muted"
+      ],
+      "rationale": "White-cube gallery: pure neutrals so work is seen exactly as shot.",
+      "light": {
+        "background": "#FFFFFF",
+        "surface": "#F4F4F4",
+        "text": "#111111",
+        "muted": "#5A5A5A",
+        "primary": "#111111",
+        "on_primary": "#FFFFFF",
+        "accent": "#E9E2D0",
+        "on_accent": "#111111",
+        "border": "#E2E2E2"
+      },
+      "dark": {
+        "background": "#0A0A0A",
+        "surface": "#161616",
+        "text": "#F5F5F5",
+        "muted": "#A6A6A6",
+        "primary": "#F5F5F5",
+        "on_primary": "#0A0A0A",
+        "accent": "#3A352B",
+        "on_accent": "#F5F5F5",
+        "border": "#262626"
+      }
+    },
+    {
+      "id": "boutique-plum",
+      "name": "Boutique Plum",
+      "categories": [
+        "ecommerce-boutique",
+        "salon-spa"
+      ],
+      "moods": [
+        "elegant",
+        "bold"
+      ],
+      "rationale": "Plum and gold; a boutique palette that feels curated, not generic e-commerce.",
+      "light": {
+        "background": "#FAF7F8",
+        "surface": "#F0E8EC",
+        "text": "#221420",
+        "muted": "#604E5C",
+        "primary": "#6B2D5C",
+        "on_primary": "#FFFFFF",
+        "accent": "#E9C46A",
+        "on_accent": "#221420",
+        "border": "#E0D2DA"
+      },
+      "dark": {
+        "background": "#170E15",
+        "surface": "#231721",
+        "text": "#F3E9F0",
+        "muted": "#BFA9B9",
+        "primary": "#D99BC8",
+        "on_primary": "#170E15",
+        "accent": "#E9C46A",
+        "on_accent": "#170E15",
+        "border": "#3A2836"
+      }
+    },
+    {
+      "id": "meadow-hope",
+      "name": "Meadow Hope",
+      "categories": [
+        "nonprofit",
+        "cafe",
+        "generic-local-business"
+      ],
+      "moods": [
+        "warm",
+        "hopeful",
+        "earthy"
+      ],
+      "rationale": "Forest green with sunny apricot; hopeful and grounded for community work.",
+      "light": {
+        "background": "#FBFAF5",
+        "surface": "#F0EEE2",
+        "text": "#1C2118",
+        "muted": "#555B4E",
+        "primary": "#2D6A4F",
+        "on_primary": "#FFFFFF",
+        "accent": "#F4A261",
+        "on_accent": "#1C2118",
+        "border": "#DEDBCB"
+      },
+      "dark": {
+        "background": "#11150F",
+        "surface": "#1B2018",
+        "text": "#EEF0E6",
+        "muted": "#A9AF9F",
+        "primary": "#7FCCA3",
+        "on_primary": "#11150F",
+        "accent": "#F4A261",
+        "on_accent": "#11150F",
+        "border": "#2E3529"
+      }
+    },
+    {
+      "id": "civic-red",
+      "name": "Civic Red",
+      "categories": [
+        "nonprofit",
+        "generic-local-business"
+      ],
+      "moods": [
+        "bold",
+        "trustworthy"
+      ],
+      "rationale": "Clear civic red and warm yellow on white; urgent and direct for campaigns and donations.",
+      "light": {
+        "background": "#FFFFFF",
+        "surface": "#F3F4F6",
+        "text": "#15171C",
+        "muted": "#4B5160",
+        "primary": "#B3261E",
+        "on_primary": "#FFFFFF",
+        "accent": "#FFD166",
+        "on_accent": "#15171C",
+        "border": "#DFE1E6"
+      },
+      "dark": null
+    },
+    {
+      "id": "main-street",
+      "name": "Main Street",
+      "categories": [
+        "generic-local-business",
+        "contractor-home-services",
+        "cafe"
+      ],
+      "moods": [
+        "friendly",
+        "trustworthy"
+      ],
+      "rationale": "Shopfront blue and sign-paint yellow on warm white; the safe, friendly default.",
+      "light": {
+        "background": "#FAF9F7",
+        "surface": "#EFEDE9",
+        "text": "#1F1E1C",
+        "muted": "#5A5752",
+        "primary": "#2B5D8C",
+        "on_primary": "#FFFFFF",
+        "accent": "#E9B949",
+        "on_accent": "#1F1E1C",
+        "border": "#DCD8D1"
+      },
+      "dark": {
+        "background": "#141413",
+        "surface": "#1F1E1C",
+        "text": "#EFEDE9",
+        "muted": "#A8A49D",
+        "primary": "#8CB8E6",
+        "on_primary": "#141413",
+        "accent": "#E9B949",
+        "on_accent": "#141413",
+        "border": "#33312E"
+      }
+    }
+  ]
+}

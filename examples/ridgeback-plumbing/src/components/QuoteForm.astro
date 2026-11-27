@@ -1,0 +1,42 @@
+---
+/**
+ * Quote request form posting to Web3Forms (no backend needed). The owner creates a free access
+ * key at web3forms.com with their email; until then the form shows a TODO and stays disabled.
+ */
+const ACCESS_KEY = ""; // TODO(shingle): Web3Forms access key for the jobs inbox (web3forms.com, free)
+const ready = ACCESS_KEY.length > 0;
+---
+
+<form class="quote" action="https://api.web3forms.com/submit" method="POST">
+  <input type="hidden" name="access_key" value={ACCESS_KEY} />
+  <input type="hidden" name="subject" value="New quote request from the website" />
+  <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true" />
+  <div class="row">
+    <label for="q-name">Name</label>
+    <input id="q-name" name="name" autocomplete="name" required />
+  </div>
+  <div class="row">
+    <label for="q-phone">Phone</label>
+    <input id="q-phone" name="phone" type="tel" autocomplete="tel" required />
+  </div>
+  <div class="row">
+    <label for="q-suburb">Suburb</label>
+    <input id="q-suburb" name="suburb" autocomplete="address-level2" />
+  </div>
+  <div class="row full">
+    <label for="q-job">What needs doing?</label>
+    <textarea id="q-job" name="message" rows="4" required></textarea>
+  </div>
+  {!ready && <p class="todo full" data-shingle-todo="Web3Forms access key in src/components/QuoteForm.astro">To add: form access key. Until then, please call or WhatsApp.</p>}
+  <button class="btn btn-primary full" type="submit" disabled={!ready}>Send quote request</button>
+</form>
+
+<style>
+  .quote { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+  @media (min-width: 40rem) { .quote { grid-template-columns: 1fr 1fr; } .full { grid-column: 1 / -1; } }
+  .row { display: flex; flex-direction: column; gap: 0.35rem; }
+  label { font-weight: 600; font-size: 0.9375rem; }
+  input, textarea { padding: 0.75rem; border-radius: var(--sh-radius); font: inherit; min-height: 44px; }
+  button[disabled] { opacity: 0.55; cursor: not-allowed; }
+  .full { justify-self: start; }
+</style>

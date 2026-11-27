@@ -1,0 +1,81 @@
+# business.json
+
+The single source of truth for a Shingle site. Lives at the site root. Every key is optional
+except `name` and `category`; leave unknowns out (never write guesses).
+`validate_input.py --write` normalizes it in place.
+
+```json
+{
+  "schema_version": 1,
+  "name": "Marigold Kitchen",
+  "slug": "marigold-kitchen",
+  "category": "restaurant",
+  "tagline": "Coastal Goan cooking in Lisbon",
+  "description": "Family-run Goan restaurant. Fish curries, xacuti, bebinca.",
+  "domain": "marigoldkitchen.pt",
+  "address": {
+    "street": "Rua da Rosa 112",
+    "locality": "Lisboa",
+    "region": "Lisboa",
+    "postal_code": "1200-389",
+    "country": "PT"
+  },
+  "geo": { "lat": 38.7139, "lng": -9.1445 },
+  "phone": "+351213000000",
+  "whatsapp": "+351913000000",
+  "email": "ola@marigoldkitchen.pt",
+  "hours": {
+    "mon": [],
+    "tue": [["12:00", "15:00"], ["19:00", "23:00"]],
+    "wed": [["12:00", "15:00"], ["19:00", "23:00"]],
+    "thu": [["12:00", "15:00"], ["19:00", "23:00"]],
+    "fri": [["12:00", "15:00"], ["19:00", "00:30"]],
+    "sat": [["19:00", "00:30"]],
+    "sun": [["12:00", "16:00"]]
+  },
+  "hours_note": "Kitchen closes 30 minutes before closing time.",
+  "socials": {
+    "instagram": "https://instagram.com/marigoldkitchen",
+    "google_maps": "https://maps.app.goo.gl/xxxx"
+  },
+  "languages": ["en", "pt"],
+  "service_area": [],
+  "images": [
+    { "src": "public/images/dining-room.jpg", "alt": "Dining room with blue tiles", "subject": "interior" }
+  ],
+  "facts": {
+    "cuisine": ["Goan", "Indian"],
+    "price_range": "€€"
+  },
+  "decisions": {
+    "goal": "reservations",
+    "cta": { "label": "Book a table", "action": "tel" },
+    "pages": "single",
+    "tone": "warm",
+    "imagery": "svg-placeholders",
+    "languages": ["en", "pt"],
+    "contact_method": ["tel", "whatsapp", "map"],
+    "form_service": null,
+    "features": ["menu", "faq", "map"],
+    "design": { "direction": "broadsheet", "palette": "saffron-ink" },
+    "badge": true
+  }
+}
+```
+
+## Field rules
+| Field | Rule |
+|---|---|
+| `name` | Exactly as the owner writes it (keep capitalization, accents, ampersands). |
+| `slug` | Derived: lowercase ASCII, hyphens. Used for the folder name. |
+| `category` | One of the file names in `categories/` without `.md`. |
+| `domain` | Bare host, no scheme or path (`example.com`). Site URL is `https://<domain>`. |
+| `timezone` | IANA name (`America/Chicago`). Optional for single-zone countries (inferred); needed in US, CA, AU, BR, MX, RU, ID, AR for the live "open now" status. |
+| `address.country` | ISO 3166-1 alpha-2. Needed for phone normalization and JSON-LD. |
+| `phone`, `whatsapp` | E.164 (`+` and digits). Display formatting happens at render time. |
+| `hours` | Keys `mon`..`sun`; list of `[open, close]` 24h pairs. `[]` = closed. Missing key = unknown. A close earlier than open means past midnight. |
+| `socials` | Full https URLs. Known keys: instagram, facebook, tiktok, x, linkedin, youtube, pinterest, threads, yelp, tripadvisor, google_maps, whatsapp_channel. |
+| `images[].src` | Path inside the site project. Never a remote URL to someone else's image. |
+| `facts` | Extra **verified** facts the owner stated (cuisine, specialties, licence numbers, founding year). Only facts in here may appear as claims on the site. |
+| `decisions` | Interview and design answers. Present keys are not asked again on re-runs. |
+| `decisions.badge` | `false` removes the "Built with Shingle" footer badge. |

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "shingle",
+  "displayName": "Shingle",
+  "version": "0.1.0",
+  "description": "Business details in, distinctive production-ready website out. Interviews you, picks a design direction and accessible palette, builds an Astro site, audits it, and tells you how to deploy.",
+  "author": {
+    "name": "OneLab-X",
+    "url": "https://github.com/OneLab-X"
+  },
+  "homepage": "https://github.com/OneLab-X/shingle",
+  "repository": "https://github.com/OneLab-X/shingle",
+  "license": "MIT",
+  "keywords": [
+    "website",
+    "local-business",
+    "astro",
+    "tailwind",
+    "seo",
+    "small-business",
+    "site-generator"
+  ]
+}

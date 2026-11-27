@@ -1,0 +1,16 @@
+---
+/**
+ * Visible placeholder for content only the owner can provide (prices, photos, bios, quotes).
+ * Next to each use, add a source comment with the marker from SKILL.md ("TODO" immediately
+ * followed by "(shingle):" and the instruction) so the audit can report file:line. The audit
+ * also collects every rendered data-shingle-todo.
+ */
+interface Props {
+  /** What the owner needs to add, written as an instruction. */
+  label: string;
+  as?: "span" | "p" | "div";
+}
+const { label, as: Tag = "span" } = Astro.props;
+---
+
+<Tag class="todo" data-shingle-todo={label}>To add: {label}</Tag>

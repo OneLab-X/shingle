@@ -1,0 +1,164 @@
+{
+  "schema_version": 1,
+  "name": "Brightwater Family Dental",
+  "slug": "brightwater-family-dental",
+  "category": "dental-clinic",
+  "tagline": "Family dentistry in Southeast Portland",
+  "description": "General and family dental care for adults and children: check-ups, fillings, crowns, root canals and whitening, with same-day emergency appointments when we have space.",
+  "domain": "brightwater-dental.example",
+  "address": {
+    "street": "418 SE Alder Street",
+    "locality": "Portland",
+    "region": "OR",
+    "postal_code": "97214",
+    "country": "US"
+  },
+  "timezone": "America/Los_Angeles",
+  "phone": "+15035550142",
+  "phone_display": "(503) 555-0142",
+  "email": "frontdesk@brightwater-dental.example",
+  "hours": {
+    "mon": [
+      [
+        "07:00",
+        "18:00"
+      ]
+    ],
+    "tue": [
+      [
+        "07:00",
+        "18:00"
+      ]
+    ],
+    "wed": [
+      [
+        "07:00",
+        "18:00"
+      ]
+    ],
+    "thu": [
+      [
+        "07:00",
+        "18:00"
+      ]
+    ],
+    "fri": [
+      [
+        "07:00",
+        "13:00"
+      ]
+    ],
+    "sat": [],
+    "sun": []
+  },
+  "languages": [
+    "en"
+  ],
+  "facts": {
+    "neighbourhood": "Southeast Portland",
+    "services": [
+      {
+        "name": "Check-ups and cleaning",
+        "summary": "An exam with the dentist, X-rays when needed, and a clean with our hygienist."
+      },
+      {
+        "name": "Children's dentistry",
+        "summary": "Check-ups and fillings for children from their first tooth onwards."
+      },
+      {
+        "name": "Fillings",
+        "summary": "Tooth-colored fillings for cavities and chipped teeth."
+      },
+      {
+        "name": "Crowns and bridges",
+        "summary": "Crowns to protect weak or broken teeth, and bridges to replace a missing tooth."
+      },
+      {
+        "name": "Root canal treatment",
+        "summary": "Treatment for an infected or badly inflamed tooth, so it can be kept."
+      },
+      {
+        "name": "Teeth whitening",
+        "summary": "In-office whitening, or custom trays to whiten at home."
+      },
+      {
+        "name": "Emergency appointments",
+        "summary": "Same-day appointments for toothache, swelling and broken teeth when we have space."
+      }
+    ],
+    "team": [
+      {
+        "name": "Dr. Leah Moreno, DMD",
+        "role": "General dentist"
+      },
+      {
+        "name": "Sam Patel",
+        "role": "Dental hygienist"
+      }
+    ],
+    "emergency": "Toothache, swelling or a broken tooth? Call before 10am and we will try to see you the same day.",
+    "new_patients": {
+      "bring": [
+        "Photo ID",
+        "Your dental insurance card, if you have one",
+        "A list of the medicines you take"
+      ],
+      "forms": "We email new patient forms when you book. You can also fill them in at reception; please arrive 15 minutes early if you do.",
+      "first_visit": "Allow about an hour for your first visit."
+    },
+    "insurance_note": "We accept most PPO dental plans. Call us with your plan name and we will check your cover before your visit.",
+    "payment": "We take credit and debit cards, cash, and HSA and FSA cards.",
+    "accessibility": "Step-free entrance and an accessible restroom. Street parking on SE Alder Street and a bike rack outside.",
+    "spoken_languages": [
+      "English",
+      "Spanish"
+    ],
+    "faq": [
+      {
+        "q": "Do you see children?",
+        "a": "Yes. We see children from their first tooth onwards, and parents can book family appointments back to back."
+      },
+      {
+        "q": "Do you take my insurance?",
+        "a": "We accept most PPO dental plans. Call us with your plan name and we will check before your visit."
+      },
+      {
+        "q": "What if I have a dental emergency?",
+        "a": "Call before 10am and we will try to see you the same day."
+      },
+      {
+        "q": "Do you speak Spanish?",
+        "a": "Yes, our front desk team speaks English and Spanish."
+      }
+    ]
+  },
+  "decisions": {
+    "goal": "appointments",
+    "cta": {
+      "label": "Call to book",
+      "action": "tel"
+    },
+    "pages": "multi",
+    "tone": "calm",
+    "imagery": "svg-placeholders",
+    "languages": [
+      "en"
+    ],
+    "contact_method": [
+      "tel",
+      "email",
+      "map"
+    ],
+    "features": [
+      "services",
+      "team",
+      "faq",
+      "map"
+    ],
+    "design": {
+      "direction": "clinical-calm",
+      "palette": "mint-clinic"
+    },
+    "badge": true
+  }
+}

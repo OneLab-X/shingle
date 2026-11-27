@@ -1,0 +1,67 @@
+---
+/**
+ * Live "Open now · until 17:00" / "Closed · opens Tue 09:00" pill, computed in the visitor's
+ * browser in the business's time zone. Hidden when hours or the time zone are unknown.
+ */
+import site from "../data/site.json";
+const { hours } = site;
+const enabled = hours.known && Boolean(hours.timezone);
+---
+
+{
+  enabled && (
+    <p class="open-status" data-open-status hidden>
+      <span class="dot" aria-hidden="true" />
+      <span data-text />
+    </p>
+  )
+}
+
+{
+  enabled && (
+    <script is:inline define:vars={{ days: hours.days, tz: hours.timezone, twelve: hours.format === "12h" }}>
+      (() => {
+        const el = document.querySelector("[data-open-status]");
+        if (!el) return;
+        const keys = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+        const parts = new Intl.DateTimeFormat("en-GB", { weekday: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: tz })
+          .formatToParts(new Date());
+        const get = (t) => parts.find((p) => p.type === t)?.value ?? "";
+        const today = keys.indexOf(get("weekday").toLowerCase().slice(0, 3));
+        const now = Number(get("hour")) * 60 + Number(get("minute"));
+        const mins = (t) => Number(t.slice(0, 2)) * 60 + Number(t.slice(3));
+        const fmt = (t) => {
+          if (!twelve) return t;
+          const h = Number(t.slice(0, 2)), m = t.slice(3);
+          return `${h % 12 || 12}${m === "00" ? "" : ":" + m} ${h < 12 ? "am" : "pm"}`;
+        };
+        const byKey = Object.fromEntries(days.map((d) => [d.key, d]));
+        const at = (offset) => byKey[keys[(today + offset + 7) % 7]];
+        // open now? check today's ranges and yesterday's past-midnight range
+        for (const r of at(0).ranges) {
+          const o = mins(r.open), c = mins(r.close) <= o ? mins(r.close) + 1440 : mins(r.close);
+          if (now >= o && now < c) return show(true, `Open now · until ${fmt(r.close)}`);
+        }
+        for (const r of at(-1).ranges) {
+          if (mins(r.close) <= mins(r.open) && now < mins(r.close)) return show(true, `Open now · until ${fmt(r.close)}`);
+        }
+        for (let i = 0; i < 7; i++) {
+          const d = at(i);
+          const next = d.ranges.find((r) => i > 0 || mins(r.open) > now);
+          if (next) return show(false, `Closed · opens ${i === 0 ? "today" : i === 1 ? "tomorrow" : d.label} ${fmt(next.open)}`);
+        }
+        function show(open, text) {
+          el.querySelector("[data-text]").textContent = text;
+          el.dataset.open = String(open);
+          el.hidden = false;
+        }
+      })();
+    </script>
+  )
+}
+
+<style>
+  .open-status { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 0.9375rem; margin: 0; }
+  .dot { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--sh-muted); }
+  .open-status[data-open="true"] .dot { background: var(--sh-primary); box-shadow: 0 0 0 4px color-mix(in srgb, var(--sh-primary) 20%, transparent); }
+</style>

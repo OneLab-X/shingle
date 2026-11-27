@@ -1,0 +1,140 @@
+---
+/**
+ * Marigold Kitchen · single page, "broadsheet" direction.
+ * Every fact comes from business.json via src/data/site.json; unknowns are TODO placeholders.
+ */
+import Base from "../layouts/Base.astro";
+import Masthead from "../components/Masthead.astro";
+import Menu from "../components/Menu.astro";
+import Hours from "../components/Hours.astro";
+import MapEmbed from "../components/MapEmbed.astro";
+import PlaceholderImage from "../components/PlaceholderImage.astro";
+import Footer from "../components/Footer.astro";
+import site from "../data/site.json";
+
+const { business, contact } = site;
+const facts = business.facts as {
+  story?: string;
+  transport?: string;
+  booking_policy?: string;
+  faq?: { q: string; a: string }[];
+};
+const faq = facts.faq ?? [];
+const faqLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+};
+---
+
+<Base jsonld={faq.length ? [faqLd] : []}>
+  <Masthead />
+  <main id="main">
+    <section class="wrap lead" aria-labelledby="story-title">
+      <article class="story">
+        <h2 id="story-title" class="label">From the kitchen</h2>
+        <p class="dropcap">{facts.story}</p>
+        <p>{business.description}</p>
+      </article>
+      {/* TODO(shingle): photo of the fish curry rice, landscape 3:2 */}
+      <PlaceholderImage subject="Fish curry rice on the pass" width={1200} height={800} class="lead-photo" />
+      <aside class="today" aria-label="Opening times summary">
+        <h2 class="label">Opening times</h2>
+        <dl>
+          {
+            site.hours.groups.map((g) => (
+              <div>
+                <dt>{g.label}</dt>
+                <dd>{g.text}</dd>
+              </div>
+            ))
+          }
+        </dl>
+        {site.hours.note && <p class="small">{site.hours.note}</p>}
+      </aside>
+    </section>
+
+    <Menu />
+
+    <section class="wrap photos" aria-label="Photos">
+      {/* TODO(shingle): three photos from the owner: bebinca, the dining room, chouriço pão */}
+      <PlaceholderImage subject="Bebinca, sliced" width={800} height={1000} />
+      <PlaceholderImage subject="Dining room in the evening" width={800} height={1000} />
+      <PlaceholderImage subject="Chouriço pão" width={800} height={1000} />
+    </section>
+
+    <section id="visit" class="wrap section visit" aria-labelledby="visit-title">
+      <div>
+        <h2 id="visit-title">Visit</h2>
+        <address class="addr">
+          {business.address_lines.map((l) => <span>{l}</span>)}
+        </address>
+        {facts.transport && <p>{facts.transport}</p>}
+        <Hours class="mt-8" />
+      </div>
+      <MapEmbed />
+    </section>
+
+    {
+      faq.length > 0 && (
+        <section class="wrap section faq" aria-labelledby="faq-title">
+          <h2 id="faq-title">Questions</h2>
+          <div class="faq-list">
+            {faq.map((f) => (
+              <details>
+                <summary>{f.q}</summary>
+                <p>{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <section id="book" class="book" aria-labelledby="book-title">
+      <div class="wrap">
+        <h2 id="book-title">Book a table</h2>
+        {contact.tel && <a class="phone" href={contact.tel.href}>{contact.tel.label}</a>}
+        {facts.booking_policy && <p>{facts.booking_policy}</p>}
+        {contact.email && (
+          <p>
+            Private parties and everything else: <a href={contact.email.href}>{contact.email.label}</a>
+          </p>
+        )}
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .label { font-family: var(--sh-font-body); font-variant: small-caps; text-transform: lowercase; letter-spacing: var(--sh-ui-tracking); font-size: 1.0625rem; font-weight: 600; color: var(--sh-muted); border-bottom: 1px solid var(--sh-border); padding-bottom: 0.4rem; margin-bottom: 1rem; }
+  .lead { display: grid; gap: 2.5rem; padding-block: clamp(2.5rem, 6vw, 4.5rem); grid-template-columns: 1fr; }
+  @media (min-width: 56rem) {
+    .lead { grid-template-columns: 1.15fr 1.3fr 0.8fr; column-gap: 2.5rem; }
+    .lead > * + * { border-left: 1px solid var(--sh-border); padding-left: 2.5rem; }
+    .lead > :global(.lead-photo) { border-left: 0; padding-left: 0; }
+  }
+  .dropcap::first-letter { float: left; font-family: var(--sh-font-display); font-weight: 800; font-size: 4.6em; line-height: 0.82; margin: 0.06em 0.12em 0 0; color: var(--sh-primary); }
+  .story p + p { margin-top: 1rem; }
+  .today dl { margin: 0; }
+  .today dl div { display: flex; justify-content: space-between; gap: 1rem; padding: 0.45rem 0; border-bottom: 1px dotted var(--sh-border); }
+  .today dt { font-weight: 600; white-space: nowrap; }
+  .today dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+  .small { font-size: 0.9375rem; color: var(--sh-muted); margin-top: 0.75rem; font-style: italic; }
+  .photos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  @media (max-width: 40rem) { .photos { grid-template-columns: 1fr 1fr; } .photos > :global(:last-child) { display: none; } }
+  .visit { display: grid; gap: 3rem; border-top: 3px double var(--sh-text); margin-top: var(--sh-section-gap); }
+  @media (min-width: 56rem) { .visit { grid-template-columns: 1fr 1fr; } }
+  .addr { display: flex; flex-direction: column; font-size: 1.25rem; margin: 1rem 0; font-family: var(--sh-font-display); }
+  .faq { padding-top: 0; }
+  .faq-list { margin-top: 1.5rem; border-top: 1px solid var(--sh-text); max-width: 48rem; }
+  details { border-bottom: 1px solid var(--sh-border); padding: 1rem 0; }
+  summary { cursor: pointer; font-family: var(--sh-font-display); font-weight: 600; font-size: 1.25rem; }
+  details p { margin-top: 0.5rem; }
+  .book { background: var(--sh-text); color: var(--sh-background); padding-block: var(--sh-section-gap); text-align: center; }
+  .book h2 { color: var(--sh-background); }
+  .book p { margin: 1rem auto 0; color: var(--sh-background); }
+  .book a { color: var(--sh-background); }
+  .phone { display: inline-block; margin-top: 1rem; font-family: var(--sh-font-display); font-size: clamp(2rem, 6vw, 4rem); font-weight: 700; text-decoration: none; border-bottom: 3px solid var(--sh-accent); }
+</style>

@@ -1,0 +1,158 @@
+---
+import { url } from "../lib/url";
+/** Forge Strength Club · single page. Direction: poster. Palette: volt-graphite. */
+import Base from "../layouts/Base.astro";
+import Footer from "../components/Footer.astro";
+import Marquee from "../components/Marquee.astro";
+import OpenStatus from "../components/OpenStatus.astro";
+import Hours from "../components/Hours.astro";
+import MapEmbed from "../components/MapEmbed.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
+import Todo from "../components/Todo.astro";
+import Icon from "../components/Icon.astro";
+import site from "../data/site.json";
+
+const { business, contact } = site;
+type Row = { time: string } & Record<string, string>;
+const facts = business.facts as {
+  first_step: string;
+  classes: { name: string; text: string }[];
+  timetable: Row[];
+  parking?: string;
+};
+const days = site.hours.days.map((d) => ({ key: d.key, short: d.short }));
+---
+
+<Base>
+  <header class="top">
+    <div class="wrap bar">
+      <a href={url("/")} class="logo">Forge</a>
+      <nav aria-label="Main">
+        <a href="#classes">Classes</a>
+        <a href="#timetable">Timetable</a>
+        <a href="#join">Join</a>
+        <ThemeToggle />
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="wrap hero">
+      <p class="tag">{business.name} · {business.address?.locality}, {business.address?.region}</p>
+      <h1>Lift heavy.<br />Hit hard.<br /><span class="hi">Come back.</span></h1>
+      <p class="lead">{business.description}</p>
+      <div class="actions">
+        {contact.tel && <a class="btn btn-primary poster-btn" href={contact.tel.href}><Icon name="phone" /> Book a free intro</a>}
+        <a class="btn btn-quiet poster-btn" href="#timetable">See the timetable</a>
+      </div>
+      <OpenStatus />
+    </section>
+
+    <Marquee />
+
+    <section id="classes" class="wrap section" aria-labelledby="classes-title">
+      <h2 id="classes-title">Classes</h2>
+      <ul class="classes">
+        {
+          facts.classes.map((c) => (
+            <li>
+              <h3>{c.name}</h3>
+              <p>{c.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section id="timetable" class="wrap section tt" aria-labelledby="tt-title">
+      <h2 id="tt-title">Timetable</h2>
+      <div class="scroller" tabindex="0" role="region" aria-labelledby="tt-title">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Time</th>
+              {days.map((d) => <th scope="col">{d.short}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {
+              facts.timetable.map((row) => (
+                <tr>
+                  <th scope="row">{row.time}</th>
+                  {days.map((d) => (
+                    <td class:list={{ on: !!row[d.key] }}>{row[d.key] || <span class="sr-only">No class</span>}</td>
+                  ))}
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="join" class="join" aria-labelledby="join-title">
+      <div class="wrap section join-grid">
+        <div>
+          <h2 id="join-title">Start here</h2>
+          <p class="big">{facts.first_step}</p>
+          {contact.tel && <a class="btn poster-btn dark" href={contact.tel.href}>Call or text {contact.tel.label}</a>}
+        </div>
+        <div class="prices">
+          <h3>Memberships</h3>
+          {/* TODO(shingle): membership options and monthly prices exactly as the gym charges them */}
+          <Todo as="p" label="membership options and monthly prices" />
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap section visit" aria-labelledby="visit-title">
+      <div>
+        <h2 id="visit-title">Find the gym</h2>
+        <address class="addr">{business.address_lines.map((l) => <span>{l}</span>)}</address>
+        {facts.parking && <p>{facts.parking}</p>}
+        <Hours class="mt-6" />
+      </div>
+      <MapEmbed />
+    </section>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .top { border-bottom: var(--sh-border-width) solid var(--sh-text); }
+  .bar { display: flex; justify-content: space-between; align-items: center; padding-block: 0.75rem; }
+  .logo { font-family: var(--sh-font-display); font-size: 2rem; text-transform: uppercase; color: var(--sh-text); text-decoration: none; letter-spacing: 0.02em; }
+  nav { display: flex; align-items: center; gap: 1.25rem; }
+  nav a { color: var(--sh-text); font-weight: 700; text-transform: uppercase; letter-spacing: var(--sh-ui-tracking); font-size: 0.875rem; text-decoration: none; }
+  @media (max-width: 40rem) { nav a { display: none; } }
+  .hero { padding-block: clamp(2.5rem, 7vw, 5rem) 1rem; display: grid; gap: 1.5rem; }
+  .tag { text-transform: uppercase; letter-spacing: var(--sh-ui-tracking); font-weight: 700; font-size: 0.875rem; }
+  .hero h1 { font-size: var(--sh-h1); line-height: 0.9; }
+  .hi { color: var(--sh-primary); }
+  .lead { font-size: 1.25rem; max-width: 46ch; }
+  .actions { display: flex; flex-wrap: wrap; gap: 1rem; }
+  .poster-btn { border: var(--sh-border-width) solid var(--sh-text); box-shadow: 6px 6px 0 var(--sh-text); text-transform: uppercase; letter-spacing: var(--sh-ui-tracking); font-weight: 800; padding: 1rem 1.4rem; }
+  .poster-btn:hover { transform: translate(2px, 2px); box-shadow: 4px 4px 0 var(--sh-text); }
+  .classes { list-style: none; padding: 0; margin-top: 2rem; display: grid; gap: 0; border: var(--sh-border-width) solid var(--sh-text); }
+  @media (min-width: 48rem) { .classes { grid-template-columns: 1fr 1fr; } }
+  .classes li { padding: 1.75rem; border: calc(var(--sh-border-width) / 2) solid var(--sh-text); }
+  .classes li:nth-child(1) { background: var(--sh-accent); color: var(--sh-on-accent); }
+  .classes h3 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 0.5rem; }
+  .classes li:nth-child(1) h3 { color: var(--sh-on-accent); }
+  .scroller { position: relative; overflow-x: auto; margin-top: 2rem; border: var(--sh-border-width) solid var(--sh-text); }
+  table { border-collapse: collapse; width: 100%; min-width: 46rem; }
+  th, td { padding: 0.75rem; text-align: left; border: 1px solid var(--sh-border); font-size: 0.9375rem; }
+  thead th { background: var(--sh-text); color: var(--sh-background); text-transform: uppercase; letter-spacing: var(--sh-ui-tracking); }
+  tbody th { white-space: nowrap; font-variant-numeric: tabular-nums; }
+  td.on { font-weight: 700; background: var(--sh-surface); }
+  .join { background: var(--sh-text); color: var(--sh-background); }
+  .join h2, .join h3 { color: var(--sh-background); }
+  .join-grid { display: grid; gap: 3rem; }
+  @media (min-width: 56rem) { .join-grid { grid-template-columns: 1.4fr 1fr; } }
+  .big { font-size: 1.5rem; margin: 1rem 0 2rem; }
+  .dark { background: var(--sh-primary); color: var(--sh-on-primary); border-color: var(--sh-background); box-shadow: 6px 6px 0 var(--sh-background); }
+  .prices { border: var(--sh-border-width) solid var(--sh-background); padding: 1.75rem; }
+  .prices h3 { font-size: 2rem; margin-bottom: 1rem; }
+  .visit { display: grid; gap: 3rem; }
+  @media (min-width: 56rem) { .visit { grid-template-columns: 1fr 1fr; } }
+  .addr { display: flex; flex-direction: column; font-size: 1.25rem; font-weight: 700; margin: 1rem 0; }
+</style>

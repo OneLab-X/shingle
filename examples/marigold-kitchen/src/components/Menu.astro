@@ -1,0 +1,64 @@
+---
+/** The menu set in newspaper columns with dotted leaders. Every item comes from facts.menu. */
+import site from "../data/site.json";
+
+type Item = { name: string; description?: string; price?: string; dietary?: string[] };
+type Section = { section: string; items: Item[] };
+const facts = site.business.facts as { menu?: Section[]; dietary_note?: string };
+const menu = facts.menu ?? [];
+const dietaryLabels: Record<string, string> = { V: "Vegetarian", VG: "Vegan", GF: "Gluten-free" };
+---
+
+<section id="menu" class="wrap section menu" aria-labelledby="menu-title">
+  <div class="head">
+    <h2 id="menu-title">The menu</h2>
+    <p class="note">Highlights from the menu.</p>
+  </div>
+  <div class="columns">
+    {
+      menu.map((s) => (
+        <div class="group">
+          <h3>{s.section}</h3>
+          <ul>
+            {s.items.map((item) => (
+              <li>
+                <p class="line">
+                  <span class="dish">{item.name}</span>
+                  <span class="leader" aria-hidden="true" />
+                  <span class="price">{item.price}</span>
+                </p>
+                {item.description && <p class="desc">{item.description}</p>}
+                {item.dietary && (
+                  <p class="tags">
+                    {item.dietary.map((d) => (
+                      <abbr title={dietaryLabels[d] ?? d}>{d}</abbr>
+                    ))}
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+  {facts.dietary_note && <p class="dietary">{facts.dietary_note}</p>}
+</section>
+
+<style>
+  .head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem 2rem; border-bottom: 3px double var(--sh-text); padding-bottom: 0.75rem; }
+  .note { color: var(--sh-muted); font-style: italic; margin: 0; }
+  .columns { columns: 3 18rem; column-gap: 3rem; column-rule: 1px solid var(--sh-border); margin-top: 2rem; }
+  .group { break-inside: avoid; margin-bottom: 2.25rem; }
+  h3 { font-variant: small-caps; text-transform: lowercase; letter-spacing: 0.08em; font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem; }
+  ul { list-style: none; margin: 0; padding: 0; }
+  li { margin-bottom: 1.1rem; break-inside: avoid; }
+  .line { display: flex; align-items: baseline; gap: 0.5rem; margin: 0; max-width: none; }
+  .dish { font-family: var(--sh-font-display); font-weight: 700; font-size: 1.125rem; }
+  .leader { flex: 1; border-bottom: 2px dotted var(--sh-border); transform: translateY(-0.3em); min-width: 1rem; }
+  .price { font-variant-numeric: tabular-nums oldstyle-nums; font-weight: 600; }
+  .desc { margin: 0.15rem 0 0; color: var(--sh-muted); font-size: 1rem; }
+  .tags { margin: 0.3rem 0 0; display: flex; gap: 0.35rem; }
+  abbr { text-decoration: none; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em; padding: 0.05rem 0.4rem; border: 1px solid var(--sh-primary); color: var(--sh-primary); }
+  .dietary { margin-top: 0.5rem; font-size: 0.9375rem; color: var(--sh-muted); border-top: 1px solid var(--sh-border); padding-top: 1rem; max-width: none; }
+</style>

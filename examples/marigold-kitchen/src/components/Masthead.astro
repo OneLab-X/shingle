@@ -1,0 +1,68 @@
+---
+/**
+ * Broadsheet signature: the business name set like a newspaper masthead across the full width,
+ * a double rule, and a dateline (neighbourhood · live open status · phone · booking).
+ */
+import site from "../data/site.json";
+import OpenStatus from "./OpenStatus.astro";
+
+const { business, contact } = site;
+const facts = business.facts as { neighbourhood?: string };
+---
+
+<header class="masthead">
+  <div class="wrap">
+    <nav aria-label="Main" class="topline">
+      <span class="edition">{facts.neighbourhood}, {business.address?.locality}</span>
+      <ul>
+        <li><a href="#menu">Menu</a></li>
+        <li><a href="#visit">Visit</a></li>
+        <li><a href="#book">Book</a></li>
+      </ul>
+    </nav>
+    <h1>
+      <span class="name">{business.name}</span>
+      <span class="kicker">{business.tagline}</span>
+    </h1>
+    <div class="rules" aria-hidden="true"></div>
+    <div class="dateline">
+      <OpenStatus />
+      {contact.tel && <a href={contact.tel.href}>Tel. {contact.tel.label}</a>}
+      <a class="btn btn-primary" href="#book">Book a table</a>
+    </div>
+  </div>
+</header>
+
+<style>
+  .masthead { padding-top: 1.25rem; }
+  .topline {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+    font-variant: small-caps; letter-spacing: var(--sh-ui-tracking); font-size: 1.0625rem;
+    border-bottom: 1px solid var(--sh-text); padding-bottom: 0.5rem;
+  }
+  .topline ul { display: flex; gap: 1.5rem; list-style: none; margin: 0; padding: 0; }
+  .topline a { color: var(--sh-text); text-decoration: none; }
+  .topline a:hover { text-decoration: underline; }
+  h1 { margin: 0; padding-top: clamp(1rem, 3vw, 2rem); text-align: center; }
+  .name {
+    display: block; font-size: clamp(3rem, 12.5vw, 10.5rem); line-height: 0.92;
+    letter-spacing: -0.035em; font-weight: 800; font-variation-settings: "opsz" 144, "SOFT" 30;
+  }
+  .kicker {
+    display: block; margin-top: 0.75rem; font-family: var(--sh-font-body); font-style: italic;
+    font-weight: 400; font-size: clamp(1.125rem, 2.4vw, 1.625rem); letter-spacing: 0;
+    color: var(--sh-muted);
+  }
+  .rules { margin-top: 1.5rem; border-top: 3px solid var(--sh-text); border-bottom: 1px solid var(--sh-text); height: 6px; }
+  .dateline {
+    display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.75rem 1.5rem;
+    padding-block: 0.85rem; border-bottom: 1px solid var(--sh-text);
+    font-variant: small-caps; letter-spacing: var(--sh-ui-tracking);
+  }
+  .dateline > a:not(.btn) { color: var(--sh-text); text-decoration: none; font-weight: 600; }
+  @media (max-width: 40rem) {
+    .topline .edition { display: none; }
+    .topline { justify-content: center; }
+    .dateline { justify-content: center; text-align: center; }
+  }
+</style>

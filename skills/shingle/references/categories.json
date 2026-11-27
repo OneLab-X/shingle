@@ -1,0 +1,177 @@
+{
+  "_note": "Category registry. Adding a category = one entry here + references/categories/<id>.md + tag at least 2 palettes. See docs/adding-a-category.md.",
+  "version": 1,
+  "categories": {
+    "restaurant": {
+      "label": "Restaurant",
+      "schema_type": "Restaurant",
+      "aliases": [
+        "bistro",
+        "brasserie",
+        "diner",
+        "eatery",
+        "pizzeria",
+        "takeaway",
+        "trattoria"
+      ]
+    },
+    "cafe": {
+      "label": "Café",
+      "schema_type": "CafeOrCoffeeShop",
+      "aliases": [
+        "bakery",
+        "bakery-cafe",
+        "coffee",
+        "coffee-shop",
+        "ice-cream",
+        "juice-bar",
+        "patisserie",
+        "tea-room"
+      ]
+    },
+    "dental-clinic": {
+      "label": "Dental clinic",
+      "schema_type": "Dentist",
+      "aliases": [
+        "dental",
+        "dental-practice",
+        "dental-surgery",
+        "dentist",
+        "orthodontist"
+      ]
+    },
+    "law-firm": {
+      "label": "Law firm",
+      "schema_type": "LegalService",
+      "aliases": [
+        "attorney",
+        "law-office",
+        "lawyer",
+        "legal",
+        "legal-services",
+        "notary",
+        "solicitor",
+        "solicitors"
+      ]
+    },
+    "salon-spa": {
+      "label": "Salon & spa",
+      "schema_type": "BeautySalon",
+      "aliases": [
+        "barber",
+        "barbershop",
+        "beauty-salon",
+        "day-spa",
+        "hair-salon",
+        "hairdresser",
+        "massage",
+        "nail-salon",
+        "salon",
+        "spa"
+      ]
+    },
+    "gym-fitness": {
+      "label": "Gym",
+      "schema_type": "ExerciseGym",
+      "aliases": [
+        "boxing-gym",
+        "crossfit",
+        "fitness",
+        "fitness-studio",
+        "gym",
+        "martial-arts",
+        "personal-trainer",
+        "pilates",
+        "yoga"
+      ]
+    },
+    "real-estate": {
+      "label": "Real estate agency",
+      "schema_type": "RealEstateAgent",
+      "aliases": [
+        "estate-agent",
+        "estate-agents",
+        "letting-agent",
+        "property-management",
+        "real-estate-agency",
+        "realtor"
+      ]
+    },
+    "travel-agency": {
+      "label": "Travel agency",
+      "schema_type": "TravelAgency",
+      "aliases": [
+        "tour-operator",
+        "tours",
+        "travel",
+        "travel-agent"
+      ]
+    },
+    "photographer": {
+      "label": "Photographer",
+      "schema_type": "ProfessionalService",
+      "aliases": [
+        "photo-studio",
+        "photography",
+        "videographer",
+        "wedding-photographer"
+      ]
+    },
+    "contractor-home-services": {
+      "label": "Home services",
+      "schema_type": "HomeAndConstructionBusiness",
+      "aliases": [
+        "builder",
+        "cleaner",
+        "cleaning",
+        "contractor",
+        "electrician",
+        "gasfitter",
+        "handyman",
+        "hvac",
+        "landscaper",
+        "locksmith",
+        "painter",
+        "plumber",
+        "roofer"
+      ]
+    },
+    "ecommerce-boutique": {
+      "label": "Boutique",
+      "schema_type": "Store",
+      "aliases": [
+        "bookshop",
+        "bookstore",
+        "boutique",
+        "clothing-store",
+        "florist-shop",
+        "gift-shop",
+        "online-store",
+        "retail",
+        "shop",
+        "store"
+      ]
+    },
+    "nonprofit": {
+      "label": "Nonprofit",
+      "schema_type": "NGO",
+      "aliases": [
+        "association",
+        "charity",
+        "community-group",
+        "food-bank",
+        "foundation",
+        "ngo",
+        "non-profit"
+      ]
+    },
+    "generic-local-business": {
+      "label": "Local business",
+      "schema_type": "LocalBusiness",
+      "aliases": [
+        "generic",
+        "local-business"
+      ]
+    }
+  }
+}

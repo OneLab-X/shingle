@@ -1,0 +1,155 @@
+---
+import { url } from "../lib/url";
+/**
+ * Linden Hair & Skin · single page. Direction: quiet-luxury (inset hairline frame around the
+ * viewport, vertical small-caps section labels, generous space). Palette: rose-clay.
+ */
+import Base from "../layouts/Base.astro";
+import Footer from "../components/Footer.astro";
+import Hours from "../components/Hours.astro";
+import MapEmbed from "../components/MapEmbed.astro";
+import PlaceholderImage from "../components/PlaceholderImage.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
+import site from "../data/site.json";
+
+const { business, contact } = site;
+type Treatment = { name: string; duration?: string; price?: string };
+const facts = business.facts as {
+  treatments: { group: string; items: Treatment[] }[];
+  team: { name: string; role: string }[];
+  booking_note?: string;
+  cancellation?: string;
+};
+const book = contact.booking ?? contact.tel;
+---
+
+<Base>
+  <div class="frame" aria-hidden="true"></div>
+  <header class="wrap top">
+    <a href={url("/")} class="logo">Linden <em>Hair &amp; Skin</em></a>
+    <nav aria-label="Main">
+      <a href="#treatments">Treatments</a>
+      <a href="#team">Team</a>
+      <a href="#visit">Visit</a>
+      <ThemeToggle />
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="wrap hero">
+      <div>
+        <h1>Colour, cutting <em>&amp;</em> skin, without the rush.</h1>
+        <p class="lead">{business.description}</p>
+        {book && <a class="book" href={book.href} {...(book.href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}>Book an appointment</a>}
+      </div>
+      {/* TODO(shingle): photo of the salon interior in daylight, portrait 4:5 */}
+      <PlaceholderImage subject="The salon in morning light" width={900} height={1125} class="hero-photo" />
+    </section>
+
+    <section id="treatments" class="wrap section labelled" aria-labelledby="t-title">
+      <p class="side" aria-hidden="true">Treatments</p>
+      <div>
+        <h2 id="t-title">Treatments <em>&amp; prices</em></h2>
+        <div class="menu">
+          {
+            facts.treatments.map((g) => (
+              <div>
+                <h3>{g.group}</h3>
+                <ul>
+                  {g.items.map((t) => (
+                    <li>
+                      <span>
+                        {t.name}
+                        {t.duration && <small>{t.duration}</small>}
+                      </span>
+                      <span class="price">{t.price}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          }
+        </div>
+        <div class="notes">
+          {facts.booking_note && <p>{facts.booking_note}</p>}
+          {facts.cancellation && <p>{facts.cancellation}</p>}
+        </div>
+      </div>
+    </section>
+
+    <section id="team" class="wrap section labelled" aria-labelledby="team-title">
+      <p class="side" aria-hidden="true">Team</p>
+      <div>
+        <h2 id="team-title">The <em>team</em></h2>
+        <ul class="team">
+          {
+            facts.team.map((p) => (
+              <li>
+                <PlaceholderImage subject={`Portrait of ${p.name}`} width={600} height={800} />
+                <p class="tname">{p.name}</p>
+                <p class="trole">{p.role}</p>
+              </li>
+            ))
+          }
+        </ul>
+        {/* TODO(shingle): portraits of Ava, Jun and Priya (4:5), taken in the salon */}
+      </div>
+    </section>
+
+    <section id="visit" class="wrap section labelled" aria-labelledby="visit-title">
+      <p class="side" aria-hidden="true">Visit</p>
+      <div class="visit">
+        <div>
+          <h2 id="visit-title">Find <em>us</em></h2>
+          <address>{business.address_lines.map((l) => <span>{l}</span>)}</address>
+          <Hours class="mt-8" />
+          <p class="mt-8 contact">
+            {contact.tel && <a href={contact.tel.href}>{contact.tel.label}</a>}
+            {contact.email && <a href={contact.email.href}>{contact.email.label}</a>}
+          </p>
+        </div>
+        <MapEmbed />
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .frame { position: fixed; inset: 14px; border: 1px solid var(--sh-text); pointer-events: none; z-index: 50; opacity: 0.55; }
+  @media (max-width: 48rem) { .frame { display: none; } }
+  .top { display: flex; justify-content: space-between; align-items: center; padding-block: 2.25rem 1rem; }
+  .logo { font-family: var(--sh-font-display); font-size: 1.75rem; color: var(--sh-text); text-decoration: none; font-weight: 600; }
+  .logo em { font-weight: 400; }
+  nav { display: flex; align-items: center; gap: 1.75rem; }
+  nav a { color: var(--sh-text); text-decoration: none; font-size: 0.75rem; text-transform: uppercase; letter-spacing: var(--sh-ui-tracking); font-weight: 500; }
+  @media (max-width: 40rem) { nav a { display: none; } }
+  h1 em, h2 em { font-style: italic; font-weight: 400; color: var(--sh-primary); }
+  .hero { display: grid; gap: 3rem; align-items: end; padding-block: clamp(3rem, 9vw, 8rem); }
+  @media (min-width: 56rem) { .hero { grid-template-columns: 1.15fr 0.85fr; } }
+  .hero h1 { max-width: 13ch; }
+  .lead { margin-top: 2rem; font-size: 1.125rem; color: var(--sh-muted); }
+  .book { display: inline-block; margin-top: 2.5rem; padding: 1.1rem 2.2rem; border: 1px solid var(--sh-text); color: var(--sh-text); text-decoration: none; text-transform: uppercase; letter-spacing: var(--sh-ui-tracking); font-size: 0.8125rem; font-weight: 500; transition: background-color var(--sh-transition), color var(--sh-transition); }
+  .book:hover { background: var(--sh-text); color: var(--sh-background); }
+  .hero :global(.hero-photo figcaption) { inset: auto 1.5rem 1.5rem 1.5rem; }
+  .labelled { display: grid; gap: 2rem; border-top: 1px solid var(--sh-border); }
+  @media (min-width: 56rem) { .labelled { grid-template-columns: 4rem 1fr; } }
+  .side { writing-mode: vertical-rl; transform: rotate(180deg); justify-self: start; font-variant: small-caps; text-transform: lowercase; letter-spacing: 0.3em; color: var(--sh-muted); font-size: 1rem; margin: 0; }
+  @media (max-width: 56rem) { .side { display: none; } }
+  .menu { display: grid; gap: 3rem; margin-top: 3rem; }
+  @media (min-width: 56rem) { .menu { grid-template-columns: repeat(3, 1fr); } }
+  .menu h3 { font-size: 1.5rem; font-weight: 500; margin-bottom: 1.25rem; }
+  .menu ul { list-style: none; margin: 0; padding: 0; }
+  .menu li { display: flex; justify-content: space-between; gap: 1rem; padding: 0.85rem 0; border-bottom: 1px solid var(--sh-border); }
+  .menu small { display: block; color: var(--sh-muted); font-size: 0.8125rem; letter-spacing: 0.04em; }
+  .price { white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .notes { margin-top: 2.5rem; color: var(--sh-muted); font-size: 0.9375rem; display: grid; gap: 0.35rem; }
+  .team { list-style: none; padding: 0; margin-top: 3rem; display: grid; gap: 2rem; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); }
+  .tname { font-family: var(--sh-font-display); font-size: 1.5rem; margin-top: 1rem; }
+  .trole { font-size: 0.75rem; text-transform: uppercase; letter-spacing: var(--sh-ui-tracking); color: var(--sh-muted); }
+  .visit { display: grid; gap: 3rem; }
+  @media (min-width: 56rem) { .visit { grid-template-columns: 1fr 1fr; } }
+  address { display: flex; flex-direction: column; margin-top: 1.5rem; font-family: var(--sh-font-display); font-size: 1.5rem; }
+  .contact { display: flex; flex-direction: column; gap: 0.35rem; }
+  .contact a { color: var(--sh-text); }
+</style>

@@ -1,0 +1,24 @@
+---
+/** Wayfinder signature: a numbered map-pin marker sitting on the route line at a section start. */
+interface Props {
+  n: number;
+  label: string;
+}
+const { n, label } = Astro.props;
+---
+
+<div class="stop">
+  <svg viewBox="0 0 40 52" aria-hidden="true">
+    <path d="M20 50s16-17.5 16-30A16 16 0 0 0 4 20c0 12.5 16 30 16 30Z"></path>
+    <text x="20" y="25" text-anchor="middle" dominant-baseline="middle">{n}</text>
+  </svg>
+  <span>{label}</span>
+</div>
+
+<style>
+  .stop { display: flex; align-items: center; gap: 0.75rem; margin-left: calc(-1 * var(--route-offset, 3.25rem)); margin-bottom: 1.25rem; }
+  svg { width: 2.5rem; height: 3.25rem; flex: none; }
+  path { fill: var(--sh-primary); stroke: var(--sh-background); stroke-width: 3; }
+  text { fill: var(--sh-on-primary); font-family: var(--sh-font-display); font-weight: 700; font-size: 15px; }
+  span { text-transform: uppercase; letter-spacing: var(--sh-ui-tracking); font-size: 0.8125rem; font-weight: 700; color: var(--sh-muted); }
+</style>

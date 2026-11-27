@@ -1,0 +1,134 @@
+---
+import { url } from "../lib/url";
+/** Brightwater Family Dental · home. Direction: clinical-calm. Palette: mint-clinic. */
+import Shell from "../layouts/Shell.astro";
+import Panel from "../components/Panel.astro";
+import ContactLinks from "../components/ContactLinks.astro";
+import Hours from "../components/Hours.astro";
+import PlaceholderImage from "../components/PlaceholderImage.astro";
+import Icon from "../components/Icon.astro";
+import Todo from "../components/Todo.astro";
+import site from "../data/site.json";
+
+const { business } = site;
+const facts = business.facts as {
+  services: { name: string; summary: string }[];
+  team: { name: string; role: string }[];
+  emergency?: string;
+  new_patients?: { first_visit?: string };
+  spoken_languages?: string[];
+  faq?: { q: string; a: string }[];
+};
+const faq = facts.faq ?? [];
+const faqLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+};
+---
+
+<Shell jsonld={[faqLd]}>
+  <section class="wrap hero">
+    <div>
+      <p class="eyebrow">{business.name} · {business.address?.locality}, {business.address?.region}</p>
+      <h1 class="mt-3">{business.tagline}</h1>
+      <p class="lead mt-5">{business.description}</p>
+      <ContactLinks class="mt-8" show={["tel", "email", "directions"]} />
+      {facts.spoken_languages && <p class="langs mt-5">We speak {facts.spoken_languages.join(" and ")}.</p>}
+    </div>
+    {/* TODO(shingle): photo of the reception or a treatment room, landscape 4:3 */}
+    <PlaceholderImage subject="Reception or treatment room" width={1200} height={900} class="hero-photo" />
+  </section>
+
+  <section class="wrap quick" aria-label="At a glance">
+    {
+      facts.emergency && (
+        <Panel tone="accent">
+          <h2 class="h3"><Icon name="clock" /> Dental emergency?</h2>
+          <p>{facts.emergency}</p>
+        </Panel>
+      )
+    }
+    <Panel>
+      <h2 class="h3">New patients</h2>
+      <p>{facts.new_patients?.first_visit} <a href={url("/new-patients/")}>What to bring and how to pay</a></p>
+    </Panel>
+    <Panel>
+      <h2 class="h3">This week's hours</h2>
+      <Hours />
+    </Panel>
+  </section>
+
+  <section class="wrap section" aria-labelledby="services-title">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <h2 id="services-title">What we do</h2>
+      <a href={url("/services/")} class="more">All services <Icon name="arrow" size={18} /></a>
+    </div>
+    <ul class="services mt-8">
+      {
+        facts.services.slice(0, 6).map((s) => (
+          <li>
+            <h3>{s.name}</h3>
+            <p>{s.summary}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="bg-surface section" aria-labelledby="team-title">
+    <div class="wrap">
+      <h2 id="team-title">Who you'll see</h2>
+      <ul class="team mt-8">
+        {
+          facts.team.map((p) => (
+            <li>
+              <PlaceholderImage subject={`Portrait of ${p.name}`} width={800} height={1000} />
+              <h3 class="mt-4">{p.name}</h3>
+              <p class="role">{p.role}</p>
+              {/* TODO(shingle): short bio for each team member, in their own words */}
+              <Todo as="p" label={`a two-sentence bio for ${p.name}`} />
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="faq-title">
+    <h2 id="faq-title">Common questions</h2>
+    <div class="faq mt-6">
+      {
+        faq.map((f) => (
+          <details>
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))
+      }
+    </div>
+  </section>
+</Shell>
+
+<style>
+  .hero { display: grid; gap: 2.5rem; padding-block: clamp(2.5rem, 7vw, 5rem); align-items: center; }
+  @media (min-width: 56rem) { .hero { grid-template-columns: 1.1fr 0.9fr; } }
+  .hero :global(.hero-photo) { border-radius: calc(var(--sh-radius) * 2); }
+  .lead { font-size: 1.25rem; }
+  .langs { color: var(--sh-muted); }
+  .quick { display: grid; gap: 1rem; }
+  @media (min-width: 56rem) { .quick { grid-template-columns: repeat(3, 1fr); } }
+  .h3 { font-size: 1.25rem; display: flex; align-items: center; gap: 0.5rem; }
+  .more { display: inline-flex; align-items: center; gap: 0.35rem; font-weight: 700; }
+  .services { list-style: none; padding: 0; display: grid; gap: 1rem; }
+  @media (min-width: 40rem) { .services { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 64rem) { .services { grid-template-columns: repeat(3, 1fr); } }
+  .services li { border: 1px solid var(--sh-border); border-radius: var(--sh-radius); padding: 1.5rem; border-top: 4px solid var(--sh-primary); }
+  .services h3 { font-size: 1.25rem; margin-bottom: 0.4rem; }
+  .team { list-style: none; padding: 0; display: grid; gap: 2rem; grid-template-columns: repeat(auto-fill, minmax(14rem, 18rem)); }
+  .role { color: var(--sh-muted); margin-bottom: 0.75rem; }
+  .faq { max-width: 48rem; }
+  details { border: 1px solid var(--sh-border); border-radius: var(--sh-radius); padding: 1rem 1.25rem; margin-bottom: 0.75rem; }
+  summary { cursor: pointer; font-weight: 700; font-family: var(--sh-font-display); font-size: 1.125rem; }
+  details p { margin-top: 0.5rem; }
+</style>

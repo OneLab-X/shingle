@@ -1,0 +1,37 @@
+---
+import { url } from "../lib/url";
+/** Site header: wordmark, navigation, primary call to action. Restyle freely per direction. */
+import site from "../data/site.json";
+import ThemeToggle from "./ThemeToggle.astro";
+
+interface Props {
+  nav?: { href: string; label: string }[];
+  cta?: { href: string; label: string };
+}
+const { nav = [], cta } = Astro.props;
+const current = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <div class="wrap flex items-center justify-between gap-6 py-4">
+    <a href={url("/")} class="wordmark">{site.business.name}</a>
+    <nav aria-label="Main" class="flex items-center gap-5 flex-wrap justify-end">
+      {
+        nav.map((item) => (
+          <a href={item.href} aria-current={current === item.href ? "page" : undefined}>
+            {item.label}
+          </a>
+        ))
+      }
+      {cta && <a class="btn btn-primary" href={cta.href}>{cta.label}</a>}
+      <ThemeToggle />
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header { border-bottom: 1px solid var(--sh-border); }
+  .wordmark { font-family: var(--sh-font-display); font-weight: var(--sh-heading-weight); font-size: 1.25rem; color: var(--sh-text); text-decoration: none; text-transform: var(--sh-heading-case); }
+  nav a:not(.btn) { color: var(--sh-text); text-decoration: none; }
+  nav a:not(.btn):hover, nav a[aria-current="page"] { text-decoration: underline; }
+</style>

@@ -1,0 +1,40 @@
+---
+import Shell from "../layouts/Shell.astro";
+import Panel from "../components/Panel.astro";
+import ContactLinks from "../components/ContactLinks.astro";
+import site from "../data/site.json";
+
+const facts = site.business.facts as { services: { name: string; summary: string }[]; emergency?: string };
+---
+
+<Shell
+  title="Services"
+  description="Check-ups, children's dentistry, fillings, crowns, root canals, whitening and same-day emergency appointments in Southeast Portland."
+>
+  <section class="wrap section">
+    <p class="eyebrow">Services</p>
+    <h1 class="mt-3">Dental care for the whole family</h1>
+    <p class="mt-5 lead">Not sure which appointment you need? Call the front desk and tell us what is going on.</p>
+    <ol class="list mt-10">
+      {
+        facts.services.map((s, i) => (
+          <li id={`service-${i + 1}`}>
+            <Panel tone={s.name.startsWith("Emergency") ? "accent" : "surface"}>
+              <h2>{s.name}</h2>
+              <p>{s.summary}</p>
+            </Panel>
+          </li>
+        ))
+      }
+    </ol>
+    {/* TODO(shingle): fees or "call for a quote" wording for each service, if the practice wants prices shown */}
+    <ContactLinks class="mt-10" show={["tel", "email"]} />
+  </section>
+</Shell>
+
+<style>
+  .lead { font-size: 1.1875rem; }
+  .list { list-style: none; padding: 0; display: grid; gap: 1rem; }
+  @media (min-width: 48rem) { .list { grid-template-columns: repeat(2, 1fr); } }
+  .list h2 { font-size: 1.375rem; }
+</style>

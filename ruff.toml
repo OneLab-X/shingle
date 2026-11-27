@@ -1,0 +1,9 @@
+line-length = 130
+target-version = "py39"
+
+[lint]
+select = ["E", "F", "W", "B", "UP", "I"]
+ignore = ["E501"]
+
+[lint.per-file-ignores]
+"skills/shingle/scripts/tests/*" = ["E731", "I001"]  # helpers must load first: it puts scripts/ on sys.path

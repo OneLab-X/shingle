@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "name": "Compass & Kite Journeys",
+  "slug": "compass-and-kite-journeys",
+  "category": "travel-agency",
+  "tagline": "Slow, tailor-made trips planned in Toronto",
+  "description": "A two-person travel studio planning tailor-made trips by rail, road and ferry, for travellers who would rather see one region well than ten in a hurry.",
+  "domain": "compass-kite.example",
+  "address": {
+    "street": "88 Ossington Avenue, Suite 2",
+    "locality": "Toronto",
+    "region": "ON",
+    "postal_code": "M6J 2Y7",
+    "country": "CA"
+  },
+  "timezone": "America/Toronto",
+  "phone": "+14165550150",
+  "phone_display": "(416) 555-0150",
+  "email": "plan@compass-kite.example",
+  "hours": {
+    "mon": [
+      [
+        "10:00",
+        "18:00"
+      ]
+    ],
+    "tue": [
+      [
+        "10:00",
+        "18:00"
+      ]
+    ],
+    "wed": [
+      [
+        "10:00",
+        "18:00"
+      ]
+    ],
+    "thu": [
+      [
+        "10:00",
+        "18:00"
+      ]
+    ],
+    "fri": [
+      [
+        "10:00",
+        "18:00"
+      ]
+    ]
+  },
+  "hours_note": "Office visits by appointment. Video calls available evenings.",
+  "languages": [
+    "en"
+  ],
+  "facts": {
+    "trips": [
+      {
+        "name": "Portugal by rail",
+        "days": 12,
+        "route": "Porto · Douro Valley · Coimbra · Lisbon · Alentejo",
+        "season": "April to October"
+      },
+      {
+        "name": "Japan's back roads",
+        "days": 15,
+        "route": "Kanazawa · Takayama · Kiso Valley · Kyoto · Naoshima",
+        "season": "October to November"
+      },
+      {
+        "name": "Newfoundland coast",
+        "days": 10,
+        "route": "St. John's · Bonavista · Twillingate · Gros Morne",
+        "season": "June to September"
+      },
+      {
+        "name": "The Scottish islands",
+        "days": 11,
+        "route": "Glasgow · Mull · Iona · Skye · Harris",
+        "season": "May to September"
+      }
+    ],
+    "process": [
+      {
+        "title": "A conversation",
+        "text": "A 30-minute call about where you want to go, how you like to travel, and your budget."
+      },
+      {
+        "title": "A draft route",
+        "text": "Within a week we send a day-by-day draft with places to stay and how you'll get between them."
+      },
+      {
+        "title": "Booked and handed over",
+        "text": "Once you're happy, we book it and send a printed travel book and a 24/7 number for the trip."
+      }
+    ],
+    "pricing": "Prices on request. Every trip is costed to your dates and choices."
+  },
+  "decisions": {
+    "goal": "enquiries",
+    "cta": {
+      "label": "Start planning",
+      "action": "mailto"
+    },
+    "pages": "single",
+    "tone": "warm",
+    "imagery": "illustration",
+    "languages": [
+      "en"
+    ],
+    "contact_method": [
+      "email",
+      "tel",
+      "map"
+    ],
+    "features": [
+      "trips",
+      "process"
+    ],
+    "design": {
+      "direction": "wayfinder",
+      "palette": "lagoon"
+    },
+    "badge": true
+  }
+}

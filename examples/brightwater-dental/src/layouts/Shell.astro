@@ -1,0 +1,101 @@
+---
+import { url } from "../lib/url";
+/**
+ * Clinical-calm shell used by every page: header with live open status and the phone number,
+ * breadcrumb JSON-LD on inner pages, footer, and the signature sticky Call bar on phones.
+ */
+import Base from "./Base.astro";
+import Footer from "../components/Footer.astro";
+import OpenStatus from "../components/OpenStatus.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
+import Icon from "../components/Icon.astro";
+import site from "../data/site.json";
+
+interface Props {
+  title?: string;
+  description?: string;
+  jsonld?: Record<string, unknown>[];
+}
+const { title, description, jsonld = [] } = Astro.props;
+const { business, contact, maps } = site;
+const path = Astro.url.pathname;
+const nav = [
+  { href: url("/services/"), label: "Services" },
+  { href: url("/new-patients/"), label: "New patients" },
+  { href: url("/contact/"), label: "Contact" },
+];
+const crumbs =
+  path === url("/")
+    ? []
+    : [
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: business.url },
+            { "@type": "ListItem", position: 2, name: title, item: new URL(path, business.url).href },
+          ],
+        },
+      ];
+---
+
+<Base title={title} description={description} jsonld={[...crumbs, ...jsonld]}>
+  <div class="utility">
+    <div class="wrap flex flex-wrap items-center justify-between gap-2 py-2">
+      <OpenStatus />
+      {contact.tel && <a href={contact.tel.href} class="tel"><Icon name="phone" size={16} /> {contact.tel.label}</a>}
+    </div>
+  </div>
+  <header class="site-header">
+    <div class="wrap flex flex-wrap items-center justify-between gap-4 py-4">
+      <a href={url("/")} class="brand">
+        <span class="mark" aria-hidden="true"></span>
+        {business.name}
+      </a>
+      <nav aria-label="Main">
+        <ul class="flex flex-wrap items-center gap-1">
+          {
+            nav.map((item) => (
+              <li>
+                <a href={item.href} aria-current={path === item.href ? "page" : undefined}>{item.label}</a>
+              </li>
+            ))
+          }
+          <li><ThemeToggle /></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <slot />
+  </main>
+  <Footer />
+  <div class="sticky-bar" role="region" aria-label="Quick contact">
+    {contact.tel && <a class="btn btn-primary" href={contact.tel.href}><Icon name="phone" /> Call</a>}
+    {maps && <a class="btn btn-quiet" href={maps.directions} target="_blank" rel="noopener noreferrer"><Icon name="pin" /> Directions</a>}
+  </div>
+</Base>
+
+<style>
+  .utility { background: var(--sh-surface); font-size: 0.9375rem; }
+  .tel { display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 700; color: var(--sh-text); text-decoration: none; }
+  .site-header { border-bottom: 1px solid var(--sh-border); }
+  .brand { display: inline-flex; align-items: center; gap: 0.65rem; font-family: var(--sh-font-display); font-weight: 700; font-size: 1.25rem; color: var(--sh-text); text-decoration: none; }
+  .mark { width: 1.75rem; height: 1.75rem; border-radius: 50% 50% 50% 12%; background: var(--sh-primary); box-shadow: inset -6px -6px 0 color-mix(in srgb, var(--sh-accent) 70%, transparent); }
+  nav a { display: inline-block; padding: 0.6rem 0.9rem; border-radius: var(--sh-radius); color: var(--sh-text); text-decoration: none; font-weight: 600; }
+  nav a:hover { background: var(--sh-surface); }
+  nav a[aria-current="page"] { background: var(--sh-surface); color: var(--sh-primary); }
+  .sticky-bar { display: none; }
+  @media (max-width: 30rem) {
+    nav a { padding: 0.5rem 0.55rem; font-size: 0.9375rem; }
+    nav ul { gap: 0; margin-left: -0.55rem; }
+  }
+  @media (max-width: 40rem) {
+    .sticky-bar {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; position: sticky; bottom: 0; z-index: 20;
+      padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom)); background: var(--sh-background);
+      border-top: 1px solid var(--sh-border);
+    }
+    .sticky-bar .btn { justify-content: center; }
+  }
+</style>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://linden-hair.example/sitemap-index.xml

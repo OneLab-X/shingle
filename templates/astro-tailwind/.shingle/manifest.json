@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "files": {},
+  "font_packages": [
+    "@fontsource-variable/archivo",
+    "@fontsource-variable/ibm-plex-sans"
+  ],
+  "generated_at": "2026-11-26T18:19:06Z",
+  "shingle_version": "0.1.0"
+}

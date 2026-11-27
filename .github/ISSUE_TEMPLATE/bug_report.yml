@@ -1,0 +1,34 @@
+name: Bug report
+description: Something Shingle did wrong (build error, bad output, a script crash, invented content)
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you ran, what you expected, and what you got instead.
+    validations:
+      required: true
+  - type: textarea
+    id: business
+    attributes:
+      label: business.json (remove anything private)
+      render: json
+  - type: textarea
+    id: output
+    attributes:
+      label: Error output or audit report
+      render: text
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: Shingle version, `claude --version`, `node -v`, `python3 --version`, OS
+    validations:
+      required: true
+  - type: checkboxes
+    id: fabricated
+    attributes:
+      label: Fabricated content
+      options:
+        - label: Shingle invented something that was not in my details (a review, price, award, staff member, statistic…)

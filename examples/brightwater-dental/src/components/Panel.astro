@@ -1,0 +1,18 @@
+---
+/** Soft rounded surface panel: the main building block of the clinical-calm direction. */
+interface Props {
+  tone?: "surface" | "accent" | "outline";
+  class?: string;
+}
+const { tone = "surface", class: className } = Astro.props;
+---
+
+<div class:list={["panel", `panel-${tone}`, className]}><slot /></div>
+
+<style>
+  .panel { border-radius: var(--sh-radius); padding: clamp(1.25rem, 3vw, 2rem); }
+  .panel-surface { background: var(--sh-surface); }
+  .panel-accent { background: color-mix(in srgb, var(--sh-accent) 22%, var(--sh-background)); border: 1px solid var(--sh-accent); }
+  .panel-outline { border: 1px solid var(--sh-border); }
+  .panel :global(h2), .panel :global(h3) { margin-bottom: 0.5rem; }
+</style>
