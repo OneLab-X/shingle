@@ -18,53 +18,62 @@ REFS = ROOT / "skills" / "shingle" / "references"
 
 GUIDE = ROOT / "docs" / "media" / "guide"
 
+# (screenshot, title, what to do, command shown under the text or "")
 STEPS = [
-    ("step-1-intake", "Read and normalize", "Give it a name and a phone number, a file, or a Google Business Profile export. Shingle normalizes phones to E.164, turns free-text hours into a schedule, and lists what is missing instead of guessing."),
-    ("step-2-category", "Pick the closest category", "One of 13 categories (restaurant, dental clinic, plumber…) is loaded as a short playbook: audience, tone, required sections, schema.org type and the things never to invent."),
-    ("step-3-interview", "Interview in a few questions", "At most four multiple-choice questions per round, each with a recommended answer: goal, pages, tone, photos, booking, features. Answers are saved to business.json so reruns never ask twice."),
-    ("step-4-design", "Choose palette and direction", "Two or three palettes plus one of ten design directions, all checked for WCAG AA contrast in light and dark mode by script, not by eye."),
-    ("step-5-build", "Build the site", "An Astro + Tailwind project with real copy from your facts, LocalBusiness JSON-LD, Open Graph, sitemap, robots, favicon and contact links that work without a backend."),
-    ("step-6-audit", "Audit and fix", "Broken links, alt text, meta tags, JSON-LD and NAP consistency, fake reviews, lorem ipsum, emoji icons. Every problem is fixed before you see the site; every placeholder is listed with its file and line."),
-    ("step-7-handover", "Hand over, then stay in sync", "You get the decisions made, the placeholders to fill, and one-command deploys for GitHub Pages, Netlify or Cloudflare Pages. Edit business.json and re-run: hand edits are never overwritten."),
+    ("use-install", "Install and run", "Add the plugin from the marketplace in Claude Code, then run /shingle with whatever you know. A name and a phone number is enough to start. You can also pass a business.json file, a Google Business Profile export (.csv, .tsv, .xlsx), or the folder of a site Shingle already built.", "/plugin marketplace add OneLab-X/shingle\n/plugin install shingle@shingle\n/shingle ./business.json"),
+    ("step-1-intake", "Check what it understood", "Shingle normalizes phones, hours and addresses, then tells you what is missing. Fix anything wrong in business.json, or just tell Claude.", ""),
+    ("step-2-category", "Confirm the category", "It picks the closest of 13 categories and loads that playbook (audience, tone, required sections, things never to invent). Say so if the category is wrong.", ""),
+    ("step-3-interview", "Answer the interview", "Up to four multiple-choice questions per round, each with a recommended answer first. Accept the recommendation or pick another. Your answers are saved in business.json, so re-running never asks twice.", ""),
+    ("step-4-design", "Pick a palette and design direction", "Choose from two or three palettes and a direction. Every palette is checked for WCAG AA contrast in light and dark mode before you see it.", ""),
+    ("step-5-build", "Preview the site", "Shingle builds an Astro site in your folder and starts a preview. Look at it on desktop and phone, and ask for changes in plain words.", "cd my-site\nnpm install\nnpm run dev"),
+    ("use-photos", "Add your photos", "Point Shingle at a folder of photos. It strips location, camera and date data from the copies, suggests alt text for you to confirm in one table, and swaps the placeholders for real images. Shingle never invents or hotlinks photos.", "/shingle import the photos in ./photos"),
+    ("step-6-audit", "Review the audit and fill placeholders", "The audit checks links, alt text, meta tags, JSON-LD, phone and address consistency, fake reviews and filler copy. Anything the site needs from you appears as a visible TODO(shingle) placeholder, listed with its file and line.", "python3 audit_site.py dist --strict"),
+    ("use-deploy", "Deploy", "Pick one host. All three are free for sites like these. Then point your domain at it and submit the sitemap to Google Search Console.", ""),
+    ("use-update", "Update it later", "Edit business.json (new hours, a new phone number) and run /shingle on the site folder. Facts update everywhere, and your own edits to pages are never overwritten: Shingle saves its proposed version next to yours instead.", "/shingle ./my-site"),
 ]
 
 FEATURES = [
-    ("feature-mobile", "Phone first", "Every site is laid out for a 390 px screen first: tap-to-call, large targets, nothing hidden behind hover."),
-    ("feature-dark", "Light and dark modes", "Both modes use the same checked palette, follow the visitor's system setting and can be toggled."),
-    ("feature-hours", "Real opening hours", "Hours come from a schedule, so the current day is highlighted and the header shows whether you are open right now."),
-    ("feature-languages", "Multi-language sites", "List more than one language and each gets its own pages, a switcher and hreflang tags."),
-    ("feature-seo", "Local SEO built in", "schema.org markup for the business type, with name, address, phone and hours checked for consistency on every page."),
-    ("feature-og", "Social cards at build time", "A branded Open Graph image is rendered for every site, so links look right when shared."),
+    ("feature-mobile", "Phone first", "Laid out for a 390 px screen first: tap-to-call, large targets, nothing behind hover."),
+    ("feature-dark", "Light and dark modes", "Both use the same checked palette and follow the visitor's system setting."),
+    ("feature-hours", "Real opening hours", "Today is highlighted and the header shows whether you are open right now."),
+    ("feature-languages", "More than one language", "List several languages in business.json and each gets its own pages, a switcher and hreflang."),
+    ("feature-seo", "Local SEO built in", "schema.org markup for your business type, with name, address, phone and hours checked on every page."),
+    ("feature-og", "Social cards", "A branded Open Graph image is rendered at build time so shared links look right."),
 ]
 
 
 def guide_section(out: Path, base: str) -> str:
-    """Documentation section: one screenshot per development step and per feature."""
+    """How-to-use section: one screenshot per usage step and per feature."""
     if not GUIDE.is_dir():
         return ""
     (out / "guide").mkdir(exist_ok=True)
 
-    def figure(slug: str, title: str, text: str, n: int | None) -> str:
+    def img(slug: str, alt: str) -> str:
         shot = GUIDE / f"{slug}.png"
         if not shot.exists():
             return ""
         shutil.copy(shot, out / "guide" / shot.name)
-        num = f'<span class="num">{n}</span>' if n else ""
-        return (
-            f'<li class="{"step" if n else "feat"}"><figure><img src="{base}/guide/{shot.name}" alt="{html.escape(title)}: screenshot" loading="lazy"></figure>'
-            f"<div>{num}<h3>{html.escape(title)}</h3><p>{html.escape(text)}</p></div></li>"
-        )
+        return f'<figure><img src="{base}/guide/{shot.name}" alt="{html.escape(alt)}: screenshot" loading="lazy"></figure>'
 
-    steps = "".join(figure(slug, t, d, i) for i, (slug, t, d) in enumerate(STEPS, 1))
-    feats = "".join(figure(slug, t, d, None) for slug, t, d in FEATURES)
+    steps = []
+    for i, (slug, title, text, cmd) in enumerate(STEPS, 1):
+        code = f"<pre><code>{html.escape(cmd)}</code></pre>" if cmd else ""
+        steps.append(
+            f'<li class="step" id="step-{i}">{img(slug, title)}<div><span class="num">{i}</span>'
+            f"<h3>{html.escape(title)}</h3><p>{html.escape(text)}</p>{code}</div></li>"
+        )
+    feats = "".join(
+        f'<li class="feat">{img(slug, title)}<h3>{html.escape(title)}</h3><p>{html.escape(text)}</p></li>'
+        for slug, title, text in FEATURES
+    )
     return f"""<section id="how" aria-labelledby="how-h">
-<h2 id="how-h" class="sec">How it works</h2>
-<p class="lead">Seven steps from a phone number to a deployed site. Every screenshot below is real output for the Marigold Kitchen example: the terminal cards are the actual scripts, the site shots are the built site.</p>
-<ol class="steps">{steps}</ol>
-<h2 id="features" class="sec">What you get</h2>
+<h2 id="how-h" class="sec">How to use Shingle</h2>
+<p class="lead">You need <a href="https://claude.com/claude-code">Claude Code</a>, Node 22.23.4+ and Python 3.9+. From install to a live site takes ten steps; the pictures show real output for the Marigold Kitchen example.</p>
+<ol class="steps">{"".join(steps)}</ol>
+<h2 id="features" class="sec">What your site includes</h2>
 <ul class="feats">{feats}</ul>
 </section>
-<h2 id="examples" class="sec">Examples</h2>"""
+<h2 id="examples" class="sec">Examples to look at</h2>"""
 
 
 def main() -> None:
@@ -106,7 +115,7 @@ def main() -> None:
     (out / "index.html").write_text(
         f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Shingle: how it works and examples</title><meta name="description" content="Sites generated by Shingle, a Claude Code plugin that turns a business's details into a finished website.">
+<title>How to use Shingle</title><meta name="description" content="Sites generated by Shingle, a Claude Code plugin that turns a business's details into a finished website.">
 <meta name="robots" content="noindex">
 <style>
 :root {{ color-scheme: light dark; --bg:#f7f6f3; --fg:#18181a; --muted:#55575b; --card:#fff; --line:#dcd8d1; --accent:#b83e00; }}
@@ -129,6 +138,7 @@ ul.cards li p {{ margin:0 1.25rem; color:var(--muted); font-size:.9375rem; }}
 figure {{ margin:0; border:1px solid var(--line); border-radius:10px; overflow:hidden; background:var(--card); }}
 figure img {{ border-bottom:0; }}
 .num {{ display:inline-grid; place-items:center; width:2rem; height:2rem; border-radius:50%; background:var(--accent); color:var(--bg); font-weight:700; margin-bottom:.5rem; }}
+pre {{ background:var(--card); border:1px solid var(--line); border-radius:8px; padding:.75rem 1rem; overflow-x:auto; font-size:.875rem; margin:.75rem 0 0; }}
 .steps h3, .feats h3 {{ font-size:1.25rem; margin:.25rem 0; }}
 .steps p, .feats p {{ margin:0; color:var(--muted); }}
 .feats {{ list-style:none; padding:0; margin:1.5rem 0 0; display:grid; gap:1.5rem; grid-template-columns:repeat(auto-fill,minmax(19rem,1fr)); }}
@@ -141,7 +151,7 @@ a:focus-visible {{ outline:3px solid var(--accent); outline-offset:3px; }}
 </style></head>
 <body><main>
 <h1>Shingle</h1>
-<p class="lead">Business details in, website out. A Claude Code plugin that interviews you about a local business and builds an accessible, production-ready site. <a href="#how">How it works</a> · <a href="#examples">Examples</a></p>
+<p class="lead">Business details in, website out. A Claude Code plugin that interviews you about a local business and builds an accessible, production-ready site. <a href="#how">How to use it</a> · <a href="#examples">Examples</a></p>
 <p class="lead">Every example here was generated by <a href="https://github.com/OneLab-X/shingle">Shingle</a> from a short business.json.
 All businesses are fictional. Each one uses a different design direction.</p>
 {guide_section(out, base)}

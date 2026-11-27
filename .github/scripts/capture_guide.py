@@ -216,6 +216,46 @@ def main() -> None:
     sync = run([sys.executable, str(SCRIPTS / "sync.py"), ".", "--status"], cwd=MARIGOLD)
     page("step-7-handover", terminal("7 · Hand over", [("python3 sync.py . --status", sync)]), 980, 240)
 
+    # Usage: install and deploy commands (literal commands from the README and deploy.md)
+    page("use-install", terminal("In Claude Code", [
+        ("/plugin marketplace add OneLab-X/shingle", ""),
+        ("/plugin install shingle@shingle", ""),
+        ("/shingle Marigold Kitchen, Goan restaurant, 27 Fenwick Lane London E8 4QT, 020 7946 0321", ""),
+    ]), 1100, 250)
+    page("use-deploy", terminal("Deploy: pick one host", [
+        ("git init && git add -A && git commit -m Site && gh repo create --source . --push --public   # GitHub Pages", ""),
+        ("npx netlify-cli deploy --prod --dir=dist                                                   # Netlify", ""),
+        ("npx wrangler pages deploy dist                                                             # Cloudflare Pages", ""),
+    ]), 1300, 250)
+
+    # Usage: photos, imported into a scratch copy so the example is not modified
+    scratch = Path(tempfile.mkdtemp(prefix="shingle-scratch-"))
+    photos = ROOT / "examples" / "harbour-loaf-bakery" / "public" / "images"
+    site = scratch / "site"
+    (site / "public").mkdir(parents=True)
+    shutil.copy(MARIGOLD / "business.json", site / "business.json")
+    shutil.copytree(photos, scratch / "photos", ignore=shutil.ignore_patterns(".gitkeep"))
+    imp = run([sys.executable, str(SCRIPTS / "import_images.py"), "photos", "--site", "site", "--dry-run"], cwd=scratch)
+    page("use-photos", terminal("Add your photos", [("python3 import_images.py ./photos --site . --dry-run", imp)]), 1200, 160 + 26 * (len(imp.splitlines()) + 2))
+
+    # Usage: update after editing business.json, on a scratch copy
+    upd = scratch / "update"
+    upd.mkdir()
+    for name in ("business.json", "src", "public", "astro.config.mjs", "package.json", ".shingle", "README.md"):
+        src = MARIGOLD / name
+        shutil.copytree(src, upd / name) if src.is_dir() else shutil.copy(src, upd / name)
+    edited = json.loads((upd / "business.json").read_text())
+    old_phone = edited["phone_display"]
+    edited["phone_display"] = "020 7946 0999"
+    edited["phone"] = "+442079460999"
+    (upd / "business.json").write_text(json.dumps(edited, indent=2, ensure_ascii=False) + "\n")
+    sync_out = run([sys.executable, str(SCRIPTS / "sync.py"), "."], cwd=upd)
+    page("use-update", terminal("Update later", [
+        (f"# edit business.json: phone_display  {old_phone} -> 020 7946 0999", ""),
+        ("python3 sync.py .", sync_out),
+        ("grep -n 7946 src/data/site.json", run(["grep", "-n", "7946", "src/data/site.json"], cwd=upd)),
+    ]), 1100, 420)
+
     # Features: structured data from the real built page
     index = (MARIGOLD / "dist" / "index.html").read_text()
     m = re.search(r'<script type="application/ld\+json">(.*?)</script>', index, re.S)
@@ -244,6 +284,7 @@ def main() -> None:
     m_server.shutdown()
     b_server.shutdown()
     shutil.rmtree(tmp, ignore_errors=True)
+    shutil.rmtree(scratch, ignore_errors=True)
 
 
 if __name__ == "__main__":
