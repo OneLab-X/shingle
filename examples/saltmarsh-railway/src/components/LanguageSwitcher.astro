@@ -1,0 +1,41 @@
+---
+/**
+ * Language links for multi-language sites: each one goes to the same page in the other language.
+ * Renders nothing on single-language sites.
+ */
+import { i18n, locales, localeOf, pathIn, useT } from "../lib/i18n";
+
+const current = localeOf(Astro.currentLocale);
+const t = useT(current.code);
+---
+
+{
+  i18n.enabled && (
+    <nav class="lang-switcher" aria-label={t("nav.language")}>
+      <ul>
+        {locales.map((l) => (
+          <li>
+            {l.code === current.code ? (
+              <span lang={l.code} aria-current="true">{l.label}</span>
+            ) : (
+              <a href={pathIn(Astro.url.pathname, l)} lang={l.code} hreflang={l.hreflang} title={t("lang.switch_to", { language: l.label })}>
+                {l.label}
+              </a>
+            )}
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
+
+<style>
+  .lang-switcher ul { display: flex; gap: 0.25rem; list-style: none; margin: 0; padding: 0; }
+  .lang-switcher a, .lang-switcher span {
+    display: inline-flex; align-items: center; min-height: 44px; padding: 0 0.75rem;
+    border: 1px solid var(--sh-border); border-radius: var(--sh-radius);
+    color: var(--sh-text); text-decoration: none; font-size: 0.875rem; font-weight: 600;
+  }
+  .lang-switcher span { background: var(--sh-surface); color: var(--sh-text); }
+  .lang-switcher a:hover { background: var(--sh-surface); }
+</style>

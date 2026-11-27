@@ -1,0 +1,41 @@
+name: New palette
+description: Propose (or volunteer to add) a color palette
+labels: ["palette"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Palettes are checked for WCAG AA contrast by `validate_library.py`. The fastest route is a pull request
+        ([guide](https://github.com/OneLab-X/shingle/blob/main/docs/adding-a-palette.md), about 5 minutes); an issue is fine if you only have the idea.
+  - type: input
+    id: name
+    attributes:
+      label: Palette name and id
+      description: e.g. "Harbor Fog" / harbor-fog (lowercase, hyphens)
+    validations:
+      required: true
+  - type: textarea
+    id: categories
+    attributes:
+      label: Which categories and moods is it for?
+      description: Category ids from skills/shingle/references/categories.json (travel-agency, law-firm…) and one to three moods (warm, calm, bold, high-contrast…).
+    validations:
+      required: true
+  - type: textarea
+    id: colors
+    attributes:
+      label: Colors
+      description: Paste the palette JSON (see the guide) or list background, surface, text, muted, primary, on_primary, accent, on_accent, border as hex, for light and (optionally) dark mode.
+      render: json
+  - type: textarea
+    id: why
+    attributes:
+      label: Why is it missing from the library?
+      description: The gap it fills (a category with few palettes, a mood, accessibility needs).
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I ran `python3 skills/shingle/scripts/validate_library.py --palette my-palette.json` and it passes (or I'm asking for help with it)
+        - label: I'd like to open the PR myself

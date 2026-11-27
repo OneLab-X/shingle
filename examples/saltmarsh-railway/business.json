@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "name": "Saltmarsh Railway Society",
+  "slug": "saltmarsh-light-railway-society",
+  "category": "nonprofit",
+  "category_label": "Heritage railway",
+  "tagline": "A volunteer-run line in Norfolk",
+  "description": "A volunteer society restoring and running a small narrow-gauge railway from Saltmarsh Halt to Lantern Quay. Trains run at weekends in summer. We are always looking for people to help on the line.",
+  "domain": "saltmarsh-railway.example",
+  "address": {
+    "street": "Saltmarsh Halt, Marsh Lane",
+    "locality": "Saltmarsh",
+    "region": "Norfolk",
+    "postal_code": "NR25 7XA",
+    "country": "GB"
+  },
+  "timezone": "Europe/London",
+  "phone": "+441632960214",
+  "phone_display": "016 3296 0214",
+  "email": "hello@saltmarsh-railway.example",
+  "hours": {
+    "mon": [],
+    "tue": [],
+    "wed": [],
+    "thu": [],
+    "fri": [],
+    "sat": [
+      [
+        "10:30",
+        "16:00"
+      ]
+    ],
+    "sun": [
+      [
+        "10:30",
+        "16:00"
+      ]
+    ]
+  },
+  "hours_note": "Trains run on Saturdays and Sundays from April to October. Outside the season the site is open for volunteer work parties only.",
+  "languages": [
+    "en"
+  ],
+  "facts": {
+    "season": "April to October",
+    "stops": [
+      {
+        "name": "Saltmarsh Halt",
+        "note": "The booking office, tea hut and engine shed."
+      },
+      {
+        "name": "Reedbed Crossing",
+        "note": "A request stop where the line crosses the reedbeds on a low causeway."
+      },
+      {
+        "name": "Gull Lane",
+        "note": "The passing loop, halfway along the line."
+      },
+      {
+        "name": "Lantern Quay",
+        "note": "End of the line, beside the old quay."
+      }
+    ],
+    "roles": [
+      {
+        "name": "Guards and ticket sellers",
+        "text": "Meet visitors, sell tickets and send trains on their way. Training is given."
+      },
+      {
+        "name": "Track and signal gang",
+        "text": "Work parties on the track, drainage and signals. Boots and gloves are provided."
+      },
+      {
+        "name": "Tea hut and shop",
+        "text": "Tea, cake and cards for passengers. A few hours on a weekend is plenty."
+      },
+      {
+        "name": "Carriage restorers",
+        "text": "Sanding, painting and joinery in the engine shed, on weekdays or weekends."
+      }
+    ],
+    "headline": "Three miles of narrow-gauge line across the Norfolk marshes, run by volunteers"
+  },
+  "decisions": {
+    "goal": "volunteers",
+    "cta": {
+      "label": "Volunteer with us",
+      "action": "mailto"
+    },
+    "pages": "single",
+    "tone": "warm",
+    "imagery": "illustration",
+    "languages": [
+      "en"
+    ],
+    "contact_method": [
+      "tel",
+      "email",
+      "map"
+    ],
+    "features": [
+      "stops",
+      "roles"
+    ],
+    "design": {
+      "direction": "postcard",
+      "palette": "postcard-stamp"
+    },
+    "badge": true
+  }
+}

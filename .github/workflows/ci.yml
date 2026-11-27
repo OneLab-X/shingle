@@ -28,6 +28,8 @@ jobs:
           ruff format --check .
       - name: Palettes pass WCAG AA
         run: python3 skills/shingle/scripts/check_contrast.py --all
+      - name: Palette and direction library is valid
+        run: python3 skills/shingle/scripts/validate_library.py
       - uses: actions/setup-node@v7
         with:
           node-version: 24

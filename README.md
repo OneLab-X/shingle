@@ -51,20 +51,21 @@ Re-run `/shingle` after editing `business.json` and it updates the site **withou
 
 ## Gallery
 
-Nine fictional businesses (one of them bilingual), eight design directions. Every one was generated from a short `business.json`, and CI rebuilds and audits all of them on every pull request.
+Eleven fictional businesses (one of them bilingual), ten design directions. Every one was generated from a short `business.json`, and CI rebuilds and audits all of them on every pull request.
 
 | | | |
 |---|---|---|
 | [![Marigold Kitchen](docs/media/examples/marigold-kitchen.png)](https://onelab-x.github.io/shingle/examples/marigold-kitchen/)<br>**[Marigold Kitchen](examples/marigold-kitchen/)** · restaurant · Broadsheet | [![Brightwater Family Dental](docs/media/examples/brightwater-dental.png)](https://onelab-x.github.io/shingle/examples/brightwater-dental/)<br>**[Brightwater Family Dental](examples/brightwater-dental/)** · dental clinic · Clinical Calm | [![Ridgeback Plumbing & Gas](docs/media/examples/ridgeback-plumbing.png)](https://onelab-x.github.io/shingle/examples/ridgeback-plumbing/)<br>**[Ridgeback Plumbing & Gas](examples/ridgeback-plumbing/)** · plumber · Swiss Grid |
 | [![Little Wren Coffee](docs/media/examples/little-wren-coffee.png)](https://onelab-x.github.io/shingle/examples/little-wren-coffee/)<br>**[Little Wren Coffee](examples/little-wren-coffee/)** · cafe · Handmade | [![Forge Strength Club](docs/media/examples/forge-strength.png)](https://onelab-x.github.io/shingle/examples/forge-strength/)<br>**[Forge Strength Club](examples/forge-strength/)** · gym · Poster | [![Northlight Studio](docs/media/examples/northlight-studio.png)](https://onelab-x.github.io/shingle/examples/northlight-studio/)<br>**[Northlight Studio](examples/northlight-studio/)** · photographer · Gallery |
 | [![Linden Hair & Skin](docs/media/examples/linden-hair.png)](https://onelab-x.github.io/shingle/examples/linden-hair/)<br>**[Linden Hair & Skin](examples/linden-hair/)** · salon · Quiet Luxury | [![Compass & Kite Journeys](docs/media/examples/compass-kite.png)](https://onelab-x.github.io/shingle/examples/compass-kite/)<br>**[Compass & Kite Journeys](examples/compass-kite/)** · travel agency · Wayfinder | [![Barro & Luz (pt + en)](docs/media/examples/barro-e-luz.png)](https://onelab-x.github.io/shingle/examples/barro-e-luz/)<br>**[Barro & Luz](examples/barro-e-luz/)** · ceramics shop · Handmade · **pt + en** |
+| [![Tamsin & Pike Bookkeeping](docs/media/examples/tamsin-pike.png)](https://onelab-x.github.io/shingle/examples/tamsin-pike/)<br>**[Tamsin & Pike Bookkeeping](examples/tamsin-pike/)** · bookkeeper · Ledger | [![Saltmarsh Railway Society](docs/media/examples/saltmarsh-railway.png)](https://onelab-x.github.io/shingle/examples/saltmarsh-railway/)<br>**[Saltmarsh Railway Society](examples/saltmarsh-railway/)** · heritage railway · Postcard | |
 
 Each example's README explains its design choices and lists the placeholders the owner still needs to fill.
 
 ## What makes it different
 
 - **Nothing is invented.** Reviews, awards, prices, years in business, team members, licence numbers and statistics only appear if you provide them. Everything else becomes a visible, audited `TODO(shingle)` placeholder.
-- **Not another template.** Eight design directions, each with its own type pairing, spacing, shape language and a signature element (a newspaper masthead, an hours stamp, a route line, oversized numerals…), plus an explicit anti-slop list: no default purple gradients, no hero + three cards, no emoji icons, no stock photos.
+- **Not another template.** Ten design directions, each with its own type pairing, spacing, shape language and a signature element (a newspaper masthead, an hours stamp, a route line, ruled-paper ledgers, a stamped postcard…), plus an explicit anti-slop list: no default purple gradients, no hero + three cards, no emoji icons, no stock photos.
 - **Local SEO done properly.** schema.org type per category, opening hours, NAP consistency checks, Open Graph cards rendered at build time, sitemap and robots.
 - **Accessible by default.** WCAG AA palettes (checked by script), skip links, labelled forms, focus states, reduced-motion support, light and dark modes.
 - **Yours.** A plain Astro project with no lock-in and no runtime dependencies. Host it anywhere static, usually for free.
@@ -104,13 +105,13 @@ Each category is one short Markdown playbook: audience, tone, required sections,
 - [ ] Optional "suggest my language" banner (no automatic redirect, which hurts SEO)
 - [x] Import from a Google Business Profile export (spreadsheet download or API JSON)
 - [ ] More categories: vet, accountant, florist, driving school, coworking
-- [ ] More design directions and palettes from the community
+- [x] More design directions and palettes: contribution tooling and a starter batch (10 directions, 30 palettes); more welcome
 - [ ] Optional blog/news collection with RSS
 - [x] Image pipeline: drop a folder of photos, get alt text suggestions to confirm
 
 ## Contributing
 
-Categories, palettes and design directions are the easiest and most valuable contributions. See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/adding-a-category.md](docs/adding-a-category.md).
+Categories, palettes and design directions are the easiest and most valuable contributions. See [CONTRIBUTING.md](CONTRIBUTING.md), [adding a category](docs/adding-a-category.md), [adding a palette](docs/adding-a-palette.md) (about 5 minutes) and [adding a design direction](docs/adding-a-direction.md).
 
 ## License
 

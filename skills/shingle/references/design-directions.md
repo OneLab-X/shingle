@@ -19,6 +19,8 @@ Tokens map to CSS variables in `src/styles/theme.css` (`--font-display`, `--font
 | `poster` | Poster | gym-fitness, cafe, contractor-home-services | dental-clinic, law-firm |
 | `gallery` | Gallery | photographer, ecommerce-boutique, salon-spa | contractor-home-services |
 | `wayfinder` | Wayfinder | travel-agency, nonprofit, real-estate | dental-clinic |
+| `ledger` | Ledger | generic (bookkeeping, repairs, trades), law-firm, real-estate | salon-spa, gym-fitness |
+| `postcard` | Postcard | nonprofit (heritage, tourism), travel-agency, cafe, ecommerce-boutique | law-firm, dental-clinic |
 
 ---
 
@@ -111,6 +113,31 @@ Journeys, maps, places. Sense of movement.
 - **Signature element:** a dotted SVG route line running down the left edge, linking section
   markers shaped like map pins or passport stamps, ending at the contact section.
 
+## ledger: Ledger
+Exact, plain-spoken, built on tables. For businesses that sell care with numbers and records.
+- **Fonts:** Spline Sans Mono (display 600, labels, figures) + Newsreader (body 400, italic for notes).
+- **Scale:** 1.2; h1 clamp(2.25rem, 5.5vw, 4rem). Body 1.0625rem / 1.7; numerals always tabular.
+- **Spacing:** 8px unit; one 28px baseline so ruled lines and text line up; sections 64-96px apart.
+- **Shape:** radius 0; 1px `border` rules, no shadows, no cards.
+- **Motion:** 100ms color changes only.
+- **Signature element:** ruled-paper sections: a faint horizontal ruling in `border`, a double
+  vertical margin rule on the left, and a folio label ("Folio 02 · Services") opening each section.
+  Services, hours and process steps are real `<table>`s: right-aligned tabular figures, dotted
+  leaders between label and value, and a closing "total" row built only from facts (e.g. days open).
+
+## postcard: Postcard
+Retro travel, hand-stamped and friendly. For places people visit, send a card from, or love.
+- **Fonts:** Bevan (display 400) + Josefin Sans (body 400/600, UI uppercase with 0.12em tracking).
+- **Scale:** 1.333; h1 clamp(2.75rem, 8vw, 6rem). Body 1.125rem / 1.65.
+- **Spacing:** 8px unit; generous, with one slightly rotated (-1.5deg) card per section at most.
+- **Shape:** radius 6px; 2px borders; stamp edges cut with a radial-gradient mask; air-mail
+  stripes (diagonal `primary` / `accent` bands) as the only decoration.
+- **Motion:** 180ms hover lifts; nothing animates on scroll.
+- **Signature element:** the hero is a postcard: a perforated postage stamp holding the monogram,
+  a round postmark whose text (set on an SVG path) reads the real place and opening days from
+  facts, and an address block with ruled lines for the contact details. Detail cards are
+  smaller cards edged in air-mail stripes.
+
 ---
 
 ## Anti-slop list (never ship these)
@@ -134,4 +161,6 @@ Journeys, maps, places. Sense of movement.
 ## Pairing directions with palettes
 Directions are palette-agnostic, but these pairs are tested: broadsheet + any palette with a
 dark `text` and warm `background`; poster + palettes tagged `bold`; quiet-luxury + `muted`
-or `elegant`; clinical-calm + `calm` or `clean`. Avoid poster with `calm` palettes.
+or `elegant`; clinical-calm + `calm` or `clean`; ledger + `trustworthy` or `muted` (try `ledger-green`);
+postcard + `warm` or `playful` (try `postcard-stamp`). Avoid poster with `calm` palettes.
+Need strict accessibility? `high-contrast-ink` clears 7:1 and pairs with any direction.

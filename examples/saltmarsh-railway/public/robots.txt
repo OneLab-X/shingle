@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://saltmarsh-railway.example/sitemap-index.xml

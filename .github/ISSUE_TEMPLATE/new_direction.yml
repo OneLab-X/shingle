@@ -1,0 +1,46 @@
+name: New design direction
+description: Propose (or volunteer to add) a design direction
+labels: ["direction"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A direction is two Fontsource fonts, spacing and shape tokens, and one signature element.
+        Read the [guide](https://github.com/OneLab-X/shingle/blob/main/docs/adding-a-direction.md) first. A pull request must include an
+        example in `examples/` or a screenshot of a sample built with it.
+  - type: input
+    id: name
+    attributes:
+      label: Direction name and id
+      description: e.g. "Ledger" / ledger (lowercase, hyphens)
+    validations:
+      required: true
+  - type: textarea
+    id: concept
+    attributes:
+      label: What is the look, and which businesses is it for?
+      description: Mood in a sentence, best-for and avoid-for categories.
+    validations:
+      required: true
+  - type: textarea
+    id: fonts
+    attributes:
+      label: Fonts
+      description: Display and body font, with their Fontsource package names (`npm view @fontsource-variable/<name> version` proves they exist).
+    validations:
+      required: true
+  - type: textarea
+    id: signature
+    attributes:
+      label: Signature element
+      description: The one specific, buildable thing that makes a site in this direction recognisable (not a mood). It must work with real business facts only.
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: It needs none of the anti-slop items (purple gradients, hero + 3 cards, emoji icons, fake social proof, stock photos)
+          required: true
+        - label: I'd like to open the PR myself
