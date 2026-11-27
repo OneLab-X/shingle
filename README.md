@@ -14,8 +14,8 @@ accessible, production-ready website, with no lorem ipsum and nothing made up.</
   <a href="https://onelab-x.github.io/shingle/"><img src="https://img.shields.io/badge/examples-live-orange" alt="Live examples"></a>
 </p>
 
-<!-- TODO(launch): replace with a 20-second GIF, see docs/launch.md#demo-gif -->
-<p align="center"><img src="docs/media/demo-placeholder.svg" alt="20-second demo: running /shingle with a restaurant's details, answering the interview, and opening the finished site" width="85%"></p>
+<p align="center"><img src="docs/media/demo.gif" alt="20-second demo: running /shingle with a restaurant's details, answering four interview questions, choosing a palette, building and auditing the site, then scrolling the finished desktop and phone views" width="85%"></p>
+<p align="center"><sub>Condensed, 20 seconds. The Claude Code screens are re-created for clarity; the script output and the site are real. <a href="docs/demo-video/">How it's made</a> · <a href="docs/media/demo.mp4">MP4</a></sub></p>
 
 ## Install
 

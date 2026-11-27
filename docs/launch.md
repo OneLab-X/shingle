@@ -8,7 +8,7 @@
 - [ ] Settings → General → Social preview: upload `docs/media/social-preview.png`
 - [ ] Add the repo topics (below), description and website URL (the gallery)
 - [ ] Enable Discussions (the issue template links to them)
-- [ ] Record the demo GIF and replace `docs/media/demo-placeholder.svg` in the README
+- [x] Demo GIF: `docs/media/demo.gif` (Remotion source in `docs/demo-video/`). Optionally replace it with a real screen recording once `/shingle` is verified live
 - [ ] Fresh-machine test: `/plugin marketplace add OneLab-X/shingle`, `/plugin install shingle@shingle`, `/shingle` with a real local business (with the owner's permission)
 - [ ] Tag `v0.1.0` and publish a GitHub release with the changelog and 3 screenshots
 
@@ -35,7 +35,7 @@ gh repo edit OneLab-X/shingle --add-topic claude-code,claude-code-plugin,claude,
 - 20 seconds, 1280×720, under 8 MB (GitHub inline limit 10 MB), 12–15 fps, loops.
 - Script: 0–3 s type `/shingle Marigold Kitchen, Goan restaurant…` · 3–8 s interview question cards (pick recommended) · 8–11 s palette choice with swatches · 11–15 s build and audit output (`PASS: 0 errors`) · 15–20 s the finished site scrolling, then the phone view.
 - Speed up the build part; never fake output. Record with a screen recorder at 2× then trim; convert with `ffmpeg -i demo.mov -vf "fps=12,scale=1280:-1:flags=lanczos" -loop 0 demo.gif` (or gifski).
-- Save as `docs/media/demo.gif`, update the README `<img>` and its alt text.
+- Save as `docs/media/demo.gif`, update the README `<img>` and its alt text. The current GIF is generated with Remotion (`docs/demo-video/`), so it is a re-creation, not a screen recording; the README says so.
 
 ## Launch posts
 

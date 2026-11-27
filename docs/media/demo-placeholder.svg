@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-label="Placeholder for the 20-second demo recording">
-  <rect width="1280" height="720" fill="#141413"/>
-  <rect x="40" y="40" width="1200" height="640" rx="16" fill="none" stroke="#3a3936" stroke-width="2" stroke-dasharray="10 10"/>
-  <text x="640" y="300" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#F2F2EE">20-second demo coming soon</text>
-  <text x="640" y="370" text-anchor="middle" font-family="Menlo, monospace" font-size="28" fill="#E9B949">/shingle "Marigold Kitchen, Goan restaurant, 27 Fenwick Lane, London…"</text>
-  <text x="640" y="430" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="#A8A49D">interview → palette → build → audit → live site</text>
-</svg>
