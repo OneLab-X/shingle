@@ -876,7 +876,7 @@ def normalize(data: dict) -> tuple[dict, Report]:
                 f"images[{i}]: {src!r} is remote. Only use images the owner provides: download "
                 "them with permission into public/images/ and reference the local path"
             )
-        elif isinstance(img, dict) and not img.get("alt"):
+        elif isinstance(img, dict) and not img.get("alt") and img.get("decorative") is not True:
             r.warnings.append(f"images[{i}]: missing alt text for {src!r}")
 
     # decisions

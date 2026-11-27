@@ -50,8 +50,8 @@ Refined and quiet / Playful.
 "What images do we have?"
 - I will add my own photos later (Recommended when none given): build with tasteful SVG/CSS
   placeholders sized for the real photos, each with a TODO.
-- I have photos now: ask for a folder path; copy into `public/images/`; ask for alt text only
-  if the subject is not obvious from the filename.
+- I have photos now: ask for a folder path and run the image pipeline (`images.md`): import
+  strips location data, Claude suggests alt text, the owner confirms it once in one table.
 - No photos, keep it typographic: design leans on type, color and illustration.
 Never offer stock-photo hotlinking or AI-generated photos of the real business, staff, or food.
 

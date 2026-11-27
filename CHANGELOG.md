@@ -11,6 +11,11 @@
 - New example: `barro-e-luz` (Lisbon ceramics shop, pt + en).
 - Sub-folder previews (`SHINGLE_BASE`) now produce correct canonicals, og:image and redirects.
 
+- **Image pipeline.** `import_images.py <folder> --site <dir>` imports jpg, png, webp, gif and avif photos into `public/images/` under clean unique names, reads their size from the file headers, rejects corrupt, empty and over-25 MB files with a reason, and **strips GPS, camera and date metadata** (EXIF, XMP, IPTC, PNG text chunks) from the copies while keeping orientation. Re-running changes nothing. `--apply-alt answers.json` records the alt text the owner confirmed (non-empty unless decorative, at most 125 characters, no "image of", not a file name, never the same twice; per language with `translations`). Claude suggests alt text from the pictures and asks for one confirmation (`references/images.md`).
+- New `Photo.astro` component: `<Photo slot="Dining room" />` renders the matching photo with `astro:assets` (responsive WebP, lazy or eager, alt from the page's language) and falls back to the placeholder with its TODO. `sync.py` passes confirmed images into `site*.json`.
+- `audit_site.py` warns on poor or repeated alt text, unused files in `public/images` and large unoptimised originals, and errors on images still `needs-alt` or GPS data left in any JPEG in `dist/`.
+- New example: `harbour-loaf-bakery` (generated flat-colour test images through the real pipeline).
+
 ## 0.1.0 (2026-11-27)
 
 First public version.

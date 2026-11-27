@@ -42,7 +42,8 @@ except `name` and `category`; leave unknowns out (never write guesses).
   "translations": { "pt": { "review": "draft", "tagline": "Cozinha caseira goesa em Hackney" } },
   "service_area": [],
   "images": [
-    { "src": "public/images/dining-room.jpg", "alt": "Dining room with blue tiles", "subject": "interior" }
+    { "src": "public/images/dining-room.jpg", "alt": "Dining room with blue tiles", "subject": "Dining room",
+      "width": 1600, "height": 1067, "status": "ok" }
   ],
   "facts": {
     "cuisine": ["Goan", "Indian"],
@@ -78,6 +79,12 @@ except `name` and `category`; leave unknowns out (never write guesses).
 | `hours` | Keys `mon`..`sun`; list of `[open, close]` 24h pairs. `[]` = closed. Missing key = unknown. A close earlier than open means past midnight. |
 | `socials` | Full https URLs. Known keys: instagram, facebook, tiktok, x, linkedin, youtube, pinterest, threads, yelp, tripadvisor, google_maps, whatsapp_channel. |
 | `images[].src` | Path inside the site project. Never a remote URL to someone else's image. |
+| `images[].subject` | The page slot this photo fills: `<Photo slot="Dining room">` shows the image whose subject matches (case-insensitive). Not translated. |
+| `images[].alt` | Confirmed alt text, at most 125 characters, one per image. Translated per language in `translations.<lang>.images[i].alt` (same position). |
+| `images[].decorative` | `true` for a purely decorative picture: rendered with empty alt, so `alt` may be empty. |
+| `images[].suggested_alt` | Claude's proposal until the owner confirms it; never published. Cleared by `import_images.py --apply-alt`. |
+| `images[].status` | `needs-alt` (imported, alt not confirmed; the audit fails) or `ok`. |
+| `images[].width`, `height` | Pixels as displayed, read from the file by `import_images.py`. Also `sha256` of the stored file, used to skip re-imports. |
 | `facts` | Extra **verified** facts the owner stated (cuisine, specialties, licence numbers, founding year). Only facts in here may appear as claims on the site. |
 | `decisions` | Interview and design answers. Present keys are not asked again on re-runs. |
 | `decisions.badge` | `false` removes the "Built with Shingle" footer badge. |
