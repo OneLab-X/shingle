@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "name": "Harbour Loaf Bakery",
+  "slug": "harbour-loaf-bakery",
+  "category": "cafe",
+  "category_label": "Neighbourhood bakery",
+  "tagline": "Sourdough, rye and morning buns on Quay Lane",
+  "description": "A small neighbourhood bakery in Bristol. Bread is shaped and baked here every morning and goes when it is gone.",
+  "domain": "harbourloaf.example",
+  "address": {
+    "street": "21 Quay Lane",
+    "locality": "Bristol",
+    "postal_code": "BS1 4XY",
+    "country": "GB"
+  },
+  "phone": "+441174960300",
+  "phone_display": "0117 496 0300",
+  "email": "hello@harbourloaf.example",
+  "hours": {
+    "mon": [],
+    "tue": [
+      [
+        "07:30",
+        "15:00"
+      ]
+    ],
+    "wed": [
+      [
+        "07:30",
+        "15:00"
+      ]
+    ],
+    "thu": [
+      [
+        "07:30",
+        "15:00"
+      ]
+    ],
+    "fri": [
+      [
+        "07:30",
+        "15:00"
+      ]
+    ],
+    "sat": [
+      [
+        "08:00",
+        "14:00"
+      ]
+    ],
+    "sun": []
+  },
+  "hours_note": "Bread is baked in limited batches and can sell out before closing time.",
+  "languages": [
+    "en"
+  ],
+  "decisions": {
+    "goal": "visits",
+    "pages": "single",
+    "tone": "warm",
+    "imagery": "own-photos",
+    "design": {
+      "direction": "handmade",
+      "palette": "espresso-cream"
+    },
+    "badge": true
+  },
+  "images": [
+    {
+      "src": "public/images/counter-morning.jpg",
+      "alt": "Flat terracotta-brown colour field, a generated test image standing in for the counter photo",
+      "subject": "Counter",
+      "width": 1600,
+      "height": 900,
+      "suggested_alt": "",
+      "status": "ok",
+      "sha256": "8f1352117b12dafba2dca3ae1c2f28ba1021c8fe7035a8b3ceb25b7c4abbe978"
+    },
+    {
+      "src": "public/images/img-2041.jpg",
+      "alt": "Flat dark brown colour field, a generated portrait test image standing in for the loaves",
+      "subject": "Loaves",
+      "width": 800,
+      "height": 1200,
+      "suggested_alt": "",
+      "status": "ok",
+      "sha256": "0adb2641db8f7e811eca5be80c336f063a4b838e0dbd996d8c723cadc0c729cc"
+    },
+    {
+      "src": "public/images/shelf-of-rye.png",
+      "alt": "Flat muted green colour field, a generated test image standing in for the rye shelf",
+      "subject": "Rye shelf",
+      "width": 800,
+      "height": 600,
+      "suggested_alt": "",
+      "status": "ok",
+      "sha256": "5c887d441af9b8e7f31201413d91b94b31238e1588cb1c972c197cf3a014cba6"
+    }
+  ]
+}

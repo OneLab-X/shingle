@@ -1,0 +1,63 @@
+---
+/**
+ * The owner's real photo for a named slot, or the visible placeholder when there is none yet.
+ * The slot is matched against `subject` of the images in business.json (case-insensitive), so
+ * `<Photo slot="Dining room" eager />` shows the image whose subject is "Dining room". Photos come
+ * from public/images via `import_images.py`; alt text comes from the site data of the page's
+ * language, and only confirmed alt text (or "decorative") is ever used.
+ */
+import { Image } from "astro:assets";
+import PlaceholderImage from "./PlaceholderImage.astro";
+import { getSite } from "../lib/i18n";
+
+interface Props {
+  /** The shot, e.g. "Dining room". Must equal the `subject` of an images entry to show a photo. */
+  slot: string;
+  /** Crop shape (and the placeholder's size). Without them the photo keeps its own proportions. */
+  width?: number;
+  height?: number;
+  /** First, above-the-fold image: load immediately instead of lazily. */
+  eager?: boolean;
+  /** Which match to use when several photos share a subject (0 is the first). */
+  nth?: number;
+  /** Tell the browser how wide the image is drawn, e.g. "(min-width: 768px) 50vw, 100vw". */
+  sizes?: string;
+  class?: string;
+}
+type Photo = { file: string; subject: string; alt: string; decorative: boolean };
+
+const { slot, width, height, eager = false, nth = 0, sizes = "(min-width: 1024px) 50vw, 100vw", class: className } = Astro.props;
+const photos = (getSite(Astro.currentLocale) as { images?: Photo[] }).images ?? [];
+const wanted = slot.trim().toLowerCase();
+const photo = photos.filter((p) => p.subject.trim().toLowerCase() === wanted)[nth];
+
+const files = import.meta.glob<ImageMetadata>("/public/images/*.{jpg,jpeg,png,webp,gif,avif}", { eager: true, import: "default" });
+const found = photo && Object.entries(files).find(([path]) => path.endsWith(`/${photo.file}`));
+const src = found?.[1];
+const widths = src ? [480, 800, 1200, 1600].filter((w) => w < src.width) : [];
+if (src && src.width <= 1600) widths.push(src.width);
+const shape = width && height ? `aspect-ratio:${width}/${height};object-fit:cover;` : "";
+const style = `display:block;width:100%;height:auto;border-radius:var(--sh-radius);${shape}`;
+---
+
+{
+  photo && src ? (
+    src.format === "gif" ? (
+      <img src={src.src} alt={photo.alt} width={src.width} height={src.height} loading={eager ? "eager" : "lazy"} class={className} style={style} />
+    ) : (
+      <Image
+        src={src}
+        alt={photo.alt}
+        widths={widths}
+        sizes={sizes}
+        format="webp"
+        loading={eager ? "eager" : "lazy"}
+        fetchpriority={eager ? "high" : undefined}
+        class={className}
+        style={style}
+      />
+    )
+  ) : (
+    <PlaceholderImage subject={slot} width={width} height={height} class={className} />
+  )
+}

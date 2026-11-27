@@ -10,8 +10,10 @@ description, canonical and Open Graph tags, html lang, viewport, h1 count, JSON-
 NAP consistency with business.json, fabricated-review markup, unlabeled form fields, links and
 buttons without accessible names, duplicate ids, iframes without titles, mixed content,
 hotlinked images, image dimensions (layout shift), page weight, lorem ipsum, emoji used as
-icons, filler phrases, and default purple gradients. Site-wide: robots.txt, sitemap, favicon,
-404 page. Collects every TODO(shingle) placeholder with file:line.
+icons, filler phrases, and default purple gradients. Images: alt text quality (file names, over 125 characters, "image of", the
+same text on different images), images still marked needs-alt in business.json, unused files in
+public/images, large originals served without optimisation, and GPS location data left in any JPEG
+under dist/. Site-wide: robots.txt, sitemap, favicon, 404 page. Collects every TODO(shingle) placeholder with file:line.
 
 Exit code: 0 clean, 1 errors (or warnings with --strict), 2 bad usage. Standard library only.
 """
@@ -22,9 +24,13 @@ import argparse
 import json
 import re
 import sys
+from collections import defaultdict
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urlparse
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import imagemeta  # noqa: E402
 
 NAMED_TAGS = {"a", "button"}
 HEADINGS = {"h1", "h2", "h3", "h4", "h5", "h6"}
@@ -164,6 +170,7 @@ class Audit:
         self.issues: list[dict] = []
         self.todos: list[dict] = []
         self.pages: dict[str, Page] = {}
+        self.alts: dict[str, dict[str, str]] = defaultdict(dict)  # normalized alt -> {image src: page}
 
     def add(self, severity: str, page: str, message: str) -> None:
         self.issues.append({"severity": severity, "page": page, "message": message})
@@ -234,6 +241,11 @@ class Audit:
             src = img.get("src", "")
             if "alt" not in img:
                 self.add("error", rel, f"<img> without alt: {src[:80]}")
+            elif img["alt"].strip():
+                name = Path(unquote(urlparse(src).path)).name
+                for problem in imagemeta.alt_problems(img["alt"], file=name):
+                    self.add("warning", rel, f"alt text {img['alt'][:40]!r} {problem}")
+                self.alts[" ".join(img["alt"].lower().split())].setdefault(src, rel)
             if not (img.get("width") and img.get("height")):
                 self.add("warning", rel, f"<img> without width/height (layout shift): {src[:80]}")
             if src.startswith("http://"):
@@ -245,7 +257,15 @@ class Audit:
                 if f is None:
                     self.add("error", rel, f"image not found: {src}")
                 elif f.stat().st_size > IMAGE_WEIGHT_WARN:
-                    self.add("warning", rel, f"large image {src} ({f.stat().st_size // 1024} KB)")
+                    kb = f.stat().st_size // 1024
+                    if "/_astro/" in src:
+                        self.add("warning", rel, f"large image {src} ({kb} KB)")
+                    else:
+                        self.add(
+                            "warning",
+                            rel,
+                            f"large original {src} ({kb} KB) is served as it is; show it with <Photo> so it is resized and converted",
+                        )
 
         for fr in p.iframes:
             if not fr.get("title"):
@@ -512,6 +532,64 @@ class Audit:
                     )
                     break
 
+    # -- images
+    def check_images(self, src: Path | None) -> None:
+        for alt, srcs in self.alts.items():
+            if len(srcs) > 1:
+                self.add(
+                    "warning",
+                    "(site)",
+                    f"{len(srcs)} different images share the alt text {alt[:50]!r}: describe each one on its own",
+                )
+        root = self.dist.parent
+        images = [i for i in (self.business.get("images") or []) if isinstance(i, dict)]
+        for n, img in enumerate(images):
+            name = Path(str(img.get("src", ""))).name
+            if img.get("status") == "needs-alt":
+                self.add(
+                    "error",
+                    "business.json",
+                    f"images[{n}] {name} still needs alt text: confirm it with the owner, then import_images.py --apply-alt",
+                )
+            elif (root / "public").is_dir() and img.get("src") and not (root / str(img["src"])).is_file():
+                self.add("error", "business.json", f"images[{n}] {img['src']} does not exist")
+        for jpg in sorted(p for p in self.dist.rglob("*") if p.is_file() and p.suffix.lower() in (".jpg", ".jpeg")):
+            if imagemeta.has_gps(jpg.read_bytes()):
+                self.add(
+                    "error",
+                    jpg.relative_to(self.dist).as_posix(),
+                    f"{jpg.relative_to(self.dist).as_posix()} still carries GPS location data; "
+                    "re-import the photo with import_images.py (it strips metadata)",
+                )
+        folder = root / "public" / "images"
+        if not folder.is_dir():
+            return
+        html = "\n".join(path.read_text(encoding="utf-8", errors="replace") for path in self.dist.rglob("*.html"))
+        css = "\n".join(path.read_text(encoding="utf-8", errors="replace") for path in self.dist.rglob("*.css"))
+        sources = ""
+        if src and src.exists():
+            sources = "\n".join(
+                p.read_text(encoding="utf-8", errors="replace")
+                for p in src.rglob("*")
+                if p.is_file() and p.suffix in (".astro", ".md", ".mdx", ".ts", ".js", ".css")
+            )
+        subjects = {Path(str(i.get("src", ""))).name: i.get("subject") for i in images}
+        for file in sorted(p for p in folder.iterdir() if p.is_file() and not p.name.startswith(".")):
+            if file.suffix.lower() not in imagemeta.EXTENSIONS and file.suffix.lower() != ".svg":
+                continue
+            stem = file.stem
+            used = (
+                f"/{stem}." in html
+                or f"/images/{file.name}" in css
+                or f"/{stem}." in css
+                or file.name in sources
+                or f"images/{file.name}" in sources
+            )
+            if not used:
+                subject = subjects.get(file.name)
+                hint = f" (subject {subject!r}: add a <Photo slot=...> for it)" if subject else ""
+                self.add("warning", "(site)", f"public/images/{file.name} is not used on any page{hint}; use it or delete it")
+
     def scan_src(self, src: Path) -> None:
         seen = set()
         for path in sorted(src.rglob("*")):
@@ -541,6 +619,7 @@ class Audit:
                 continue  # the language redirect page at "/" has no content of its own
             self.check_page(rel, p)
         self.check_site()
+        self.check_images(src)
         if self.multilingual:
             self.check_i18n()
         if src and src.exists():

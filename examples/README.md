@@ -16,6 +16,7 @@ Together they cover all eight design directions, and `barro-e-luz` shows a two-l
 | [Linden Hair & Skin](linden-hair/) | salon-spa | Quiet Luxury | Rose Clay | 1 |
 | [Compass & Kite Journeys](compass-kite/) | travel-agency | Wayfinder | Lagoon | 1 |
 | [Barro & Luz](barro-e-luz/) | ecommerce-boutique | Handmade | Terracotta Sun | 1 per language (pt, en) |
+| [Harbour Loaf Bakery](harbour-loaf-bakery/) | cafe | Handmade | Espresso & Cream | 1 (real-photo path: imported test images) |
 
 Build one: `cd <example> && npm install && npm run build`, then
 `python3 ../../skills/shingle/scripts/audit_site.py dist`.

@@ -78,8 +78,9 @@ With 2+ languages also set `languages` (first = default) and read `SK/references
    robots.txt, favicon (SVG monogram), responsive layout, skip link, semantic landmarks, visible
    focus states, `prefers-reduced-motion` support, and dark mode if the palette has `dark`.
    Read `SK/references/seo-local.md` for the exact markup.
-6. Images: only user-provided files (put them in `public/images/`) or generated SVG/CSS
-   placeholders with a TODO naming the size and subject to swap in. Never hotlink images.
+6. Images: only the owner's files, never stock or AI photos or hotlinks. With photos, follow
+   `SK/references/images.md` (import, suggest alt, ONE confirmation table) and place them with
+   `<Photo slot="subject">`; without, `<Photo>` shows a placeholder with a TODO naming size and subject.
 7. Contact without a backend: `tel:`, `mailto:`, WhatsApp `https://wa.me/<digits>`, map link, and
    optionally a form posting to a form service chosen in the interview (Formspree, Web3Forms,
    Netlify Forms). Never invent an endpoint ID: leave it as a TODO.
