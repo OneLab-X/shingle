@@ -11,6 +11,7 @@ import Hours from "../components/Hours.astro";
 import OpenStatus from "../components/OpenStatus.astro";
 import MapEmbed from "../components/MapEmbed.astro";
 import Todo from "../components/Todo.astro";
+import Photo from "../components/Photo.astro";
 import site from "../data/site.json";
 
 const { business } = site;
@@ -33,6 +34,11 @@ const place = business.address?.locality ?? business.address?.region;
       }
       <div class="mt-6"><OpenStatus /></div>
       <ContactLinks class="mt-8" />
+    </section>
+
+    <section class="wrap">
+      {/* TODO(shingle): photo of the business. Import the owner's photos with import_images.py, then set slot to an image's subject */}
+      <Photo slot="Storefront" width={1600} height={900} sizes="100vw" eager />
     </section>
 
     <section id="visit" class="bg-surface section">

@@ -84,7 +84,7 @@ Each category is one short Markdown playbook: audience, tone, required sections,
 
 **Can it make things up to fill space?** It is told not to, and `audit_site.py` checks for fabricated review markup, NAP mismatches and filler copy. Unknowns become placeholders you can see and fill.
 
-**Where do the photos come from?** Only from you. Until you add them, the site shows labelled placeholders sized for the real photo. Shingle never hotlinks or generates photos of your business.
+**Where do the photos come from?** Only from you. Until you add them, the site shows labelled placeholders sized for the real photo. Shingle never hotlinks or generates photos of your business. Point it at a folder of photos and it imports them, **removes location (GPS), camera and date data from the copies**, suggests alt text for you to confirm in one table, and swaps the placeholders for responsive, accessible images. Only you can judge whether the alt text is accurate. [Example](examples/harbour-loaf-bakery/).
 
 **Does it need a server, database or form backend?** No. Contact works with phone, WhatsApp and email links, and an optional form service (Formspree, Web3Forms or Netlify Forms).
 
@@ -107,7 +107,7 @@ Each category is one short Markdown playbook: audience, tone, required sections,
 - [ ] More categories: vet, accountant, florist, driving school, coworking
 - [x] More design directions and palettes: contribution tooling and a starter batch (10 directions, 30 palettes); more welcome
 - [ ] Optional blog/news collection with RSS
-- [ ] Image pipeline: drop a folder of photos, get alt text suggestions to confirm
+- [x] Image pipeline: drop a folder of photos, get alt text suggestions to confirm
 
 ## Contributing
 

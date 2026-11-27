@@ -287,8 +287,15 @@ def merge_translation(base, overlay):
 def translated_business(b: dict, lang: str) -> dict:
     """The business as seen in `lang`: top-level fields are the default language, overlay for the rest."""
     overlay = ((b.get("translations") or {}).get(lang)) or {}
-    overlay = {k: v for k, v in overlay.items() if k != "review"}
+    overlay = {k: v for k, v in overlay.items() if k not in ("review", "images")}
     merged = merge_translation({k: v for k, v in b.items() if k != "translations"}, overlay)
+    rows = ((b.get("translations") or {}).get(lang) or {}).get("images")
+    if isinstance(rows, list) and isinstance(merged.get("images"), list):
+        # images merge by position and only the alt text is translated; slot names stay as written
+        merged["images"] = [
+            {**img, "alt": row["alt"]} if isinstance(row, dict) and row.get("alt") and isinstance(img, dict) else img
+            for img, row in zip(merged["images"], rows + [None] * len(merged["images"]))
+        ]
     return merged
 
 
@@ -396,6 +403,28 @@ def build_jsonld(b: dict, url: str, page_url: str | None = None, languages: list
     return ld
 
 
+def build_images(b: dict) -> list[dict]:
+    """Photos the site may show: only those with confirmed alt text (or marked decorative). Never suggested_alt."""
+    out = []
+    for img in b.get("images") or []:
+        if not isinstance(img, dict) or not img.get("src"):
+            continue
+        decorative = img.get("decorative") is True
+        if not (img.get("alt") or decorative):
+            continue
+        out.append(
+            {
+                "file": Path(str(img["src"])).name,
+                "subject": img.get("subject") or "",
+                "alt": "" if decorative else img["alt"],
+                "decorative": decorative,
+                "width": img.get("width"),
+                "height": img.get("height"),
+            }
+        )
+    return out
+
+
 def build_site_data(b: dict, palette: dict | None = None, lang: str | None = None, i18n: dict | None = None) -> dict:
     addr = b.get("address") or {}
     country = addr.get("country")
@@ -493,6 +522,7 @@ def build_site_data(b: dict, palette: dict | None = None, lang: str | None = Non
         },
         "i18n": i18n,
         "lang": current,
+        **({"images": images} if (images := build_images(b)) else {}),
         "jsonld": build_jsonld(b, url, page_url, langs),
         "shingle_version": VERSION,
     }

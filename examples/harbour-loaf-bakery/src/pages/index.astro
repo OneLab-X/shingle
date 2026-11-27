@@ -1,0 +1,67 @@
+---
+/**
+ * Harbour Loaf Bakery · single page. Direction: handmade. Palette: espresso-cream.
+ * Shows the image pipeline end to end: photos imported with import_images.py (alt text confirmed by
+ * the owner) appear through <Photo>; the "Pastry case" slot has no photo yet and stays a placeholder.
+ */
+import Base from "../layouts/Base.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import ContactLinks from "../components/ContactLinks.astro";
+import Hours from "../components/Hours.astro";
+import OpenStatus from "../components/OpenStatus.astro";
+import MapEmbed from "../components/MapEmbed.astro";
+import Photo from "../components/Photo.astro";
+import site from "../data/site.json";
+
+const { business } = site;
+---
+
+<Base>
+  <Header nav={[{ href: "#bread", label: "The bread" }, { href: "#visit", label: "Visit" }]} />
+  <main id="main">
+    <section class="wrap hero">
+      <div class="copy">
+        <p class="eyebrow">{business.category_label} · {business.address?.locality}</p>
+        <h1>{business.name}</h1>
+        <p class="lead">{business.tagline}</p>
+        <OpenStatus />
+        <ContactLinks show={["tel", "directions"]} />
+      </div>
+      <Photo slot="Counter" width={1600} height={900} sizes="(min-width: 56rem) 55vw, 100vw" eager class="art" />
+    </section>
+
+    <section id="bread" class="wrap section" aria-labelledby="bread-title">
+      <h2 id="bread-title">The bread</h2>
+      <p class="lead">{business.description}</p>
+      <div class="shots">
+        <Photo slot="Loaves" width={800} height={1000} sizes="(min-width: 48rem) 33vw, 100vw" />
+        <Photo slot="Rye shelf" width={800} height={1000} sizes="(min-width: 48rem) 33vw, 100vw" />
+        {/* TODO(shingle): photo of the pastry case; add it to the photo folder and re-run import_images.py */}
+        <Photo slot="Pastry case" width={800} height={1000} />
+      </div>
+    </section>
+
+    <section id="visit" class="bg-surface section">
+      <div class="wrap grid gap-12 md:grid-cols-2">
+        <div>
+          <h2>Visit</h2>
+          <address class="mt-4 not-italic">{business.address_lines.map((l) => <span class="block">{l}</span>)}</address>
+          <Hours class="mt-6" />
+        </div>
+        <MapEmbed />
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .hero { display: grid; gap: 2.5rem; padding-block: clamp(2rem, 6vw, 4.5rem); align-items: center; }
+  @media (min-width: 56rem) { .hero { grid-template-columns: 1fr 1.1fr; } }
+  .copy { display: grid; gap: 1.25rem; justify-items: start; }
+  .copy h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 1.08; }
+  .lead { font-size: 1.25rem; max-width: 40rem; }
+  .shots { display: grid; gap: 1.5rem; margin-top: 2rem; }
+  @media (min-width: 48rem) { .shots { grid-template-columns: repeat(3, 1fr); } }
+</style>

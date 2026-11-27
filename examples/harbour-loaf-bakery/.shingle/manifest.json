@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "files": {
+    "README.md": "sha256:3c425b5d2e24f81eeef19c5b7636122091411e5657f2f35efb1873b026a5b7f1",
+    "astro.config.mjs": "sha256:026a682cba1683df4113b5c0ae157a712c9e23f62f452e4655e54e8a678b015e",
+    "src/components/ContactLinks.astro": "sha256:99609c4091a15bf6fa2d29cf4821e440a7bac977d629a5a806afeb628caafd24",
+    "src/components/Footer.astro": "sha256:0c98852ae48e7c35551edb6316b8d31b59060d10acc5831314e249c6325c84b8",
+    "src/components/Header.astro": "sha256:2fb28678c02bd91e750a137149cce3ace05053052a6b79ad82e8cf6ac234d6f6",
+    "src/components/Hours.astro": "sha256:2f7d250f5fd7e315840a6caf5854bdf8ecec209d1ecab84f38913431e17ce9ef",
+    "src/components/Icon.astro": "sha256:afc30aec29354b6f96f0b71e9786723d5e018468b1db5027820987a2c472d47d",
+    "src/components/LanguageSwitcher.astro": "sha256:2707ee6a9d9b74f82b9aba3850d9f3cb6a3152d71ab5d7ba9fb1ee1e21273ee6",
+    "src/components/MapEmbed.astro": "sha256:fa316a1a8fb35b9b93110769699bbd9d49e1e07b2ef40535c56da6b966311c9b",
+    "src/components/OpenStatus.astro": "sha256:b46b349eeade68eacbbcc52a0fc09567e751005fe1cbfda3364e7be93561063c",
+    "src/components/Photo.astro": "sha256:9220e53ddff3564078e9ed9f08f5285e045c458c5ae4c03e9ec53a280fb1f997",
+    "src/components/PlaceholderImage.astro": "sha256:b82b52385d267d61a51e7c16d60aacff2115d9b40fc84bd2d645284f01a34919",
+    "src/components/ThemeToggle.astro": "sha256:539728ed8f7f09f7c73ac343ad4a58ea85d1217233a6703f7fed690d518499e8",
+    "src/components/Todo.astro": "sha256:c523155841a32d78e60231900c02dc2d9476cc5de313ebb8a1ced508257072e0",
+    "src/layouts/Base.astro": "sha256:c9549ffa889e4d2d08625f7d567aff376ed8db17ab2a5753d61a68f57ec78717",
+    "src/lib/i18n.ts": "sha256:8158611c05e66b626e3a61ac52dd9362f32ea0e3269f2ff420bd2ffe58ebf2c8",
+    "src/lib/url.ts": "sha256:27fdc8ffea7157f8b82c071d4c593f3c634b2458a0cc692aaf30b3bccff3ec9c",
+    "src/pages/404.astro": "sha256:11443098d68fbf8384ff2b891312230e7cf012cb7faf2801b1d9899f2b25bf49",
+    "src/pages/favicon.svg.ts": "sha256:b6c7d8c425540bc01e3a2130d4474df14b08686219bb16b71fe7fa9b5e74aac8",
+    "src/pages/index.astro": "sha256:535638413e0b6e52fd62231e3f6366edc36f66c991649b699409ea1ac73a69f2",
+    "src/pages/og.png.ts": "sha256:9a99a95ba3818f758c50d641b1c8d4bf6d7812d9d43e39d642cc91a1514e62bf",
+    "src/styles/global.css": "sha256:eebb8b1eea341f6e5590c6765cc9e25c58b69b671116ab15d64d5b632864b5b9"
+  },
+  "font_packages": [
+    "@fontsource-variable/nunito-sans",
+    "@fontsource/young-serif"
+  ],
+  "generated_at": "2026-11-27T05:28:25Z",
+  "shingle_version": "0.1.0"
+}

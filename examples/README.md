@@ -18,6 +18,7 @@ Together they cover all ten design directions, and `barro-e-luz` shows a two-lan
 | [Barro & Luz](barro-e-luz/) | ecommerce-boutique | Handmade | Terracotta Sun | 1 per language (pt, en) |
 | [Tamsin & Pike Bookkeeping](tamsin-pike/) | generic-local-business | Ledger | Ledger Green | 1 |
 | [Saltmarsh Railway Society](saltmarsh-railway/) | nonprofit | Postcard | Postcard Stamp | 1 |
+| [Harbour Loaf Bakery](harbour-loaf-bakery/) | cafe | Handmade | Espresso & Cream | 1 (real-photo path: imported test images) |
 
 Build one: `cd <example> && npm install && npm run build`, then
 `python3 ../../skills/shingle/scripts/audit_site.py dist`.
