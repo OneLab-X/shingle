@@ -11,6 +11,22 @@
     "on_accent": "Text/icons on accent fills",
     "border": "Decorative dividers only (not for form fields)"
   },
+  "moods": [
+    "bold",
+    "calm",
+    "clean",
+    "earthy",
+    "elegant",
+    "energetic",
+    "fresh",
+    "friendly",
+    "high-contrast",
+    "hopeful",
+    "muted",
+    "playful",
+    "trustworthy",
+    "warm"
+  ],
   "contrast_rules": [
     {
       "fg": "text",
@@ -818,6 +834,283 @@
         "accent": "#E9B949",
         "on_accent": "#141413",
         "border": "#33312E"
+      }
+    },
+    {
+      "id": "postcard-stamp",
+      "name": "Postcard Stamp",
+      "categories": [
+        "travel-agency",
+        "nonprofit",
+        "cafe"
+      ],
+      "moods": [
+        "warm",
+        "playful"
+      ],
+      "rationale": "Cream card stock, navy ink and a postage-stamp red; reads like a mailed postcard and keeps travel sites out of sunset-gradient territory.",
+      "light": {
+        "background": "#FBF3E4",
+        "surface": "#F1E4CC",
+        "text": "#1F2B38",
+        "muted": "#4F5B66",
+        "primary": "#B03A24",
+        "on_primary": "#FFFFFF",
+        "accent": "#3E8FA8",
+        "on_accent": "#10202A",
+        "border": "#DCCBAA"
+      },
+      "dark": {
+        "background": "#161E27",
+        "surface": "#1F2A36",
+        "text": "#F4EBDA",
+        "muted": "#B4BCC4",
+        "primary": "#F08C73",
+        "on_primary": "#161E27",
+        "accent": "#5FB0C8",
+        "on_accent": "#0E1A22",
+        "border": "#34414F"
+      }
+    },
+    {
+      "id": "ledger-green",
+      "name": "Ledger Green",
+      "categories": [
+        "generic-local-business",
+        "law-firm",
+        "real-estate"
+      ],
+      "moods": [
+        "trustworthy",
+        "muted"
+      ],
+      "rationale": "Ruled-paper ivory with bookkeeper's green ink and a brass accent; quiet and exact, for practices that sell care with numbers and documents.",
+      "light": {
+        "background": "#F6F2E7",
+        "surface": "#EAE5D3",
+        "text": "#1A2820",
+        "muted": "#51604F",
+        "primary": "#1D5A3A",
+        "on_primary": "#FFFFFF",
+        "accent": "#C79A3B",
+        "on_accent": "#20190A",
+        "border": "#D3CCB4"
+      },
+      "dark": {
+        "background": "#121A15",
+        "surface": "#1B261F",
+        "text": "#EEEBDD",
+        "muted": "#AAB5A6",
+        "primary": "#7FCB9E",
+        "on_primary": "#0F1A13",
+        "accent": "#D6AC52",
+        "on_accent": "#17110A",
+        "border": "#2D3B31"
+      }
+    },
+    {
+      "id": "fjord-mist",
+      "name": "Fjord Mist",
+      "categories": [
+        "travel-agency",
+        "dental-clinic",
+        "photographer"
+      ],
+      "moods": [
+        "calm",
+        "clean"
+      ],
+      "rationale": "Cool mist-grey ground with deep fjord blue; still and uncluttered, so photographs and itineraries carry the page.",
+      "light": {
+        "background": "#F3F6F8",
+        "surface": "#E4EBEF",
+        "text": "#14242C",
+        "muted": "#475A64",
+        "primary": "#1B5B78",
+        "on_primary": "#FFFFFF",
+        "accent": "#9CC3D3",
+        "on_accent": "#10222B",
+        "border": "#CDD8DE"
+      },
+      "dark": {
+        "background": "#0F191F",
+        "surface": "#17252D",
+        "text": "#E9F0F3",
+        "muted": "#A3B4BD",
+        "primary": "#82C0DB",
+        "on_primary": "#0B151A",
+        "accent": "#4F8BA3",
+        "on_accent": "#06141A",
+        "border": "#27383F"
+      }
+    },
+    {
+      "id": "dune-clay",
+      "name": "Dune & Clay",
+      "categories": [
+        "travel-agency",
+        "restaurant",
+        "ecommerce-boutique",
+        "salon-spa"
+      ],
+      "moods": [
+        "warm",
+        "earthy"
+      ],
+      "rationale": "Sun-baked sand with clay-red action color and an olive accent; warm and tactile without the saffron of food-first palettes.",
+      "light": {
+        "background": "#F8EFE3",
+        "surface": "#EEDFCB",
+        "text": "#2B2018",
+        "muted": "#5E4E40",
+        "primary": "#A2452A",
+        "on_primary": "#FFFFFF",
+        "accent": "#A3A867",
+        "on_accent": "#1D2010",
+        "border": "#D8C5AA"
+      }
+    },
+    {
+      "id": "cobalt-pop",
+      "name": "Cobalt Pop",
+      "categories": [
+        "ecommerce-boutique",
+        "cafe",
+        "gym-fitness",
+        "contractor-home-services",
+        "generic-local-business"
+      ],
+      "moods": [
+        "bold",
+        "playful",
+        "energetic"
+      ],
+      "rationale": "Clean white-cream ground with saturated cobalt and a sunny yellow; loud on purpose, with large flat blocks instead of gradients.",
+      "light": {
+        "background": "#FFFDF6",
+        "surface": "#F1EFE4",
+        "text": "#101828",
+        "muted": "#464F60",
+        "primary": "#1A44D6",
+        "on_primary": "#FFFFFF",
+        "accent": "#FFC53D",
+        "on_accent": "#161200",
+        "border": "#DAD7C6"
+      },
+      "dark": {
+        "background": "#0C1020",
+        "surface": "#151B30",
+        "text": "#F4F5FA",
+        "muted": "#A8B0C6",
+        "primary": "#8AA5FF",
+        "on_primary": "#0C1020",
+        "accent": "#FFC53D",
+        "on_accent": "#161200",
+        "border": "#2A3250"
+      }
+    },
+    {
+      "id": "high-contrast-ink",
+      "name": "High-Contrast Ink",
+      "categories": [
+        "dental-clinic",
+        "nonprofit",
+        "law-firm",
+        "generic-local-business",
+        "contractor-home-services"
+      ],
+      "moods": [
+        "high-contrast",
+        "clean",
+        "bold"
+      ],
+      "rationale": "Pure black on white with a deep blue action color and a yellow highlight; every text pair clears 7:1 (WCAG AAA) for low-vision visitors.",
+      "light": {
+        "background": "#FFFFFF",
+        "surface": "#F0F0F0",
+        "text": "#000000",
+        "muted": "#3D3D3D",
+        "primary": "#0027A8",
+        "on_primary": "#FFFFFF",
+        "accent": "#FFD600",
+        "on_accent": "#000000",
+        "border": "#8F8F8F"
+      },
+      "dark": {
+        "background": "#000000",
+        "surface": "#141414",
+        "text": "#FFFFFF",
+        "muted": "#C7C7C7",
+        "primary": "#9DB8FF",
+        "on_primary": "#000000",
+        "accent": "#FFD600",
+        "on_accent": "#000000",
+        "border": "#6B6B6B"
+      }
+    },
+    {
+      "id": "moss-sand",
+      "name": "Moss & Sand",
+      "categories": [
+        "gym-fitness",
+        "salon-spa",
+        "photographer",
+        "real-estate"
+      ],
+      "moods": [
+        "calm",
+        "earthy",
+        "muted"
+      ],
+      "rationale": "Soft sand ground with deep moss and a warm clay accent; a calm option for studios, yoga, pilates and anywhere shouting would be wrong.",
+      "light": {
+        "background": "#F6F1E9",
+        "surface": "#EBE3D6",
+        "text": "#25281F",
+        "muted": "#5A5D4E",
+        "primary": "#4A5F3A",
+        "on_primary": "#FFFFFF",
+        "accent": "#C98F5B",
+        "on_accent": "#1E1308",
+        "border": "#D6CDBB"
+      }
+    },
+    {
+      "id": "brick-and-brass",
+      "name": "Brick & Brass",
+      "categories": [
+        "real-estate",
+        "law-firm",
+        "contractor-home-services",
+        "restaurant"
+      ],
+      "moods": [
+        "warm",
+        "trustworthy",
+        "elegant"
+      ],
+      "rationale": "Parchment with oxblood-brick and a brass accent; established and warm, for firms and trades that want to feel local and long-standing without claiming it.",
+      "light": {
+        "background": "#FAF5EE",
+        "surface": "#F0E7DA",
+        "text": "#261B16",
+        "muted": "#5C4D44",
+        "primary": "#8C2F1F",
+        "on_primary": "#FFFFFF",
+        "accent": "#C79A3B",
+        "on_accent": "#1F1608",
+        "border": "#DCCDB8"
+      },
+      "dark": {
+        "background": "#18110E",
+        "surface": "#241A15",
+        "text": "#F3EADF",
+        "muted": "#BDAB9C",
+        "primary": "#E58A73",
+        "on_primary": "#18110E",
+        "accent": "#D4A94E",
+        "on_accent": "#1A1206",
+        "border": "#3B2D25"
       }
     }
   ]

@@ -6,8 +6,10 @@ Thanks for helping. The most useful contributions, roughly in order:
    [Guide, under 10 minutes →](docs/adding-a-category.md)
 2. **An interface language**: one JSON file of translated buttons and labels.
    [Guide →](docs/adding-a-language.md)
-3. **A palette**: add it to `skills/shingle/references/palettes.json`; the contrast check tells you if it passes WCAG AA.
-4. **A design direction**: prose in `design-directions.md` plus tokens in `directions.json`, and an example that uses it.
+3. **A palette**: one JSON object; `validate_library.py` tells you if it passes WCAG AA.
+   [Guide, about 5 minutes →](docs/adding-a-palette.md)
+4. **A design direction**: two Fontsource fonts, tokens and a signature element, plus a sample built with it.
+   [Guide →](docs/adding-a-direction.md)
 5. **An example site** for a category that has none yet.
 6. Bug fixes in the scripts, the template or the skill instructions.
 
@@ -17,7 +19,7 @@ Thanks for helping. The most useful contributions, roughly in order:
 |---|---|
 | `skills/shingle/SKILL.md` | The workflow Claude follows (keep it under 150 lines) |
 | `skills/shingle/references/` | Loaded on demand: interview, categories, palettes, directions, SEO, regeneration, deploy |
-| `skills/shingle/scripts/` | Standard-library Python: `validate_input`, `check_contrast`, `sync`, `audit_site`, plus tests |
+| `skills/shingle/scripts/` | Standard-library Python: `validate_input`, `check_contrast`, `validate_library`, `sync`, `audit_site`, plus tests |
 | `templates/astro-tailwind/` | The starter every site is copied from |
 | `examples/` | Generated sites, each with its `business.json` and a design rationale |
 | `commands/shingle.md` | The `/shingle` slash command |
@@ -30,6 +32,9 @@ python3 -m unittest discover -s skills/shingle/scripts/tests -t skills/shingle/s
 
 # lint (same version as CI)
 pipx run ruff==0.17.6 check . && pipx run ruff==0.17.6 format --check .
+
+# palettes and directions (add --check-fonts to ask npm that the fonts exist)
+python3 skills/shingle/scripts/validate_library.py
 
 # plugin manifests
 claude plugin validate . --strict

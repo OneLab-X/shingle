@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "name": "Tamsin & Pike Bookkeeping",
+  "slug": "tamsin-and-pike-bookkeeping",
+  "category": "generic-local-business",
+  "category_label": "Bookkeepers",
+  "tagline": "Bookkeeping for Bristol's small traders, kept in plain columns",
+  "description": "A two-person bookkeeping practice in central Bristol. We keep the books for sole traders, market stalls and small limited companies, and hand over figures you can read at the kitchen table.",
+  "domain": "tamsin-pike.example",
+  "address": {
+    "street": "Unit 3, 22 Counterslip",
+    "locality": "Bristol",
+    "region": "Bristol",
+    "postal_code": "BS1 6AQ",
+    "country": "GB"
+  },
+  "timezone": "Europe/London",
+  "phone": "+441174960137",
+  "phone_display": "011 7496 0137",
+  "email": "books@tamsin-pike.example",
+  "hours": {
+    "mon": [
+      [
+        "09:00",
+        "17:00"
+      ]
+    ],
+    "tue": [
+      [
+        "09:00",
+        "17:00"
+      ]
+    ],
+    "wed": [
+      [
+        "09:00",
+        "17:00"
+      ]
+    ],
+    "thu": [
+      [
+        "09:00",
+        "13:00"
+      ]
+    ],
+    "fri": [
+      [
+        "09:00",
+        "17:00"
+      ]
+    ],
+    "sat": [],
+    "sun": []
+  },
+  "hours_note": "Visits by appointment. Phone and email are answered in office hours.",
+  "languages": [
+    "en"
+  ],
+  "facts": {
+    "services": [
+      {
+        "name": "Monthly bookkeeping",
+        "for": "Sole traders and small limited companies",
+        "rhythm": "Every month, books closed by the 10th"
+      },
+      {
+        "name": "VAT returns",
+        "for": "VAT-registered businesses",
+        "rhythm": "Every quarter, filed before the deadline"
+      },
+      {
+        "name": "Year-end pack",
+        "for": "Accountants and the self-assessment return",
+        "rhythm": "Once a year, within four weeks of year end"
+      },
+      {
+        "name": "Catch-up and clean-up",
+        "for": "Shoeboxes, spreadsheets and unfiled months",
+        "rhythm": "One-off project, scoped on a call"
+      },
+      {
+        "name": "Payroll for up to five people",
+        "for": "Small teams paid monthly",
+        "rhythm": "Every month, payslips two days before payday"
+      }
+    ],
+    "month": [
+      {
+        "when": "Days 1-5",
+        "what": "You send receipts and bank access. A shared folder or a photo from your phone is fine."
+      },
+      {
+        "when": "Days 6-9",
+        "what": "We match, categorise and chase anything we cannot place."
+      },
+      {
+        "when": "Day 10",
+        "what": "You get a one-page summary: what came in, what went out, what you owe."
+      }
+    ],
+    "pricing": "A fixed monthly fee, agreed after a free 30-minute call. No price list: every set of books is different."
+  },
+  "decisions": {
+    "goal": "enquiries",
+    "cta": {
+      "label": "Book a free call",
+      "action": "tel"
+    },
+    "pages": "single",
+    "tone": "warm",
+    "imagery": "none",
+    "languages": [
+      "en"
+    ],
+    "contact_method": [
+      "tel",
+      "email",
+      "map"
+    ],
+    "features": [
+      "services",
+      "process"
+    ],
+    "design": {
+      "direction": "ledger",
+      "palette": "ledger-green"
+    },
+    "badge": true
+  }
+}

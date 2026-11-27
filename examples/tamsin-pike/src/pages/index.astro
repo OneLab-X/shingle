@@ -1,0 +1,187 @@
+---
+/**
+ * Tamsin & Pike Bookkeeping · single page. Direction: ledger (ruled-paper folios, services and
+ * hours set as real tables with tabular figures, dotted leaders and a closing total row).
+ * Palette: ledger-green.
+ */
+import Base from "../layouts/Base.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import OpenStatus from "../components/OpenStatus.astro";
+import MapEmbed from "../components/MapEmbed.astro";
+import Todo from "../components/Todo.astro";
+import site from "../data/site.json";
+
+const { business, contact, hours } = site;
+const facts = business.facts as {
+  services: { name: string; for: string; rhythm: string }[];
+  month: { when: string; what: string }[];
+  pricing: string;
+};
+const place = business.address?.locality;
+const minutes = (t: string) => Number(t.slice(0, 2)) * 60 + Number(t.slice(3, 5));
+const weekly = hours.days.reduce((sum, d) => sum + d.ranges.reduce((s, r) => s + minutes(r.close) - minutes(r.open), 0), 0);
+const weeklyHours = Math.round((weekly / 60) * 10) / 10;
+---
+
+<Base>
+  <Header nav={[{ href: "#services", label: "Services" }, { href: "#month", label: "A month" }, { href: "#visit", label: "Visit" }]} cta={contact.tel ? { href: contact.tel.href, label: "Book a free call" } : undefined} />
+  <main id="main">
+    <section class="wrap sheet hero">
+      <p class="folio">Folio 00 · {business.category_label} · {place}</p>
+      <h1>{business.tagline}</h1>
+      <p class="lead">{business.description}</p>
+      <div class="actions">
+        {contact.tel && <a class="btn btn-primary" href={contact.tel.href}>Book a free call: {contact.tel.label}</a>}
+        {contact.email && <a class="btn btn-quiet" href={contact.email.href}>{contact.email.label}</a>}
+      </div>
+      <div class="mt-6"><OpenStatus /></div>
+    </section>
+
+    <section id="services" class="wrap sheet" aria-labelledby="services-title">
+      <p class="folio">Folio 01 · Services</p>
+      <h2 id="services-title">What we keep for you</h2>
+      <table class="ledger">
+        <caption class="sr-only">Services, who they are for and how often</caption>
+        <thead>
+          <tr><th scope="col">Service</th><th scope="col">For</th><th scope="col">Rhythm</th></tr>
+        </thead>
+        <tbody>
+          {facts.services.map((s) => (
+            <tr><th scope="row">{s.name}</th><td data-label="For">{s.for}</td><td data-label="Rhythm">{s.rhythm}</td></tr>
+          ))}
+        </tbody>
+        <tfoot>
+          <tr><th scope="row">Total</th><td colspan="2" class="num">{facts.services.length} services</td></tr>
+        </tfoot>
+      </table>
+      <p class="pricing">{facts.pricing}</p>
+      <p class="credentials">
+        {/* TODO(shingle): professional body membership, registration and insurance details, exactly as on the certificates */}
+        <Todo label="professional body membership and registration details" />
+      </p>
+    </section>
+
+    <section id="month" class="wrap sheet" aria-labelledby="month-title">
+      <p class="folio">Folio 02 · A month in the books</p>
+      <h2 id="month-title">How a month works</h2>
+      <table class="ledger">
+        <caption class="sr-only">What happens in each part of the month</caption>
+        <thead>
+          <tr><th scope="col">When</th><th scope="col">What happens</th></tr>
+        </thead>
+        <tbody>
+          {facts.month.map((m) => (
+            <tr><th scope="row" class="num">{m.when}</th><td data-label="What happens">{m.what}</td></tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
+
+    <section id="visit" class="wrap sheet" aria-labelledby="visit-title">
+      <p class="folio">Folio 03 · Visit and contact</p>
+      <h2 id="visit-title">Where and when</h2>
+      <div class="visit">
+        <div>
+          <table class="ledger hours">
+            <caption class="sr-only">Opening hours</caption>
+            <tbody>
+              {hours.days.map((d) => (
+                <tr data-day={d.key}>
+                  <th scope="row">{d.label}</th>
+                  <td class="num">{d.closed ? "Closed" : d.ranges.map((r) => r.text).join(", ")}</td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr><th scope="row">Open each week</th><td class="num">{weeklyHours} h</td></tr>
+            </tfoot>
+          </table>
+          {hours.note && <p class="note">{hours.note}</p>}
+          <address>
+            {business.address_lines.map((l) => <span>{l}</span>)}
+          </address>
+          <p>
+            {contact.tel && <a href={contact.tel.href}>{contact.tel.label}</a>}
+            {contact.email && <br />}
+            {contact.email && <a href={contact.email.href}>{contact.email.label}</a>}
+          </p>
+        </div>
+        <MapEmbed />
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Base>
+
+<script define:vars={{ tz: hours.timezone }}>
+  const keys = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+  let day = new Date().getDay();
+  try {
+    if (tz) {
+      const name = new Intl.DateTimeFormat("en-US", { weekday: "short", timeZone: tz }).format(new Date()).toLowerCase();
+      day = keys.indexOf(name.slice(0, 3));
+    }
+  } catch {}
+  document.querySelectorAll(`.hours tr[data-day="${keys[day]}"]`).forEach((tr) => tr.setAttribute("aria-current", "date"));
+</script>
+
+<style>
+  /* Ruled paper: a 28px baseline in `border`, and a double margin rule in `primary`. */
+  .sheet {
+    --rule: 28px;
+    position: relative;
+    margin-block: var(--sh-section-gap);
+    padding: 1.75rem 1rem 2rem 3.25rem;
+    line-height: var(--rule);
+    background-color: var(--sh-surface);
+    background-image: repeating-linear-gradient(to bottom, transparent 0, transparent calc(var(--rule) - 1px), var(--sh-border) calc(var(--rule) - 1px), var(--sh-border) var(--rule));
+    background-position: 0 0.75rem;
+    border: 1px solid var(--sh-border);
+  }
+  .sheet::before {
+    content: ""; position: absolute; inset-block: 0; left: 2.25rem; width: 5px;
+    border-left: 1px solid var(--sh-primary); border-right: 1px solid var(--sh-primary);
+  }
+  @media (min-width: 48rem) { .sheet { padding: 2.5rem 3rem 3rem 5rem; } .sheet::before { left: 3.5rem; } }
+  .sheet > * { position: relative; }
+  .sheet :is(h1, h2) { line-height: 1.2; margin-block: 0.25rem 0.75rem; }
+  .folio {
+    font-family: var(--sh-font-display); font-size: 0.8125rem; letter-spacing: var(--sh-ui-tracking);
+    text-transform: uppercase; color: var(--sh-muted); font-variant-numeric: tabular-nums; margin: 0;
+  }
+  .hero h1 { max-width: 20ch; }
+  .lead { font-size: 1.25rem; max-width: 52ch; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.25rem; }
+  .actions .btn { background-color: transparent; }
+  .actions .btn-primary { background-color: var(--sh-primary); }
+
+  .ledger { width: 100%; border-collapse: collapse; margin-top: 0.75rem; font-variant-numeric: tabular-nums; }
+  .ledger th, .ledger td { text-align: left; vertical-align: top; padding: 0 1rem 0 0; line-height: var(--rule); }
+  .ledger thead th {
+    font-family: var(--sh-font-display); font-size: 0.8125rem; font-weight: 600; text-transform: uppercase;
+    letter-spacing: var(--sh-ui-tracking); color: var(--sh-muted); border-bottom: 2px solid var(--sh-text);
+  }
+  .ledger tbody th { font-family: var(--sh-font-display); font-weight: 600; font-size: 0.9375rem; white-space: nowrap; }
+  .ledger tbody tr { background-image: linear-gradient(to right, var(--sh-muted) 40%, transparent 0); background-size: 6px 1px; background-repeat: repeat-x; background-position: 0 100%; }
+  .ledger tfoot th, .ledger tfoot td { border-top: 2px solid var(--sh-text); font-family: var(--sh-font-display); font-weight: 600; font-size: 0.9375rem; }
+  .ledger .num, .hours td { font-family: var(--sh-font-display); font-size: 0.9375rem; }
+  .hours td { text-align: right; padding-right: 0; }
+  .hours tfoot td { text-align: right; }
+  .hours tr[aria-current="date"] th, .hours tr[aria-current="date"] td { color: var(--sh-primary); font-weight: 700; }
+  .hours { max-width: 26rem; }
+  .pricing { margin-top: 1.25rem; max-width: 60ch; }
+  .credentials { margin-top: 0.5rem; }
+  .note { font-size: 0.9375rem; color: var(--sh-muted); margin-top: 0.5rem; }
+  .visit { display: grid; gap: 2rem; margin-top: 0.5rem; }
+  @media (min-width: 56rem) { .visit { grid-template-columns: 1fr 1fr; } }
+  address { display: flex; flex-direction: column; margin-block: 1rem; }
+
+  @media (max-width: 40rem) {
+    .ledger:not(.hours) :is(thead) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+    .ledger:not(.hours) :is(tbody, tr, th, td, tfoot) { display: block; }
+    .ledger:not(.hours) tbody tr { padding-block: 0.5rem; }
+    .ledger:not(.hours) td[data-label]::before { content: attr(data-label) ": "; font-family: var(--sh-font-display); font-size: 0.8125rem; color: var(--sh-muted); }
+    .ledger:not(.hours) tbody th { white-space: normal; }
+  }
+</style>

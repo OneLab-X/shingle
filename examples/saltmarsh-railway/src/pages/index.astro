@@ -1,0 +1,181 @@
+---
+/**
+ * Saltmarsh Railway Society · single page. Direction: postcard (the hero is a postcard:
+ * perforated stamp, round postmark set from real facts, ruled address block; detail cards edged
+ * in air-mail stripes). Palette: postcard-stamp.
+ */
+import Base from "../layouts/Base.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import OpenStatus from "../components/OpenStatus.astro";
+import MapEmbed from "../components/MapEmbed.astro";
+import Todo from "../components/Todo.astro";
+import site from "../data/site.json";
+
+const { business, contact, hours } = site;
+const facts = business.facts as {
+  season: string;
+  headline: string;
+  stops: { name: string; note: string }[];
+  roles: { name: string; text: string }[];
+};
+const running = hours.groups.find((g) => !g.closed && !g.unknown);
+const postmark = [business.address.locality, business.address.region, running?.label, facts.season]
+  .filter(Boolean)
+  .join(" · ")
+  .toUpperCase();
+const monogram = business.name.trim().charAt(0).toUpperCase();
+---
+
+<Base>
+  <div class="airmail" aria-hidden="true"></div>
+  <Header nav={[{ href: "#line", label: "The line" }, { href: "#help", label: "Volunteer" }, { href: "#visit", label: "Visit" }]} />
+  <main id="main">
+    <section class="wrap hero-wrap">
+      <div class="postcard">
+        <div class="message">
+          <p class="eyebrow">{business.category_label} · {business.address.region}</p>
+          <h1>{facts.headline}</h1>
+          <p class="lead">{business.description}</p>
+          <div class="actions">
+            {contact.email && <a class="btn btn-primary" href={`${contact.email.href}?subject=${encodeURIComponent("Volunteering")}`}>Volunteer with us</a>}
+            {contact.tel && <a class="btn btn-quiet" href={contact.tel.href}>{contact.tel.label}</a>}
+          </div>
+          <div class="mt-6"><OpenStatus /></div>
+        </div>
+        <div class="stamps">
+          <div class="stamp" aria-hidden="true"><span>{monogram}</span></div>
+          <svg class="postmark" viewBox="0 0 200 200" role="img" aria-label={`Postmark: ${postmark}`}>
+            <defs><path id="ring" d="M100,100 m-72,0 a72,72 0 1,1 144,0 a72,72 0 1,1 -144,0" /></defs>
+            <circle cx="100" cy="100" r="92" fill="none" stroke="currentColor" stroke-width="3" />
+            <circle cx="100" cy="100" r="50" fill="none" stroke="currentColor" stroke-width="2" />
+            <text font-size="12.5" letter-spacing="1.6" fill="currentColor" font-family="var(--sh-font-body)" font-weight="600">
+              <textPath href="#ring" textLength="440" lengthAdjust="spacing">{postmark}</textPath>
+            </text>
+            <path d="M70 108 h60 M78 98 h44 M100 80 v-8 M84 108 v10 M116 108 v10" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none" />
+          </svg>
+          <address class="to">
+            <span class="line">{business.name}</span>
+            {business.address_lines.map((l) => <span class="line">{l}</span>)}
+          </address>
+        </div>
+      </div>
+    </section>
+
+    <section id="line" class="wrap section" aria-labelledby="line-title">
+      <p class="eyebrow">Stations on the line</p>
+      <h2 id="line-title">Four stops, three miles</h2>
+      <ol class="cards">
+        {facts.stops.map((s, i) => (
+          <li class="card">
+            <p class="no">No. {String(i + 1).padStart(2, "0")}</p>
+            <h3>{s.name}</h3>
+            <p>{s.note}</p>
+          </li>
+        ))}
+      </ol>
+      <p class="mt-8">
+        {/* TODO(shingle): fares and timetable for the season, as printed at the booking office */}
+        <Todo label="fares and the season timetable" />
+      </p>
+    </section>
+
+    <section id="help" class="wrap section" aria-labelledby="help-title">
+      <p class="eyebrow">Wanted</p>
+      <h2 id="help-title">Lend a hand</h2>
+      <p class="mt-4">Everything here is done by volunteers. Write to us and say which of these sounds like you.</p>
+      <ul class="cards">
+        {facts.roles.map((r) => (
+          <li class="card">
+            <h3>{r.name}</h3>
+            <p>{r.text}</p>
+          </li>
+        ))}
+      </ul>
+      <p class="mt-8 actions">
+        {contact.email && <a class="btn btn-primary" href={`${contact.email.href}?subject=${encodeURIComponent("Volunteering")}`}>Write to the volunteer coordinator</a>}
+      </p>
+      <p class="mt-6">
+        {/* TODO(shingle): charity or society registration number, and a donation link if there is one */}
+        <Todo label="registration number and donation link" />
+      </p>
+    </section>
+
+    <section id="visit" class="wrap section" aria-labelledby="visit-title">
+      <p class="eyebrow">Visit</p>
+      <h2 id="visit-title">Come and ride</h2>
+      <div class="visit">
+        <div class="card plain">
+          <h3>When</h3>
+          <ul class="times">
+            {hours.groups.map((g) => <li><strong>{g.label}</strong> {g.closed ? "No trains" : g.text}</li>)}
+          </ul>
+          {hours.note && <p class="note">{hours.note}</p>}
+          <h3 class="mt-6">Where</h3>
+          <address>{business.address_lines.map((l) => <span>{l}</span>)}</address>
+          <p class="mt-4">
+            {contact.tel && <a href={contact.tel.href}>{contact.tel.label}</a>}
+            {contact.email && <br />}
+            {contact.email && <a href={contact.email.href}>{contact.email.label}</a>}
+          </p>
+        </div>
+        <MapEmbed />
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .airmail {
+    height: 12px;
+    background: repeating-linear-gradient(135deg, var(--sh-primary) 0 14px, var(--sh-background) 14px 22px, var(--sh-accent) 22px 36px, var(--sh-background) 36px 44px);
+  }
+  .hero-wrap { padding-block: clamp(2rem, 6vw, 4rem) 0; }
+  /* The hero is a postcard: stripe frame, message on the left, stamps and address on the right. */
+  .postcard {
+    display: grid; gap: 2rem; padding: clamp(1.25rem, 3vw, 2.5rem);
+    background: var(--sh-surface); border: var(--sh-border-width) solid var(--sh-border);
+    border-radius: var(--sh-radius); position: relative;
+    outline: 10px solid transparent;
+    border-image: repeating-linear-gradient(135deg, var(--sh-primary) 0 14px, var(--sh-surface) 14px 22px, var(--sh-accent) 22px 36px, var(--sh-surface) 36px 44px) 10;
+    border-width: 10px;
+  }
+  @media (min-width: 56rem) {
+    .postcard { grid-template-columns: 1.35fr 1fr; gap: 3rem; }
+    .stamps { border-left: 2px solid var(--sh-border); padding-left: 2rem; }
+  }
+  .postcard h1 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.12; }
+  .eyebrow { margin-bottom: 0.75rem; }
+  .lead { font-size: 1.25rem; margin-top: 1.25rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
+  .stamps { position: relative; display: grid; align-content: start; gap: 1.5rem; min-height: 22rem; }
+  .stamp {
+    justify-self: end; width: 6.5rem; aspect-ratio: 4 / 5; position: relative;
+    background: var(--sh-primary); color: var(--sh-on-primary); display: grid; place-items: center;
+    font-family: var(--sh-font-display); font-size: 3.5rem; transform: rotate(2deg);
+  }
+  .stamp::after { content: ""; position: absolute; inset: -4px; border: 8px dotted var(--sh-surface); pointer-events: none; }
+  .stamp span { border: 2px solid var(--sh-on-primary); display: grid; place-items: center; inset: 0.5rem; position: absolute; }
+  .postmark { position: absolute; right: 6.5rem; top: -0.75rem; width: 9.5rem; color: var(--sh-muted); opacity: 0.9; transform: rotate(-8deg); }
+  .to { margin-top: 2.5rem; font-family: var(--sh-font-display); font-size: 1.25rem; }
+  .to .line { display: block; border-bottom: 2px solid var(--sh-border); padding-block: 0.5rem 0.25rem; min-height: 2.5rem; }
+  .cards { list-style: none; padding: 0; margin-top: 2rem; display: grid; gap: 1.5rem; }
+  @media (min-width: 48rem) { .cards { grid-template-columns: 1fr 1fr; } }
+  .card {
+    background: var(--sh-surface); padding: 1.5rem; border-radius: var(--sh-radius);
+    border: 8px solid transparent;
+    border-image: repeating-linear-gradient(135deg, var(--sh-primary) 0 10px, var(--sh-surface) 10px 16px, var(--sh-accent) 16px 26px, var(--sh-surface) 26px 32px) 8;
+  }
+  .card.plain { border-image: none; border: 2px solid var(--sh-border); }
+  .cards .card:nth-child(even) { transform: rotate(-0.6deg); }
+  @media (prefers-reduced-motion: no-preference) { .card { transition: transform var(--sh-transition); } .cards .card:hover { transform: translateY(-3px) rotate(0); } }
+  .card h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+  .no { font-size: 0.8125rem; letter-spacing: var(--sh-ui-tracking); text-transform: uppercase; color: var(--sh-muted); font-weight: 600; margin-bottom: 0.25rem; }
+  .visit { display: grid; gap: 2rem; margin-top: 2rem; }
+  @media (min-width: 56rem) { .visit { grid-template-columns: 1fr 1fr; } }
+  .times { list-style: none; padding: 0; }
+  .times strong { display: inline-block; min-width: 6rem; }
+  .note { font-size: 0.9375rem; color: var(--sh-muted); margin-top: 0.5rem; }
+  address { display: flex; flex-direction: column; }
+</style>

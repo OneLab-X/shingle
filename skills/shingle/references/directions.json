@@ -65,6 +65,22 @@
         "body": { "family": "Literata Variable", "package": "@fontsource-variable/literata", "imports": ["@fontsource-variable/literata"], "fallback": "Georgia, serif" }
       },
       "tokens": { "scale": 1.333, "h1": "clamp(2.5rem, 6.5vw, 5rem)", "body-size": "1.0625rem", "line-height": "1.65", "space-unit": "8px", "section-gap": "clamp(4rem, 9vw, 7rem)", "radius": "8px", "measure": "66ch", "heading-weight": "700", "heading-tracking": "-0.02em", "heading-case": "none", "ui-tracking": "0.04em", "border-width": "1px", "transition": "200ms" }
+    },
+    "ledger": {
+      "name": "Ledger",
+      "fonts": {
+        "display": { "family": "Spline Sans Mono Variable", "package": "@fontsource-variable/spline-sans-mono", "imports": ["@fontsource-variable/spline-sans-mono"], "fallback": "ui-monospace, 'Courier New', monospace" },
+        "body": { "family": "Newsreader Variable", "package": "@fontsource-variable/newsreader", "imports": ["@fontsource-variable/newsreader"], "fallback": "Georgia, serif" }
+      },
+      "tokens": { "scale": 1.2, "h1": "clamp(2.25rem, 5.5vw, 4rem)", "body-size": "1.0625rem", "line-height": "1.7", "space-unit": "8px", "section-gap": "clamp(3.5rem, 8vw, 6rem)", "radius": "0px", "measure": "66ch", "heading-weight": "600", "heading-tracking": "-0.02em", "heading-case": "none", "ui-tracking": "0.04em", "border-width": "1px", "transition": "100ms" }
+    },
+    "postcard": {
+      "name": "Postcard",
+      "fonts": {
+        "display": { "family": "Bevan", "package": "@fontsource/bevan", "imports": ["@fontsource/bevan"], "fallback": "Rockwell, 'Roboto Slab', Georgia, serif" },
+        "body": { "family": "Josefin Sans Variable", "package": "@fontsource-variable/josefin-sans", "imports": ["@fontsource-variable/josefin-sans"], "fallback": "'Century Gothic', Futura, sans-serif" }
+      },
+      "tokens": { "scale": 1.333, "h1": "clamp(2.75rem, 8vw, 6rem)", "body-size": "1.125rem", "line-height": "1.65", "space-unit": "8px", "section-gap": "clamp(4rem, 9vw, 7rem)", "radius": "6px", "measure": "62ch", "heading-weight": "400", "heading-tracking": "0.005em", "heading-case": "none", "ui-tracking": "0.12em", "border-width": "2px", "transition": "180ms" }
     }
   }
 }

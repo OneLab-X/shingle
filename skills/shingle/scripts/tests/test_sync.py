@@ -307,7 +307,7 @@ class ThemeTests(unittest.TestCase):
 
     def test_every_direction_has_tokens(self):
         directions = json.loads((REFS / "directions.json").read_text())["directions"]
-        self.assertEqual(len(directions), 8)
+        self.assertEqual(len(directions), 10)
         for name, d in directions.items():
             with self.subTest(name):
                 for role in ("display", "body"):
