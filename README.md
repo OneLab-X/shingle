@@ -51,6 +51,8 @@ Re-run `/shingle` after editing `business.json` and it updates the site **withou
 
 ## Gallery
 
+The [live site](https://onelab-x.github.io/shingle/) walks through every step and feature with screenshots. To refresh them after changing an example: `python3 .github/scripts/capture_guide.py`.
+
 Eleven fictional businesses (one of them bilingual), ten design directions. Every one was generated from a short `business.json`, and CI rebuilds and audits all of them on every pull request.
 
 | | | |
